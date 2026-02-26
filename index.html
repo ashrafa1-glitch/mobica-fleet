@@ -251,6 +251,11 @@ let reqs = [];
 let assignIds = [];
 
 // ══ INIT ══
+// Clear old service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+
 window.onload = function() {
   // Populate location selects
   ['e-from','e-dest'].forEach(id => {
@@ -283,12 +288,12 @@ function pickTeam(t, btn) {
 }
 
 function doLogin() {
-  const name = document.getElementById('inp-name').value.trim();
-  if (!name)         return toast('✋ اكتب اسمك');
-  if (!selectedRole) return toast('✋ اختر الدور');
-  if (selectedRole === 'engineer' && !selectedTeam) return toast('✋ اختر المجموعة');
+  const name = (document.getElementById('inp-name').value || '').trim();
+  if (!name)         { alert('اكتب اسمك أولاً'); return; }
+  if (!selectedRole) { alert('اختر الدور أولاً'); return; }
+  if (selectedRole === 'engineer' && !selectedTeam) { alert('اختر المجموعة'); return; }
   user = { name, role: selectedRole, team: selectedTeam };
-  localStorage.setItem('fleet_u', JSON.stringify(user));
+  try { localStorage.setItem('fleet_u', JSON.stringify(user)); } catch(e){}
   launchApp();
 }
 
