@@ -389,7 +389,9 @@ function renderMerge() {
     if(g){g.ids.push(r.id);g.techs+=parseInt(r.techs)||0;g.rows.push(r);}
     else gs.push({from:r.from_loc,dest:r.dest,ids:[r.id],techs:parseInt(r.techs)||0,rows:[r]});
   });
-  el.innerHTML = gs.map((g,i)=>{
+  // store groups globally — no Arabic in onclick
+  _groups = gs;
+  el.innerHTML = gs.map((g,gi)=>{
     const cSep=g.rows.reduce((s,r)=>s+bf(parseInt(r.techs)||0).cost,0);
     const nSep=g.rows.reduce((s,r)=>s+bf(parseInt(r.techs)||0).cnt,0);
     const best=bf(g.techs);
@@ -397,20 +399,22 @@ function renderMerge() {
     const cap=CAR_CAP[best.type];
     const pct=Math.min(100,Math.round(g.techs/cap*100));
     const col=g.techs>cap?'#c62828':g.techs>cap*.8?'#f57c00':'#2e7d32';
-    const ids_str=g.ids.join(',');
-    return `<div class="mc">
+    const multiRow = g.rows.length > 1;
+    return `<div class="mc" style="border-color:${multiRow?'#ffc107':'#ddd'}">
       <div class="mc-title">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
-      <div style="font-size:12px;color:#666;margin-bottom:8px">${g.rows.map(r=>`👷 ${r.team} (${r.techs})`).join(' | ')}</div>
+      <div style="font-size:12px;color:#666;margin-bottom:8px">${g.rows.map(r=>`👷 ${r.team||'—'} (${r.techs} فرد)`).join('<br>')}</div>
+      ${multiRow ? `
       <div class="ba-row">
-        <div class="ba-num"><div class="ba-big" style="color:#e65100">${nSep}</div><div class="ba-lbl">منفردة</div></div>
+        <div class="ba-num"><div class="ba-big" style="color:#e65100">${nSep}</div><div class="ba-lbl">سيارات منفردة</div></div>
         <div style="font-size:24px;color:#999">→</div>
-        <div class="ba-num"><div class="ba-big" style="color:#2e7d32">${best.cnt}</div><div class="ba-lbl">مدمجة</div></div>
+        <div class="ba-num"><div class="ba-big" style="color:#2e7d32">${best.cnt}</div><div class="ba-lbl">بعد الدمج</div></div>
       </div>
+      ${sav>0?`<div style="background:#2e7d32;color:#fff;display:inline-block;padding:3px 14px;border-radius:20px;font-size:12px;margin-bottom:8px;font-weight:700">💰 توفير ${sav}% من التكلفة</div>`:''}
+      ` : ''}
       <div style="font-size:13px;margin-bottom:6px">🚐 ${CAR_LBL[best.type]} | 👥 ${g.techs} فرد</div>
       <div class="cap-bg"><div class="cap-fill" style="background:${col};width:${pct}%"></div></div>
-      <div style="font-size:12px;color:${col};margin-bottom:10px">${g.techs}/${cap} مقعد</div>
-      ${sav>0?`<div style="background:#2e7d32;color:#fff;display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;margin-bottom:10px">توفير ${sav}% من التكلفة</div>`:''}
-      <button class="btn b-orange b-sm" onclick="openAssignGroup('${ids_str}','${(g.from||'').replace(/'/g,'')} ← ${(g.dest||'').replace(/'/g,'')} | ${g.techs} فرد',${best.type==='sedan5'?0:best.type==='suv7'?1:2})">🔑 تعيين سيارة للمجموعة</button>
+      <div style="font-size:12px;color:${col};margin-bottom:10px">${g.techs} / ${cap} مقعد</div>
+      <button class="btn b-orange b-sm" onclick="openAssignGroup(${gi})">🔑 تعيين سيارة للمجموعة</button>
     </div>`;
   }).join('');
 }
@@ -450,7 +454,10 @@ function bf(t){
   return b;
 }
 
-// ══ ASSIGN ══
+// ══ MERGE GROUPS STORE ══
+let _groups = [];
+
+
 function openAssign(id) {
   const r=REQS.find(x=>x.id===id);
   if(!r) return;
@@ -463,10 +470,15 @@ function openAssign(id) {
   document.getElementById('amodal').classList.add('open');
 }
 
-function openAssignGroup(ids_str, info, typeIdx) {
-  ASSIGN_IDS = ids_str.split(',');
-  document.getElementById('ainfo').innerHTML = info.replace(/\|/g,'<br>');
-  document.getElementById('atype').selectedIndex = typeIdx||2;
+function openAssignGroup(gi) {
+  const g = _groups[gi];
+  if (!g) return;
+  ASSIGN_IDS = g.ids;
+  const best = bf(g.techs);
+  document.getElementById('ainfo').innerHTML =
+    `📍 ${g.from||'—'} ➜ ${g.dest||'—'}<br>👥 ${g.techs} فرد إجمالاً<br>` +
+    g.rows.map(r=>`👷 ${r.team||'—'}: ${r.techs} فرد`).join('<br>');
+  document.getElementById('atype').value = best.type;
   document.getElementById('aplate').value='';
   document.getElementById('adriver').value='';
   document.getElementById('amodal').classList.add('open');
