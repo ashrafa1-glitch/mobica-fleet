@@ -277,7 +277,7 @@ function renderApp() {
         <div class="stat"><div class="sn" id="st2">0</div><div class="sl">محددة</div></div>
       </div>
       <div style="margin-bottom:12px">
-        <button class="btn b-green" onclick="autoDistribute();switchTab('merge',document.querySelectorAll('.tab')[1])">⚡ توزيع تلقائي</button>
+        <button class="btn b-green" onclick="runAutoDistribute()">⚡ توزيع تلقائي</button>
       </div>
       <div class="tabs">
         <div class="tab on"  onclick="switchTab('reqs',this)">الطلبات</div>
@@ -473,8 +473,25 @@ function bf(techs) {
 }
 
 // Auto-distribute all requests optimally using available fleet
+function runAutoDistribute() {
+  // switch to merge tab first
+  CUR_TAB = 'merge';
+  ['reqs','merge','order'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el) el.style.display=t==='merge'?'':'none';
+  });
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('on', i===1);
+  });
+  autoDistribute();
+}
+
 function autoDistribute() {
-  if (!REQS.length) return toast('لا توجد طلبات للتوزيع');
+  if (!REQS.length) {
+    const el=document.getElementById('tab-merge');
+    if(el) el.innerHTML='<div class="empty">⚠️ لا توجد طلبات — اضغط تحديث أولاً</div>';
+    return;
+  }
 
   // Count available (unassigned) fleet slots
   const used = {};
