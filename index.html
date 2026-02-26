@@ -103,9 +103,10 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
     <div class="fl"><label>اسم السائق</label><input id="adriver" type="text" placeholder="الاسم"></div>
     <div class="fl"><label>نوع السيارة</label>
       <select id="atype">
-        <option value="sedan5">سيدان 5 راكب (4 فنيين)</option>
-        <option value="suv7">SUV 7 راكب (6 فنيين)</option>
-        <option value="micro14">ميكروباص 14 راكب (13 فنيين)</option>
+        <option value="pickup">🛻 باكاب 4 ركاب</option>
+        <option value="suzuki">🚙 سوزوكى 7 ركاب</option>
+        <option value="micro14">🚐 ميكروباص 14 راكب</option>
+        <option value="bus26">🚌 أتوبيس 26 راكب</option>
       </select>
     </div>
     <div style="display:flex;gap:8px">
@@ -119,9 +120,17 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
 <script>
 // ══ CONFIG ══
 const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
-const CAR_CAP  = {sedan5:4,suv7:6,micro14:13};
-const CAR_COST = {sedan5:1,suv7:1.5,micro14:2.2};
-const CAR_LBL  = {sedan5:'سيدان 5 راكب',suv7:'SUV 7 راكب',micro14:'ميكروباص 14 راكب'};
+// ══ ACTUAL MOBICA FLEET ══
+const FLEET = {
+  pickup:  { label:'باكاب 4 ركاب',    cap:4,  total:2, cost:0.8, icon:'🛻' },
+  suzuki:  { label:'سوزوكى 7 ركاب',   cap:7,  total:6, cost:1.0, icon:'🚙' },
+  micro14: { label:'ميكروباص 14 راكب',cap:14, total:2, cost:1.5, icon:'🚐' },
+  bus26:   { label:'أتوبيس 26 راكب',  cap:26, total:2, cost:2.5, icon:'🚌' },
+};
+// legacy aliases
+const CAR_CAP  = {pickup:4,suzuki:7,micro14:14,bus26:26};
+const CAR_COST = {pickup:0.8,suzuki:1,micro14:1.5,bus26:2.5};
+const CAR_LBL  = Object.fromEntries(Object.entries(FLEET).map(([k,v])=>[k,v.label]));
 const LOCS = ['القاهرة','مدينة نصر','مصر الجديدة','المعادي','المقطم','حلوان','التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','المستقبل سيتي','بدر','العبور','الشروق','الرحاب','الشيخ زايد','6 أكتوبر','السادس من أكتوبر','الحرم','فيصل','إمبابة','عين شمس','المطرية','شبرا','السلام','النزهة','العباسية','وسط البلد','الزمالك','المهندسين','الدقي','الجيزة','الهرم','10 رمضان','15 مايو','الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','سيدي جابر','الرمل','أبوقير','برج العرب','القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ','المنصورة','دمياط','الزقازيق','بنى سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','الفيوم','بورسعيد','الإسماعيلية','السويس','العريش','الغردقة','دمنهور','شبين الكوم','المنطقة الصناعية 6 أكتوبر','المنطقة الصناعية 10 رمضان','المنطقة الصناعية برج العرب','المنطقة الصناعية العبور'];
 
 // ══ STATE ══
@@ -266,6 +275,9 @@ function renderApp() {
         <div class="stat"><div class="sn" id="st0">0</div><div class="sl">طلبات</div></div>
         <div class="stat"><div class="sn" id="st1">0</div><div class="sl">انتظار</div></div>
         <div class="stat"><div class="sn" id="st2">0</div><div class="sl">محددة</div></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <button class="btn b-green" onclick="autoDistribute();switchTab('merge',document.querySelectorAll('.tab')[1])">⚡ توزيع تلقائي</button>
       </div>
       <div class="tabs">
         <div class="tab on"  onclick="switchTab('reqs',this)">الطلبات</div>
@@ -447,11 +459,147 @@ function printOrder(){
   w.document.close();
 }
 
-function bf(t){
-  let b={type:'micro14',cnt:Math.ceil(t/13)||1,cost:0};
-  b.cost=b.cnt*2.2;
-  ['sedan5','suv7','micro14'].forEach(k=>{const c=Math.ceil(t/CAR_CAP[k])||1,ci=c*CAR_COST[k];if(ci<b.cost)b={type:k,cnt:c,cost:ci};});
-  return b;
+// Best fit from Mobica fleet
+function bf(techs) {
+  const types = Object.keys(FLEET).sort((a,b)=>FLEET[a].cap-FLEET[b].cap); // smallest first
+  let best = null;
+  for (const t of types) {
+    const cap = FLEET[t].cap;
+    const cnt = Math.ceil(techs/cap);
+    const cost = cnt * FLEET[t].cost;
+    if (!best || cost < best.cost) best = {type:t, cnt, cost};
+  }
+  return best || {type:'bus26',cnt:1,cost:2.5};
+}
+
+// Auto-distribute all requests optimally using available fleet
+function autoDistribute() {
+  if (!REQS.length) return toast('لا توجد طلبات للتوزيع');
+
+  // Count available (unassigned) fleet slots
+  const used = {};
+  Object.keys(FLEET).forEach(k => used[k] = 0);
+  REQS.filter(r=>r.status==='assigned').forEach(r=>{ if(r.car_type&&used[r.car_type]!==undefined) used[r.car_type]++; });
+
+  // Group pending requests by route
+  const pending = REQS.filter(r=>r.status==='pending');
+  const groups = [];
+  pending.forEach(r=>{
+    const g=groups.find(x=>x.from===r.from_loc&&x.dest===r.dest);
+    if(g){g.ids.push(r.id);g.techs+=parseInt(r.techs)||0;g.rows.push(r);}
+    else groups.push({from:r.from_loc,dest:r.dest,ids:[r.id],techs:parseInt(r.techs)||0,rows:[r]});
+  });
+
+  // Sort groups largest first
+  groups.sort((a,b)=>b.techs-a.techs);
+
+  const plan = [];
+  const warnings = [];
+
+  groups.forEach(g=>{
+    // Find cheapest available vehicle type that fits
+    const types = Object.keys(FLEET).sort((a,b)=>FLEET[a].cap-FLEET[b].cap);
+    let assigned = false;
+    for (const t of types) {
+      const avail = FLEET[t].total - used[t];
+      if (avail > 0 && FLEET[t].cap >= g.techs) {
+        used[t]++;
+        plan.push({ ids:g.ids, type:t, label:FLEET[t].label, icon:FLEET[t].icon, from:g.from, dest:g.dest, techs:g.techs });
+        assigned = true;
+        break;
+      }
+    }
+    if (!assigned) {
+      // Need multiple cars — use largest available
+      let remaining = g.techs;
+      const types2 = Object.keys(FLEET).sort((a,b)=>FLEET[b].cap-FLEET[a].cap);
+      let tempIds = [...g.ids];
+      for (const t of types2) {
+        while (remaining > 0 && (FLEET[t].total - used[t]) > 0) {
+          used[t]++;
+          const cap = FLEET[t].cap;
+          plan.push({ ids:tempIds.splice(0,1), type:t, label:FLEET[t].label, icon:FLEET[t].icon, from:g.from, dest:g.dest, techs:Math.min(remaining,cap) });
+          remaining -= cap;
+        }
+        if (remaining <= 0) break;
+      }
+      if (remaining > 0) warnings.push(`⚠️ ${g.from}→${g.dest}: تجاوز الطاقة بـ ${remaining} فرد`);
+    }
+  });
+
+  // Show plan
+  showAutoPlan(plan, warnings);
+}
+
+// ══ AUTO PLAN ══
+function showAutoPlan(plan, warnings) {
+  const el = document.getElementById('tab-merge');
+  if (!el) return;
+
+  // Fleet availability summary
+  const used = {};
+  Object.keys(FLEET).forEach(k=>used[k]=0);
+  plan.forEach(p=>{ if(used[p.type]!==undefined) used[p.type]++; });
+
+  const fleetBar = Object.entries(FLEET).map(([k,v])=>{
+    const u = used[k]||0;
+    const avail = v.total - u;
+    const col = avail===0?'#c62828':avail<v.total?'#f57c00':'#2e7d32';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px">
+      <span>${v.icon} ${v.label}</span>
+      <span style="color:${col};font-weight:700">${u}/${v.total} مستخدمة</span>
+    </div>`;
+  }).join('');
+
+  const planCards = plan.map((p,i)=>`
+    <div style="background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border-right:4px solid #1565c0;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-weight:700;font-size:14px">${p.icon} ${p.label}</span>
+        <span style="background:#e3f2fd;color:#1565c0;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700">سيارة ${i+1}</span>
+      </div>
+      <div style="font-size:13px;color:#555">📍 ${p.from||'—'} ➜ ${p.dest||'—'}</div>
+      <div style="font-size:12px;color:#888;margin-top:2px">👥 ${p.techs} فرد | سعة ${FLEET[p.type].cap}</div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="ct">🚗 الأسطول المتاح</div>
+      ${fleetBar}
+    </div>
+    ${warnings.length?`<div style="background:#fff3e0;border:2px solid #f57c00;border-radius:10px;padding:12px;margin-bottom:12px">${warnings.map(w=>`<div style="font-size:13px;color:#e65100">${w}</div>`).join('')}</div>`:''}
+    <div class="card">
+      <div class="ct">✅ خطة التوزيع التلقائي — ${plan.length} سيارة</div>
+      ${planCards}
+      ${plan.length?`<button class="btn b-blue" style="margin-top:8px" onclick="applyAutoPlan()">✅ تطبيق الخطة</button>`:'<div class="empty">لا توجد طلبات معلّقة</div>'}
+    </div>`;
+
+  // store plan globally
+  window._autoPlan = plan;
+}
+
+function applyAutoPlan() {
+  const plan = window._autoPlan;
+  if (!plan||!plan.length) return;
+  // Open assign modal for first unassigned — or show batch assign UI
+  // For now show plan summary and let عماد assign plates manually per group
+  toast('✅ الخطة جاهزة — اضغط على كل مجموعة لإضافة رقم السيارة والسائق');
+  renderMergeWithPlan(plan);
+}
+
+function renderMergeWithPlan(plan) {
+  const el = document.getElementById('tab-merge');
+  if (!el) return;
+  _groups = plan.map(p=>({ ids:p.ids, from:p.from, dest:p.dest, techs:p.techs, rows: REQS.filter(r=>p.ids.includes(r.id)), suggestedType:p.type }));
+  el.innerHTML = plan.map((p,i)=>`
+    <div class="mc" style="border-color:#1565c0">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-weight:700">${p.icon} ${p.label}</span>
+        <span style="background:#e3f2fd;color:#1565c0;padding:2px 10px;border-radius:20px;font-size:12px">سيارة ${i+1}</span>
+      </div>
+      <div style="font-size:13px;color:#555;margin-bottom:4px">📍 ${p.from||'—'} ➜ ${p.dest||'—'}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:10px">👥 ${p.techs} فرد</div>
+      <button class="btn b-orange b-sm" onclick="openAssignGroup(${i})">🔑 إضافة رقم السيارة والسائق</button>
+    </div>`).join('');
 }
 
 // ══ MERGE GROUPS STORE ══
