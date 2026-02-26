@@ -4,824 +4,576 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#1565c0">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="حملة موبيكا">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>حملة موبيكا 🚐</title>
 <style>
-:root {
-  --primary: #1565c0;
-  --primary-light: #e3f2fd;
-  --success: #2e7d32;
-  --warning: #f57c00;
-  --danger: #c62828;
-  --gray: #757575;
-  --bg: #f5f5f5;
-  --card: #ffffff;
-  --radius: 12px;
-  --shadow: 0 2px 8px rgba(0,0,0,.1);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #222; min-height: 100vh; }
-
-/* ── TOP BAR ── */
-.topbar { background: var(--primary); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
-.topbar-title { font-size: 17px; font-weight: 700; }
-.topbar-sub { font-size: 12px; opacity: .8; margin-top: 2px; }
-.topbar-date { font-size: 12px; opacity: .75; text-align: left; }
-
-/* ── CONTENT ── */
-.content { padding: 16px; padding-bottom: 80px; max-width: 500px; margin: 0 auto; }
-
-/* ── CARDS ── */
-.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px; }
-.card-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-
-/* ── FORM ── */
-.field { margin-bottom: 14px; }
-.field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 600; }
-.field select, .field input { width: 100%; padding: 11px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 15px; font-family: inherit; background: #fff; color: #222; appearance: none; -webkit-appearance: none; }
-.field select:focus, .field input:focus { outline: none; border-color: var(--primary); }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* ── BUTTONS ── */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: opacity .15s; width: 100%; }
-.btn:active { opacity: .75; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-success { background: var(--success); color: #fff; }
-.btn-warning { background: var(--warning); color: #fff; }
-.btn-danger  { background: var(--danger);  color: #fff; }
-.btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-.btn-sm { padding: 8px 14px; font-size: 13px; width: auto; }
-.btn-row { display: flex; gap: 8px; }
-
-/* ── LOGIN ── */
-#screen-login { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; background: linear-gradient(160deg, #1565c0 0%, #0d47a1 100%); }
-.login-logo { font-size: 56px; margin-bottom: 12px; }
-.login-title { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-.login-sub { color: rgba(255,255,255,.75); font-size: 14px; margin-bottom: 32px; }
-.login-card { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
-.login-card .field label { color: #333; }
-.login-card .btn { margin-top: 8px; }
-
-/* ── REQUEST CARDS ── */
-.req-card { background: var(--card); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; border-right: 4px solid #ddd; box-shadow: var(--shadow); }
-.req-card.pending  { border-color: var(--warning); }
-.req-card.assigned { border-color: var(--success); }
-.req-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.req-team { font-weight: 700; font-size: 14px; }
-.req-route { font-size: 13px; color: #555; margin-bottom: 4px; }
-.req-techs { font-size: 12px; color: #888; }
-
-/* ── BADGE ── */
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.badge-pending  { background: #fff3e0; color: #e65100; }
-.badge-assigned { background: #e8f5e9; color: #2e7d32; }
-.badge-blue     { background: #e3f2fd; color: #1565c0; }
-
-/* ── TABS ── */
-.tabs { display: flex; background: #fff; border-radius: 10px; padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow); }
-.tab { flex: 1; text-align: center; padding: 9px 6px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; transition: all .2s; }
-.tab.active { background: var(--primary); color: #fff; }
-
-/* ── STATS ── */
-.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-.stat { background: var(--card); border-radius: 10px; padding: 12px; text-align: center; box-shadow: var(--shadow); }
-.stat-val { font-size: 24px; font-weight: 800; color: var(--primary); }
-.stat-lbl { font-size: 11px; color: #888; margin-top: 2px; }
-
-/* ── MERGE BOX ── */
-.merge-box { background: #fff8e1; border: 1.5px solid #ffc107; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
-.merge-box-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; color: #e65100; }
-
-/* ── CAPACITY BAR ── */
-.cap-bar-wrap { background: #eee; border-radius: 6px; height: 8px; margin: 6px 0; overflow: hidden; }
-.cap-bar { height: 8px; border-radius: 6px; transition: width .3s; }
-
-/* ── EMPTY STATE ── */
-.empty { text-align: center; padding: 40px 20px; color: #aaa; }
-.empty-icon { font-size: 48px; margin-bottom: 12px; }
-.empty-text { font-size: 14px; }
-
-/* ── LOADING ── */
-.spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── TOAST ── */
-#toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity .3s; z-index: 999; white-space: nowrap; pointer-events: none; }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #eee; display: flex; z-index: 100; box-shadow: 0 -2px 8px rgba(0,0,0,.08); }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 6px 8px; font-size: 11px; color: #aaa; cursor: pointer; transition: color .2s; }
-.nav-item.active { color: var(--primary); }
-.nav-icon { font-size: 22px; margin-bottom: 2px; }
-
-/* ── MODAL ── */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: flex; align-items: flex-end; }
-.modal { background: #fff; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 90vh; overflow-y: auto; }
-.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--primary); }
-.modal-close { float: left; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
-
-/* ── SUGGESTION CARD ── */
-.sugg-card { background: #e8f5e9; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1.5px solid #a5d6a7; }
-.sugg-before-after { display: flex; align-items: center; justify-content: space-around; margin: 8px 0; }
-.sugg-num { text-align: center; }
-.sugg-num .big { font-size: 28px; font-weight: 900; }
-.sugg-num .lbl { font-size: 11px; color: #777; }
-.sugg-arrow { font-size: 22px; color: #2e7d32; }
-
-/* screens */
-.screen { display: none; }
-.screen.active { display: block; }
-#screen-login.active { display: flex; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Segoe UI',Tahoma,sans-serif;background:#f0f4f8;color:#222;min-height:100vh}
+/* LOGIN */
+#pg-login{min-height:100vh;background:linear-gradient(160deg,#1565c0,#0d47a1);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.login-logo{font-size:60px;margin-bottom:12px}
+.login-title{color:#fff;font-size:24px;font-weight:800;margin-bottom:4px}
+.login-sub{color:rgba(255,255,255,.75);font-size:14px;margin-bottom:28px}
+.login-box{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.lbl{font-size:13px;color:#555;font-weight:700;margin-bottom:8px;display:block}
+.txt-inp{width:100%;padding:13px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;font-family:inherit;margin-bottom:16px}
+.txt-inp:focus{outline:none;border-color:#1565c0}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.choice-btn{padding:12px 8px;border:2px solid #e0e0e0;border-radius:10px;background:#fff;font-size:13px;font-family:inherit;font-weight:600;color:#555;cursor:pointer;text-align:center;transition:all .15s}
+.choice-btn.sel{border-color:#1565c0;background:#e3f2fd;color:#1565c0}
+.choice-btn.full{grid-column:1/-1}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+#team-section{display:none}
+.login-btn{width:100%;padding:14px;background:#1565c0;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+.login-btn:active{opacity:.85}
+/* APP */
+#pg-app{display:none;min-height:100vh;flex-direction:column}
+.topbar{background:#1565c0;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.topbar-name{font-size:16px;font-weight:700}
+.topbar-role{font-size:12px;opacity:.8;margin-top:2px}
+.content{padding:16px;padding-bottom:90px;flex:1}
+/* CARDS */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:700;color:#1565c0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+/* FORM */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:#555;font-weight:600;margin-bottom:6px}
+.field select,.field input{width:100%;padding:12px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:#222}
+.field select:focus,.field input:focus{outline:none;border-color:#1565c0}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 18px;border-radius:10px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;width:100%;transition:opacity .15s}
+.btn:active{opacity:.8}
+.btn-blue{background:#1565c0;color:#fff}
+.btn-green{background:#2e7d32;color:#fff}
+.btn-orange{background:#f57c00;color:#fff}
+.btn-outline{background:#fff;border:2px solid #1565c0;color:#1565c0}
+.btn-sm{padding:9px 14px;font-size:13px;width:auto}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.tab{flex:1;text-align:center;padding:10px 4px;border-radius:9px;font-size:13px;font-weight:600;color:#999;cursor:pointer}
+.tab.act{background:#1565c0;color:#fff}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fff;border-radius:12px;padding:14px 8px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.stat-n{font-size:26px;font-weight:800;color:#1565c0}
+.stat-l{font-size:11px;color:#888;margin-top:2px}
+/* REQ CARD */
+.req{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;border-right:4px solid #ddd;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.req.pending{border-color:#f57c00}
+.req.assigned{border-color:#2e7d32}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.req-team{font-weight:700;font-size:14px}
+.req-route{font-size:13px;color:#555;margin-bottom:3px}
+.req-info{font-size:12px;color:#888}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-p{background:#fff3e0;color:#e65100}
+.badge-a{background:#e8f5e9;color:#2e7d32}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;box-shadow:0 -2px 8px rgba(0,0,0,.08);z-index:50}
+.nav-i{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 12px;font-size:11px;color:#bbb;cursor:pointer}
+.nav-i.act{color:#1565c0}
+.nav-i span{font-size:22px;margin-bottom:2px}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px 16px 0 0;padding:20px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;color:#1565c0;margin-bottom:14px}
+/* EMPTY */
+.empty{text-align:center;padding:36px 20px;color:#bbb}
+.empty span{font-size:48px;display:block;margin-bottom:10px}
+/* MERGE */
+.merge-card{background:#fff8e1;border:2px solid #ffc107;border-radius:12px;padding:14px;margin-bottom:12px}
+.before-after{display:flex;justify-content:space-around;align-items:center;margin:10px 0}
+.ba-num{text-align:center}
+.ba-big{font-size:32px;font-weight:900}
+.ba-lbl{font-size:11px;color:#888}
+.cap-wrap{background:#eee;border-radius:6px;height:9px;overflow:hidden;margin:6px 0}
+.cap-bar{height:9px;border-radius:6px}
+/* TOAST */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:200;pointer-events:none;white-space:nowrap}
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
-<div id="screen-login" class="screen active">
+<!-- ═══ LOGIN ═══ -->
+<div id="pg-login">
   <div class="login-logo">🚐</div>
   <div class="login-title">حملة موبيكا</div>
   <div class="login-sub">إدارة نقل الفنيين</div>
-  <div class="login-card">
-    <div class="field">
-      <label>الاسم</label>
-      <input id="login-name" type="text" placeholder="اكتب اسمك">
+  <div class="login-box">
+    <label class="lbl">الاسم</label>
+    <input class="txt-inp" id="inp-name" type="text" placeholder="اكتب اسمك هنا">
+
+    <label class="lbl">الدور</label>
+    <div class="choice-row" id="role-btns">
+      <button class="choice-btn" onclick="pickRole('engineer',this)">👷 مهندس<br>مدير مجموعة</button>
+      <button class="choice-btn" onclick="pickRole('fleet_manager',this)">🚐 مسؤول<br>الحملة (عماد)</button>
     </div>
-    <div class="field">
-      <label>الدور</label>
-      <select id="login-role">
-        <option value="">— اختر —</option>
-        <option value="engineer">مهندس / مدير مجموعة</option>
-        <option value="fleet_manager">مسؤول الحملة (عماد)</option>
-      </select>
+
+    <div id="team-section">
+      <label class="lbl">المجموعة</label>
+      <div class="team-grid" id="team-btns">
+        <button class="choice-btn" onclick="pickTeam('A — أحمد حسن',this)">A<br>أحمد حسن</button>
+        <button class="choice-btn" onclick="pickTeam('B — سامى فؤاد',this)">B<br>سامى فؤاد</button>
+        <button class="choice-btn" onclick="pickTeam('C — حازم قاعود',this)">C<br>حازم قاعود</button>
+        <button class="choice-btn" onclick="pickTeam('D — هشام جمال',this)">D<br>هشام جمال</button>
+      </div>
     </div>
-    <div class="field" id="login-team-wrap" style="display:none">
-      <label>المجموعة</label>
-      <select id="login-team">
-        <option value="">— اختر —</option>
-        <option value="A — أحمد حسن">مجموعة A — أحمد حسن</option>
-        <option value="B — سامى فؤاد">مجموعة B — سامى فؤاد</option>
-        <option value="C — حازم قاعود">مجموعة C — حازم قاعود</option>
-        <option value="D — هشام جمال">مجموعة D — هشام جمال</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" onclick="doLogin()">دخول</button>
+
+    <button class="login-btn" onclick="doLogin()">دخول ←</button>
   </div>
 </div>
 
-<!-- ══════════ MAIN APP ══════════ -->
-<div id="screen-app" class="screen">
+<!-- ═══ APP ═══ -->
+<div id="pg-app" style="display:none;flex-direction:column;min-height:100vh">
   <div class="topbar">
     <div>
-      <div class="topbar-title">🚐 حملة موبيكا</div>
-      <div class="topbar-sub" id="topbar-user"></div>
+      <div class="topbar-name" id="tb-name"></div>
+      <div class="topbar-role" id="tb-role"></div>
     </div>
-    <div class="topbar-date" id="topbar-date"></div>
+    <div style="font-size:13px;opacity:.8" id="tb-date"></div>
   </div>
 
-  <!-- Engineer View -->
-  <div id="view-engineer" style="display:none">
-    <div class="content">
-      <!-- Add Request -->
-      <div class="card" id="card-add-req">
-        <div class="card-title">➕ طلب نقل جديد</div>
-        <div class="field">
-          <label>المجموعة</label>
-          <select id="req-team">
-            <option value="">— اختر —</option>
-            <option value="A — أحمد حسن">مجموعة A — أحمد حسن</option>
-            <option value="B — سامى فؤاد">مجموعة B — سامى فؤاد</option>
-            <option value="C — حازم قاعود">مجموعة C — حازم قاعود</option>
-            <option value="D — هشام جمال">مجموعة D — هشام جمال</option>
-          </select>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>مكان التحرك</label>
-            <select id="req-from"><option value="">— اختر —</option></select>
-          </div>
-          <div class="field">
-            <label>مكان الوصول</label>
-            <select id="req-dest"><option value="">— اختر —</option></select>
-          </div>
-        </div>
-        <div class="field">
-          <label>عدد الأفراد</label>
-          <input id="req-techs" type="number" min="1" max="50" placeholder="0" inputmode="numeric">
-        </div>
-        <div class="field">
-          <label>ملاحظات (اختياري)</label>
-          <input id="req-notes" type="text" placeholder="أي تفاصيل إضافية">
-        </div>
-        <button class="btn btn-primary" id="btn-submit-req" onclick="submitRequest()">
-          📤 إرسال الطلب
-        </button>
+  <!-- ENGINEER -->
+  <div id="view-eng" class="content" style="display:none">
+    <div class="card">
+      <div class="card-title">➕ طلب نقل جديد</div>
+
+      <div class="field">
+        <label>المجموعة</label>
+        <select id="e-team">
+          <option value="">— اختر —</option>
+          <option>A — أحمد حسن</option>
+          <option>B — سامى فؤاد</option>
+          <option>C — حازم قاعود</option>
+          <option>D — هشام جمال</option>
+        </select>
       </div>
 
-      <!-- Today's Requests -->
+      <div class="field-row">
+        <div class="field">
+          <label>مكان التحرك</label>
+          <select id="e-from"><option value="">— اختر —</option></select>
+        </div>
+        <div class="field">
+          <label>مكان الوصول</label>
+          <select id="e-dest"><option value="">— اختر —</option></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>عدد الأفراد</label>
+        <input id="e-techs" type="number" min="1" placeholder="0" inputmode="numeric">
+      </div>
+
+      <button class="btn btn-blue" id="submit-btn" onclick="submitReq()">📤 إرسال الطلب</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 طلباتي اليوم</div>
+      <div id="my-list"></div>
+    </div>
+  </div>
+
+  <!-- FLEET MANAGER -->
+  <div id="view-fm" class="content" style="display:none">
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">طلبات</div></div>
+      <div class="stat"><div class="stat-n" id="s-pend">0</div><div class="stat-l">انتظار</div></div>
+      <div class="stat"><div class="stat-n" id="s-done">0</div><div class="stat-l">محددة</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab act" onclick="fmTab('reqs',this)">الطلبات</div>
+      <div class="tab" onclick="fmTab('merge',this)">💡 تحسين</div>
+      <div class="tab" onclick="fmTab('order',this)">📄 إيجار</div>
+    </div>
+    <div id="fm-reqs"></div>
+    <div id="fm-merge" style="display:none"></div>
+    <div id="fm-order" style="display:none">
       <div class="card">
-        <div class="card-title">📋 طلباتي اليوم</div>
-        <div id="my-requests-list"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">لا توجد طلبات اليوم</div></div></div>
+        <div class="card-title">📄 أمر الإيجار</div>
+        <div id="order-body"></div>
+        <button class="btn btn-blue" style="margin-top:12px" onclick="printOrder()">🖨️ طباعة</button>
       </div>
     </div>
   </div>
 
-  <!-- Fleet Manager View (عماد) -->
-  <div id="view-fleet-manager" style="display:none">
-    <div class="content">
-      <!-- Stats -->
-      <div class="stats" id="fm-stats">
-        <div class="stat"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">طلبات</div></div>
-        <div class="stat"><div class="stat-val" id="st-pending">0</div><div class="stat-lbl">انتظار</div></div>
-        <div class="stat"><div class="stat-val" id="st-assigned">0</div><div class="stat-lbl">محددة</div></div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab active" onclick="fmTab('requests',this)">الطلبات</div>
-        <div class="tab" onclick="fmTab('merge',this)">💡 تحسين</div>
-        <div class="tab" onclick="fmTab('order',this)">📄 أمر الإيجار</div>
-      </div>
-
-      <!-- Tab: Requests -->
-      <div id="fm-tab-requests">
-        <div id="fm-requests-list"></div>
-      </div>
-
-      <!-- Tab: Merge -->
-      <div id="fm-tab-merge" style="display:none">
-        <div id="merge-content"></div>
-      </div>
-
-      <!-- Tab: Order -->
-      <div id="fm-tab-order" style="display:none">
-        <div class="card">
-          <div class="card-title">📄 أمر الإيجار</div>
-          <div id="order-preview"></div>
-          <button class="btn btn-primary" style="margin-top:12px" onclick="printOrder()">🖨️ طباعة</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Nav -->
-  <div class="bottom-nav" id="bottom-nav" style="display:none">
-    <div class="nav-item active" onclick="navTo('home',this)" id="nav-home">
-      <div class="nav-icon">🏠</div>الرئيسية
-    </div>
-    <div class="nav-item" onclick="navTo('refresh',this)">
-      <div class="nav-icon">🔄</div>تحديث
-    </div>
-    <div class="nav-item" onclick="doLogout()">
-      <div class="nav-icon">🚪</div>خروج
-    </div>
+  <div class="bottom-nav">
+    <div class="nav-i act" onclick="goHome(this)"><span>🏠</span>الرئيسية</div>
+    <div class="nav-i" onclick="doRefresh(this)"><span>🔄</span>تحديث</div>
+    <div class="nav-i" onclick="doLogout()"><span>🚪</span>خروج</div>
   </div>
 </div>
 
-<!-- ══════════ ASSIGN MODAL ══════════ -->
-<div id="assign-modal" class="modal-overlay" style="display:none" onclick="closeAssignModal(event)">
+<!-- ASSIGN MODAL -->
+<div class="overlay" id="assign-modal">
   <div class="modal">
-    <button class="modal-close" onclick="closeAssignModal()">✕</button>
     <div class="modal-title">🔑 تحديد السيارة</div>
-    <div id="assign-req-info" style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px"></div>
-    <div class="field">
-      <label>رقم السيارة</label>
-      <input id="assign-plate" type="text" placeholder="اللوحة">
-    </div>
-    <div class="field">
-      <label>اسم السائق</label>
-      <input id="assign-driver" type="text" placeholder="الاسم الكامل">
-    </div>
+    <div id="assign-info" style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px;line-height:1.6"></div>
+    <div class="field"><label>رقم السيارة</label><input id="a-plate" type="text" placeholder="اللوحة"></div>
+    <div class="field"><label>اسم السائق</label><input id="a-driver" type="text" placeholder="الاسم"></div>
     <div class="field">
       <label>نوع السيارة</label>
-      <select id="assign-type">
+      <select id="a-type">
         <option value="sedan5">سيدان 5 راكب</option>
         <option value="suv7">SUV 7 راكب</option>
         <option value="micro14">ميكروباص 14 راكب</option>
       </select>
     </div>
-    <button class="btn btn-success" onclick="confirmAssign()">✅ تأكيد</button>
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="confirmAssign()">✅ تأكيد</button>
+      <button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// CONFIG — ضع هنا الـ URL بعد deploy الـ Apps Script
-// ══════════════════════════════════════════════════════════
+// ══ CONFIG ══
 const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
 
-// ══════════════════════════════════════════════════════════
-// EGYPT LOCATIONS
-// ══════════════════════════════════════════════════════════
-const LOCATIONS = [
-  'القاهرة','مدينة نصر','مصر الجديدة','هليوبوليس','المعادي','المقطم','حلوان',
-  'التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','المستقبل سيتي',
-  'بدر','العبور','الشروق','الرحاب','الشيخ زايد','6 أكتوبر','السادس من أكتوبر',
-  'الحرم','فيصل','إمبابة','المنيل','عين شمس','المطرية','شبرا','السلام',
-  'النزهة','العباسية','وسط البلد','الزمالك','المهندسين','الدقي','الجيزة',
-  'الهرم','المنصورية','أوسيم','كرداسة','10 رمضان','15 مايو',
-  'الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','المندرة','ميامي',
-  'الجمرك','سيدي جابر','الرمل','أبوقير','برج العرب',
-  'القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ',
-  'المنصورة','دمياط','الزقازيق','بنى سويف','المنيا','أسيوط',
-  'سوهاج','قنا','الأقصر','أسوان','الفيوم',
-  'بورسعيد','الإسماعيلية','السويس','العريش',
-  'الغردقة','دمنهور','شبين الكوم',
-  'المنطقة الصناعية — 6 أكتوبر','المنطقة الصناعية — العاشر من رمضان',
-  'المنطقة الصناعية — برج العرب','المنطقة الصناعية — العبور',
-];
+// ══ LOCATIONS ══
+const LOCS = ['القاهرة','مدينة نصر','مصر الجديدة','المعادي','المقطم','حلوان','التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','المستقبل سيتي','بدر','العبور','الشروق','الرحاب','الشيخ زايد','6 أكتوبر','السادس من أكتوبر','الحرم','فيصل','إمبابة','عين شمس','المطرية','شبرا','السلام','النزهة','العباسية','وسط البلد','الزمالك','المهندسين','الدقي','الجيزة','الهرم','10 رمضان','15 مايو','الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','الجمرك','سيدي جابر','الرمل','أبوقير','برج العرب','القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ','المنصورة','دمياط','الزقازيق','بنى سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','الفيوم','بورسعيد','الإسماعيلية','السويس','العريش','الغردقة','دمنهور','شبين الكوم','المنطقة الصناعية 6 أكتوبر','المنطقة الصناعية 10 رمضان','المنطقة الصناعية برج العرب','المنطقة الصناعية العبور'];
 
-const CAR_CAPS  = { sedan5:4, suv7:6, micro14:13 };
-const CAR_COST  = { sedan5:1, suv7:1.5, micro14:2.2 };
-const CAR_LABEL = { sedan5:'سيدان 5 راكب', suv7:'SUV 7 راكب', micro14:'ميكروباص 14 راكب' };
+const CAR_CAP  = {sedan5:4, suv7:6, micro14:13};
+const CAR_COST = {sedan5:1, suv7:1.5, micro14:2.2};
+const CAR_LBL  = {sedan5:'سيدان 5 راكب', suv7:'SUV 7 راكب', micro14:'ميكروباص 14 راكب'};
 
-// ══════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════
-let currentUser = null; // { name, role, team }
-let allRequests = [];
-let assignTarget = []; // IDs being assigned
+// ══ STATE ══
+let user = null;
+let selectedRole = '';
+let selectedTeam = '';
+let reqs = [];
+let assignIds = [];
 
-// ══════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+// ══ INIT ══
+window.onload = function() {
   // Populate location selects
-  ['req-from','req-dest'].forEach(id => {
+  ['e-from','e-dest'].forEach(id => {
     const sel = document.getElementById(id);
-    LOCATIONS.forEach(l => {
-      const o = document.createElement('option');
-      o.value = o.textContent = l;
-      sel.appendChild(o);
-    });
+    LOCS.forEach(l => { const o = document.createElement('option'); o.value = o.textContent = l; sel.appendChild(o); });
   });
-
-  // Role change → show/hide team
-  document.getElementById('login-role').addEventListener('change', function() {
-    document.getElementById('login-team-wrap').style.display =
-      this.value === 'engineer' ? '' : 'none';
-  });
-
   // Date
-  document.getElementById('topbar-date').textContent =
-    new Date().toLocaleDateString('ar-EG', {weekday:'short',day:'numeric',month:'long'});
-
+  document.getElementById('tb-date').textContent = new Date().toLocaleDateString('ar-EG',{weekday:'short',day:'numeric',month:'short'});
   // Restore session
-  const saved = localStorage.getItem('fleet_user');
-  if (saved) { currentUser = JSON.parse(saved); initApp(); }
-});
+  try {
+    const s = localStorage.getItem('fleet_u');
+    if (s) { user = JSON.parse(s); launchApp(); }
+  } catch(e) {}
+};
 
-// ══════════════════════════════════════════════════════════
-// LOGIN / LOGOUT
-// ══════════════════════════════════════════════════════════
+// ══ LOGIN ══
+function pickRole(r, btn) {
+  selectedRole = r;
+  document.querySelectorAll('#role-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('team-section').style.display = r === 'engineer' ? '' : 'none';
+  selectedTeam = '';
+  document.querySelectorAll('#team-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+}
+
+function pickTeam(t, btn) {
+  selectedTeam = t;
+  document.querySelectorAll('#team-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
 function doLogin() {
-  const name = document.getElementById('login-name').value.trim();
-  const role = document.getElementById('login-role').value;
-  const team = document.getElementById('login-team').value;
-  if (!name) return toast('أدخل اسمك');
-  if (!role) return toast('اختر الدور');
-  if (role === 'engineer' && !team) return toast('اختر المجموعة');
-  currentUser = { name, role, team };
-  localStorage.setItem('fleet_user', JSON.stringify(currentUser));
-  initApp();
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name)         return toast('✋ اكتب اسمك');
+  if (!selectedRole) return toast('✋ اختر الدور');
+  if (selectedRole === 'engineer' && !selectedTeam) return toast('✋ اختر المجموعة');
+  user = { name, role: selectedRole, team: selectedTeam };
+  localStorage.setItem('fleet_u', JSON.stringify(user));
+  launchApp();
 }
 
 function doLogout() {
-  localStorage.removeItem('fleet_user');
+  localStorage.removeItem('fleet_u');
   location.reload();
 }
 
-function initApp() {
-  show('screen-login', false);
-  show('screen-app', true);
-  document.getElementById('topbar-user').textContent =
-    currentUser.name + (currentUser.team ? ' — ' + currentUser.team : '');
-  document.getElementById('bottom-nav').style.display = 'flex';
-  if (currentUser.role === 'engineer') {
-    show('view-engineer', true);
-    if (currentUser.team) document.getElementById('req-team').value = currentUser.team;
-    loadMyRequests();
+function launchApp() {
+  document.getElementById('pg-login').style.display = 'none';
+  document.getElementById('pg-app').style.display   = 'flex';
+  document.getElementById('tb-name').textContent = user.name;
+  document.getElementById('tb-role').textContent = user.role === 'engineer' ? ('مهندس — ' + user.team) : 'مسؤول الحملة';
+  if (user.role === 'engineer') {
+    document.getElementById('view-eng').style.display = '';
+    if (user.team) document.getElementById('e-team').value = user.team;
+    loadMyReqs();
   } else {
-    show('view-fleet-manager', true);
-    loadAllRequests();
+    document.getElementById('view-fm').style.display = '';
+    loadAllReqs();
   }
 }
 
-// ══════════════════════════════════════════════════════════
-// ENGINEER
-// ══════════════════════════════════════════════════════════
-async function submitRequest() {
-  const team  = document.getElementById('req-team').value;
-  const from  = document.getElementById('req-from').value;
-  const dest  = document.getElementById('req-dest').value;
-  const techs = parseInt(document.getElementById('req-techs').value) || 0;
-  const notes = document.getElementById('req-notes').value;
+// ══ ENGINEER ══
+async function submitReq() {
+  const team  = document.getElementById('e-team').value;
+  const from  = document.getElementById('e-from').value;
+  const dest  = document.getElementById('e-dest').value;
+  const techs = parseInt(document.getElementById('e-techs').value)||0;
+  if (!team)  return toast('✋ اختر المجموعة');
+  if (!from)  return toast('✋ اختر مكان التحرك');
+  if (!dest)  return toast('✋ اختر مكان الوصول');
+  if (!techs) return toast('✋ أدخل عدد الأفراد');
 
-  if (!team)  return toast('اختر المجموعة');
-  if (!from)  return toast('اختر مكان التحرك');
-  if (!dest)  return toast('اختر مكان الوصول');
-  if (!techs) return toast('أدخل عدد الأفراد');
-
-  const btn = document.getElementById('btn-submit-req');
-  btn.innerHTML = '<div class="spinner"></div>';
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = '⏳ جاري الإرسال...';
   btn.disabled = true;
 
   try {
-    const res = await api('addRequest', {
-      team, from_loc: from, dest, techs,
-      notes, created_by: currentUser.name,
-      date: todayStr()
-    });
-    if (res.ok) {
-      toast('✅ تم إرسال الطلب — سيُخطر عماد فوراً');
-      document.getElementById('req-techs').value = '';
-      document.getElementById('req-notes').value = '';
-      document.getElementById('req-from').value = '';
-      document.getElementById('req-dest').value = '';
-      loadMyRequests();
-    } else {
-      toast('❌ خطأ: ' + (res.error || 'حاول تاني'));
-    }
-  } catch(e) {
-    toast('❌ تعذّر الاتصال — تحقق من النت');
-  }
+    const r = await api('addRequest', { team, from_loc:from, dest, techs, created_by:user.name, date:todayStr() });
+    if (r.ok) { toast('✅ تم الإرسال — سيُخطر عماد فوراً'); document.getElementById('e-techs').value=''; loadMyReqs(); }
+    else toast('❌ ' + (r.error||'خطأ'));
+  } catch(e) { toast('❌ تعذّر الاتصال'); }
 
-  btn.innerHTML = '📤 إرسال الطلب';
+  btn.textContent = '📤 إرسال الطلب';
   btn.disabled = false;
 }
 
-async function loadMyRequests() {
-  const el = document.getElementById('my-requests-list');
-  el.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa"><div class="spinner" style="border-color:#ddd;border-top-color:#1565c0;margin:auto"></div></div>';
+async function loadMyReqs() {
+  const el = document.getElementById('my-list');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:#bbb">⏳ جاري التحميل...</div>';
   try {
-    const res = await apiGet('getRequests', { date: todayStr() });
-    allRequests = res.requests || [];
-    const mine = allRequests.filter(r => r.team === currentUser.team || r.created_by === currentUser.name);
-    if (!mine.length) {
-      el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">لا توجد طلبات اليوم</div></div>';
-      return;
-    }
-    el.innerHTML = mine.map(r => reqCard(r, false)).join('');
-  } catch(e) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">تعذّر تحميل الطلبات</div></div>';
-  }
+    const r = await apiGet('getRequests', {date:todayStr()});
+    reqs = r.requests || [];
+    const mine = reqs.filter(x => x.team === user.team || x.created_by === user.name);
+    el.innerHTML = mine.length ? mine.map(x => reqHTML(x, false)).join('') : empty('لا توجد طلبات اليوم');
+  } catch(e) { el.innerHTML = empty('تعذّر التحميل'); }
 }
 
-// ══════════════════════════════════════════════════════════
-// FLEET MANAGER
-// ══════════════════════════════════════════════════════════
-async function loadAllRequests() {
-  const el = document.getElementById('fm-requests-list');
-  el.innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner" style="border-color:#ddd;border-top-color:#1565c0;margin:auto"></div></div>';
+// ══ FLEET MANAGER ══
+async function loadAllReqs() {
+  document.getElementById('fm-reqs').innerHTML = '<div style="text-align:center;padding:24px;color:#bbb">⏳ جاري التحميل...</div>';
   try {
-    const res = await apiGet('getRequests', { date: todayStr() });
-    allRequests = res.requests || [];
-    updateStats();
-    renderFmRequests();
-    renderMergeSuggestions();
-    renderOrderPreview();
-  } catch(e) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">تعذّر تحميل البيانات</div></div>';
-  }
+    const r = await apiGet('getRequests', {date:todayStr()});
+    reqs = r.requests || [];
+    renderStats(); renderReqs(); renderMerge(); renderOrder();
+  } catch(e) { document.getElementById('fm-reqs').innerHTML = empty('تعذّر التحميل'); }
 }
 
-function updateStats() {
-  const total    = allRequests.length;
-  const pending  = allRequests.filter(r => r.status === 'pending').length;
-  const assigned = allRequests.filter(r => r.status === 'assigned').length;
-  document.getElementById('st-total').textContent    = total;
-  document.getElementById('st-pending').textContent  = pending;
-  document.getElementById('st-assigned').textContent = assigned;
+function renderStats() {
+  document.getElementById('s-total').textContent = reqs.length;
+  document.getElementById('s-pend').textContent  = reqs.filter(r=>r.status==='pending').length;
+  document.getElementById('s-done').textContent  = reqs.filter(r=>r.status==='assigned').length;
 }
 
-function renderFmRequests() {
-  const el = document.getElementById('fm-requests-list');
-  if (!allRequests.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">لا توجد طلبات اليوم</div></div>';
-    return;
-  }
-  el.innerHTML = allRequests.map(r => reqCard(r, true)).join('');
+function renderReqs() {
+  const el = document.getElementById('fm-reqs');
+  el.innerHTML = reqs.length ? reqs.map(r=>reqHTML(r,true)).join('') : empty('لا توجد طلبات اليوم');
 }
 
-function reqCard(r, canAssign) {
-  const isPending  = r.status === 'pending';
-  const badge = isPending
-    ? '<span class="badge badge-pending">⏳ انتظار</span>'
-    : '<span class="badge badge-assigned">✅ محدد</span>';
-  const vehicle = !isPending
-    ? `<div style="font-size:12px;color:#2e7d32;margin-top:4px">🔑 ${r.plate} — ${r.driver} (${CAR_LABEL[r.car_type]||r.car_type})</div>`
-    : '';
-  const assignBtn = canAssign && isPending
-    ? `<button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="openAssignModal('${r.id}')">🔑 تحديد السيارة</button>`
-    : '';
-  return `<div class="req-card ${r.status}">
-    <div class="req-header">
-      <div class="req-team">👷 ${r.team||'—'}</div>
-      ${badge}
-    </div>
+function reqHTML(r, canAssign) {
+  const isPend = r.status === 'pending';
+  const badge  = isPend ? '<span class="badge badge-p">⏳ انتظار</span>' : '<span class="badge badge-a">✅ محدد</span>';
+  const vehicle= !isPend ? `<div style="font-size:12px;color:#2e7d32;margin-top:4px">🔑 ${r.plate||''} — ${r.driver||''} (${CAR_LBL[r.car_type]||''})</div>` : '';
+  const btn    = canAssign && isPend ? `<button class="btn btn-orange btn-sm" style="margin-top:10px" onclick="openAssign('${r.id}')">🔑 تحديد السيارة</button>` : '';
+  return `<div class="req ${r.status||'pending'}">
+    <div class="req-top"><div class="req-team">👷 ${r.team||'—'}</div>${badge}</div>
     <div class="req-route">📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}</div>
-    <div class="req-techs">👥 ${r.techs} فرد &nbsp;|&nbsp; 👤 ${r.created_by||'—'}</div>
-    ${vehicle}
-    ${assignBtn}
+    <div class="req-info">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
+    ${vehicle}${btn}
   </div>`;
 }
 
-// ── Assign Modal ──────────────────────────────────────────
-function openAssignModal(id) {
-  const r = allRequests.find(x => x.id === id);
+// ══ ASSIGN ══
+function openAssign(id) {
+  const r = reqs.find(x=>x.id===id);
   if (!r) return;
-  assignTarget = [id];
-  document.getElementById('assign-req-info').innerHTML =
-    `👷 ${r.team} &nbsp;|&nbsp; 📍 ${r.from_loc} ➜ ${r.dest} &nbsp;|&nbsp; 👥 ${r.techs} فرد`;
-  // suggest car type
+  assignIds = [id];
+  document.getElementById('assign-info').innerHTML = `👷 ${r.team}<br>📍 ${r.from_loc} ➜ ${r.dest}<br>👥 ${r.techs} فرد`;
   const t = parseInt(r.techs)||0;
-  const type = t<=4?'sedan5': t<=6?'suv7':'micro14';
-  document.getElementById('assign-type').value = type;
-  document.getElementById('assign-plate').value  = '';
-  document.getElementById('assign-driver').value = '';
-  document.getElementById('assign-modal').style.display = 'flex';
+  document.getElementById('a-type').value = t<=4?'sedan5':t<=6?'suv7':'micro14';
+  document.getElementById('a-plate').value = '';
+  document.getElementById('a-driver').value = '';
+  document.getElementById('assign-modal').classList.add('open');
 }
 
-function openAssignModalGroup(ids) {
-  assignTarget = ids;
-  const grouped = allRequests.filter(r => ids.includes(r.id));
-  const totalTechs = grouped.reduce((s,r)=>s+(parseInt(r.techs)||0),0);
-  const type = totalTechs<=4?'sedan5': totalTechs<=6?'suv7':'micro14';
-  document.getElementById('assign-req-info').innerHTML =
-    `${grouped.length} طلبات مدمجة &nbsp;|&nbsp; 👥 ${totalTechs} فرد إجمالاً`;
-  document.getElementById('assign-type').value = type;
-  document.getElementById('assign-plate').value  = '';
-  document.getElementById('assign-driver').value = '';
-  document.getElementById('assign-modal').style.display = 'flex';
+function openAssignGroup(ids, info) {
+  assignIds = ids;
+  document.getElementById('assign-info').innerHTML = info;
+  document.getElementById('a-plate').value = '';
+  document.getElementById('a-driver').value = '';
+  document.getElementById('assign-modal').classList.add('open');
 }
 
-function closeAssignModal(e) {
-  if (e && e.target !== document.getElementById('assign-modal')) return;
-  document.getElementById('assign-modal').style.display = 'none';
-}
+function closeModal() { document.getElementById('assign-modal').classList.remove('open'); }
 
 async function confirmAssign() {
-  const plate  = document.getElementById('assign-plate').value.trim();
-  const driver = document.getElementById('assign-driver').value.trim();
-  const type   = document.getElementById('assign-type').value;
-  if (!plate)  return toast('أدخل رقم السيارة');
-  if (!driver) return toast('أدخل اسم السائق');
+  const plate  = document.getElementById('a-plate').value.trim();
+  const driver = document.getElementById('a-driver').value.trim();
+  const type   = document.getElementById('a-type').value;
+  if (!plate)  return toast('✋ أدخل رقم السيارة');
+  if (!driver) return toast('✋ أدخل اسم السائق');
   try {
-    const res = await api('assignVehicle', {
-      ids: assignTarget, plate, driver,
-      car_type: type, car_type_label: CAR_LABEL[type]
-    });
-    if (res.ok) {
-      toast(`✅ تم تحديد السيارة — ${plate} / ${driver}`);
-      document.getElementById('assign-modal').style.display = 'none';
-      loadAllRequests();
-    } else { toast('❌ ' + (res.error||'حاول تاني')); }
+    const r = await api('assignVehicle', {ids:assignIds, plate, driver, car_type:type, car_type_label:CAR_LBL[type]});
+    if (r.ok) { toast('✅ تم تحديد السيارة'); closeModal(); loadAllReqs(); }
+    else toast('❌ ' + (r.error||'خطأ'));
   } catch(e) { toast('❌ تعذّر الاتصال'); }
 }
 
-// ── Merge / Optimize ──────────────────────────────────────
-function renderMergeSuggestions() {
-  const el = document.getElementById('merge-content');
-  if (!allRequests.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">لا توجد طلبات</div></div>';
-    return;
-  }
+// ══ MERGE ══
+function renderMerge() {
+  const el = document.getElementById('fm-merge');
+  if (!reqs.length) { el.innerHTML = empty('لا توجد طلبات'); return; }
 
-  // Group by same from+dest
+  // Group by from+dest
   const groups = [];
-  allRequests.forEach(r => {
-    const match = groups.find(g =>
-      g.from === r.from_loc && g.dest === r.dest
-    );
-    if (match) { match.ids.push(r.id); match.techs += parseInt(r.techs)||0; }
-    else groups.push({ from:r.from_loc, dest:r.dest, ids:[r.id], techs:parseInt(r.techs)||0 });
+  reqs.forEach(r => {
+    const g = groups.find(x => x.from===r.from_loc && x.dest===r.dest);
+    if (g) { g.ids.push(r.id); g.techs += parseInt(r.techs)||0; g.rows.push(r); }
+    else groups.push({ from:r.from_loc, dest:r.dest, ids:[r.id], techs:parseInt(r.techs)||0, rows:[r] });
   });
 
-  const suggestions = [];
-  groups.forEach(g => {
-    const rows = allRequests.filter(r => g.ids.includes(r.id));
-    const costSep = rows.reduce((s,r) => {
-      const t = parseInt(r.techs)||0;
-      return s + cheapestFit(t).costIndex;
-    }, 0);
-    const carsSep = rows.reduce((s,r) => s + cheapestFit(parseInt(r.techs)||0).count, 0);
-    const best = cheapestFit(g.techs);
-    const saving = costSep - best.costIndex;
-    if (saving > 0.05 || carsSep > best.count) {
-      suggestions.push({ ...g, carsSep, carsMerged:best.count, typeMerged:best.type, savingPct: Math.round(saving/costSep*100)||0 });
-    }
-  });
-
-  if (!suggestions.length) {
-    el.innerHTML = '<div class="card"><div style="text-align:center;padding:16px;color:#2e7d32;font-weight:700">✅ التوزيع الحالي مثالي — لا يوجد توفير ممكن</div></div>';
-    return;
-  }
-
-  el.innerHTML = suggestions.map((s,i) => {
-    const cap = CAR_CAPS[s.typeMerged];
-    const pct = Math.min(Math.round(s.techs/cap*100),100);
-    const col = s.techs>cap?'#c62828': s.techs>cap*0.8?'#f57c00':'#2e7d32';
-    return `<div class="sugg-card">
-      <div class="merge-box-title">💡 ${s.from||'—'} ➜ ${s.dest||'—'}</div>
-      <div class="sugg-before-after">
-        <div class="sugg-num">
-          <div class="big" style="color:#e65100">${s.carsSep}</div>
-          <div class="lbl">سيارات منفردة</div>
-        </div>
-        <div class="sugg-arrow">→</div>
-        <div class="sugg-num">
-          <div class="big" style="color:#2e7d32">${s.carsMerged}</div>
-          <div class="lbl">بعد الدمج</div>
-        </div>
+  const cards = groups.map((g,i) => {
+    const costSep = g.rows.reduce((s,r) => s + bestFit(parseInt(r.techs)||0).cost, 0);
+    const carsSep = g.rows.reduce((s,r) => s + bestFit(parseInt(r.techs)||0).count, 0);
+    const best    = bestFit(g.techs);
+    const saving  = Math.round((costSep - best.cost) / costSep * 100) || 0;
+    const cap     = CAR_CAP[best.type];
+    const pct     = Math.min(Math.round(g.techs/cap*100), 100);
+    const col     = g.techs>cap ? '#c62828' : g.techs>cap*.8 ? '#f57c00' : '#2e7d32';
+    const info    = `${g.rows.length} فريق — ${g.techs} فرد<br>📍 ${g.from||'—'} ➜ ${g.dest||'—'}`;
+    return `<div class="merge-card">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
+      <div style="font-size:12px;color:#555;margin-bottom:8px">${g.rows.map(r=>`👷 ${r.team} (${r.techs} فرد)`).join(' | ')}</div>
+      <div class="before-after">
+        <div class="ba-num"><div class="ba-big" style="color:#e65100">${carsSep}</div><div class="ba-lbl">منفردة</div></div>
+        <div style="font-size:24px">→</div>
+        <div class="ba-num"><div class="ba-big" style="color:#2e7d32">${best.count}</div><div class="ba-lbl">بعد الدمج</div></div>
       </div>
-      <div style="font-size:13px;margin-bottom:6px">🚐 ${CAR_LABEL[s.typeMerged]} &nbsp;|&nbsp; 👥 ${s.techs} فرد</div>
-      <div class="cap-bar-wrap"><div class="cap-bar" style="background:${col};width:${pct}%"></div></div>
-      <div style="font-size:12px;color:${col};margin-bottom:10px">${s.techs}/${cap} مقعد</div>
-      ${s.savingPct>0?`<div style="background:#2e7d32;color:#fff;display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;margin-bottom:10px">وفّر ${s.savingPct}% من التكلفة</div>`:''}
-      <button class="btn btn-success btn-sm" onclick="applyGroupAssign(${i})">🔑 تعيين سيارة للمجموعة</button>
+      <div style="font-size:13px;margin-bottom:6px">🚐 ${CAR_LBL[best.type]} | 👥 ${g.techs} فرد</div>
+      <div class="cap-wrap"><div class="cap-bar" style="background:${col};width:${pct}%"></div></div>
+      <div style="font-size:12px;color:${col};margin-bottom:10px">${g.techs}/${cap} مقعد</div>
+      ${saving>0?`<div style="background:#2e7d32;color:#fff;display:inline-block;padding:3px 12px;border-radius:20px;font-size:12px;margin-bottom:10px">توفير ${saving}%</div>`:''}
+      <button class="btn btn-orange btn-sm" onclick="openAssignGroup(${JSON.stringify(g.ids).replace(/"/g,"'")}, '${info.replace(/'/g,'').replace(/<br>/g,' | ')}')">🔑 تعيين سيارة للمجموعة</button>
     </div>`;
-  }).join('');
+  });
 
-  // store for onclick
-  window._suggestions = suggestions;
+  el.innerHTML = cards.join('') || empty('التوزيع مثالي ✅');
 }
 
-function applyGroupAssign(i) {
-  const s = window._suggestions[i];
-  if (!s) return;
-  openAssignModalGroup(s.ids);
-}
-
-function cheapestFit(techs) {
-  const n = Math.max(techs, 0);
-  let best = { type:'micro14', count:Math.ceil(n/13), costIndex:Math.ceil(n/13)*2.2 };
+function bestFit(techs) {
+  let best = {type:'micro14', count:Math.ceil(techs/13)||1, cost:0};
+  best.cost = best.count * 2.2;
   ['sedan5','suv7','micro14'].forEach(t => {
-    const c = Math.ceil(n/CAR_CAPS[t]);
+    const c = Math.ceil(techs/CAR_CAP[t])||1;
     const ci = c * CAR_COST[t];
-    if (ci < best.costIndex) best = { type:t, count:c, costIndex:ci };
+    if (ci < best.cost) best = {type:t, count:c, cost:ci};
   });
   return best;
 }
 
-// ── Rental Order ──────────────────────────────────────────
-function renderOrderPreview() {
-  const el = document.getElementById('order-preview');
-  if (!allRequests.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📄</div><div class="empty-text">لا توجد طلبات</div></div>';
-    return;
-  }
-  const rows = allRequests.map((r,i) => `
-    <tr>
-      <td>${i+1}</td><td>${r.team||'—'}</td><td>${r.from_loc||'—'}</td>
-      <td>${r.dest||'—'}</td><td>${r.techs||0}</td>
-      <td>${CAR_LABEL[r.car_type]||'—'}</td>
-      <td>${r.plate||'___'}</td><td>${r.driver||'___'}</td>
-    </tr>`).join('');
-  el.innerHTML = `<div style="overflow-x:auto;font-size:12px">
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#1565c0;color:#fff">
-        <th style="padding:6px">#</th><th>الفريق</th><th>من</th><th>إلى</th>
-        <th>أفراد</th><th>نوع</th><th>لوحة</th><th>سائق</th>
+// ══ ORDER ══
+function renderOrder() {
+  const el = document.getElementById('order-body');
+  if (!reqs.length) { el.innerHTML = empty('لا توجد طلبات'); return; }
+  el.innerHTML = `<div style="font-size:12px;overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:400px">
+      <thead><tr style="background:#1565c0;color:#fff;font-size:12px">
+        <th style="padding:6px">#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع</th><th>لوحة</th><th>سائق</th>
       </tr></thead>
-      <tbody>${rows}</tbody>
+      <tbody>${reqs.map((r,i)=>`<tr style="background:${i%2?'#f9f9f9':'#fff'}">
+        <td style="padding:5px 6px;text-align:center">${i+1}</td>
+        <td style="padding:5px 6px">${r.team||'—'}</td>
+        <td style="padding:5px 6px">${r.from_loc||'—'}</td>
+        <td style="padding:5px 6px">${r.dest||'—'}</td>
+        <td style="padding:5px 6px;text-align:center">${r.techs||0}</td>
+        <td style="padding:5px 6px">${CAR_LBL[r.car_type]||'—'}</td>
+        <td style="padding:5px 6px">${r.plate||'___'}</td>
+        <td style="padding:5px 6px">${r.driver||'___'}</td>
+      </tr>`).join('')}</tbody>
     </table></div>`;
 }
 
 function printOrder() {
-  const today = new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
-  const rows = allRequests.map((r,i)=>`<tr><td>${i+1}</td><td>${r.team||'—'}</td><td>${r.from_loc||'—'}</td><td>${r.dest||'—'}</td><td>${r.techs||0}</td><td>${CAR_LABEL[r.car_type]||'—'}</td><td>${r.plate||'___________'}</td><td>${r.driver||'___________'}</td></tr>`).join('');
-  const w=window.open('','_blank');
+  const date = new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  const rows = reqs.map((r,i)=>`<tr><td>${i+1}</td><td>${r.team||''}</td><td>${r.from_loc||''}</td><td>${r.dest||''}</td><td>${r.techs||0}</td><td>${CAR_LBL[r.car_type]||'—'}</td><td>${r.plate||'_____'}</td><td>${r.driver||'_____'}</td></tr>`).join('');
+  const w = window.open('','_blank');
   w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>أمر إيجار</title>
-  <style>body{font-family:Arial,sans-serif;padding:20px}h2{text-align:center;color:#1565c0}
-  table{width:100%;border-collapse:collapse}th{background:#1565c0;color:#fff;padding:7px;text-align:right}
-  td{padding:6px 7px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#f9f9f9}
-  .sign{display:flex;justify-content:space-between;margin-top:40px}
-  .sign div{text-align:center;width:180px;border-top:1px solid #333;padding-top:6px;font-size:12px}
+  <style>body{font-family:Arial;padding:20px}h2{text-align:center;color:#1565c0}
+  table{width:100%;border-collapse:collapse;margin-top:16px}
+  th{background:#1565c0;color:#fff;padding:8px;text-align:right}
+  td{padding:7px 8px;border-bottom:1px solid #ddd}
+  tr:nth-child(even){background:#f5f5f5}
+  .sign{display:flex;justify-content:space-between;margin-top:50px}
+  .sign div{text-align:center;width:160px;border-top:1px solid #333;padding-top:6px;font-size:12px}
   @media print{button{display:none}}</style></head><body>
   <h2>🚐 أمر إيجار سيارات — موبيكا</h2>
-  <p style="text-align:center;color:#555">📅 ${today} &nbsp;|&nbsp; مسؤول الحملة: عماد عبدالواحد</p>
-  <table><thead><tr><th>#</th><th>الفريق</th><th>مكان التحرك</th><th>مكان الوصول</th><th>أفراد</th><th>نوع السيارة</th><th>رقم السيارة</th><th>السائق</th></tr></thead>
+  <p style="text-align:center;color:#666">📅 ${date} | مسؤول الحملة: عماد عبدالواحد</p>
+  <table><thead><tr><th>#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع السيارة</th><th>رقم السيارة</th><th>السائق</th></tr></thead>
   <tbody>${rows}</tbody></table>
   <div class="sign"><div>مسؤول الحملة<br>عماد عبدالواحد</div><div>مكتب الإيجار</div><div>مدير التركيبات<br>محمد فتحى</div></div>
-  <br><button onclick="window.print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:6px;cursor:pointer">🖨️ طباعة</button>
+  <br><button onclick="print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">🖨️ طباعة</button>
   </body></html>`);
   w.document.close();
 }
 
-// ══════════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════════
-function fmTab(name, el) {
-  ['requests','merge','order'].forEach(t => {
-    document.getElementById('fm-tab-'+t).style.display = t===name?'':'none';
-  });
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  if (name==='merge') renderMergeSuggestions();
-  if (name==='order') renderOrderPreview();
+// ══ TABS / NAV ══
+function fmTab(name, btn) {
+  ['reqs','merge','order'].forEach(t => document.getElementById('fm-'+t).style.display = t===name?'':'none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('act'));
+  btn.classList.add('act');
 }
 
-function navTo(action, el) {
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');
-  if (action==='refresh') {
-    currentUser.role==='engineer' ? loadMyRequests() : loadAllRequests();
-    setTimeout(()=>el.classList.remove('active'),500);
-  }
+function goHome(el) {
+  document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('act'));
+  el.classList.add('act');
 }
 
-// ══════════════════════════════════════════════════════════
-// API
-// ══════════════════════════════════════════════════════════
+function doRefresh(el) {
+  document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('act'));
+  el.classList.add('act');
+  user.role==='engineer' ? loadMyReqs() : loadAllReqs();
+  setTimeout(()=>{el.classList.remove('act');document.querySelector('.nav-i').classList.add('act');},600);
+}
+
+// ══ API ══
 async function api(action, data) {
-  if (API_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
-    // DEMO MODE — محاكاة محلية
-    return demoApi(action, data);
-  }
-  const r = await fetch(API_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ action, ...data })
-  });
+  if (API_URL.includes('PASTE')) return demoPost(action, data);
+  const r = await fetch(API_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+  return r.json();
+}
+async function apiGet(action, params) {
+  if (API_URL.includes('PASTE')) return demoGet(action, params);
+  const q = new URLSearchParams({action,...params});
+  const r = await fetch(API_URL+'?'+q);
   return r.json();
 }
 
-async function apiGet(action, params={}) {
-  if (API_URL === 'PASTE_APPS_SCRIPT_URL_HERE') return demoApiGet(action, params);
-  const q = new URLSearchParams({ action, ...params });
-  const r = await fetch(API_URL + '?' + q);
-  return r.json();
-}
-
-// ── Demo Mode (بدون Apps Script) ─────────────────────────
-let demoData = JSON.parse(localStorage.getItem('demo_requests')||'[]');
-function saveDemoData() { localStorage.setItem('demo_requests', JSON.stringify(demoData)); }
-
-function demoApi(action, data) {
+// DEMO mode
+let _demo = JSON.parse(localStorage.getItem('demo')||'[]');
+function saveDemo(){ localStorage.setItem('demo', JSON.stringify(_demo)); }
+function demoPost(action, data) {
   if (action==='addRequest') {
-    const id = 'R'+Date.now().toString(36).toUpperCase();
-    demoData.push({ id, status:'pending', created_at:new Date().toISOString(), ...data });
-    saveDemoData();
-    return Promise.resolve({ ok:true, id });
+    const id='R'+Date.now().toString(36).toUpperCase();
+    _demo.push({id,status:'pending',created_at:new Date().toISOString(),...data});
+    saveDemo(); return Promise.resolve({ok:true,id});
   }
   if (action==='assignVehicle') {
-    (data.ids||[]).forEach(id => {
-      const r = demoData.find(x=>x.id===id);
-      if (r) { r.plate=data.plate; r.driver=data.driver; r.car_type=data.car_type; r.status='assigned'; }
-    });
-    saveDemoData();
-    return Promise.resolve({ ok:true, updated:(data.ids||[]).length });
+    (data.ids||[]).forEach(id=>{const r=_demo.find(x=>x.id===id);if(r){r.plate=data.plate;r.driver=data.driver;r.car_type=data.car_type;r.status='assigned';}});
+    saveDemo(); return Promise.resolve({ok:true,updated:data.ids.length});
   }
-  return Promise.resolve({ ok:false, error:'unknown' });
+  return Promise.resolve({ok:false});
+}
+function demoGet(action, params) {
+  const list = _demo.filter(r => !params.date || r.date===params.date);
+  return Promise.resolve({ok:true, requests:list});
 }
 
-function demoApiGet(action, params) {
-  if (action==='getRequests') {
-    const reqs = demoData.filter(r => !params.date || r.date===params.date);
-    return Promise.resolve({ ok:true, requests:reqs });
-  }
-  return Promise.resolve({ ok:true, requests:[] });
-}
-
-// ══════════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════════
-function show(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (val) el.classList.add('active');
-  else     el.classList.remove('active');
-}
-
-function todayStr() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.opacity = '1';
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.style.opacity='0', 3000);
-}
-
-// ── PWA Service Worker ─────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  const sw = `
-    const CACHE = 'fleet-v1';
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
-      self.skipWaiting();
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-    });`;
-  const blob = new Blob([sw], {type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+// ══ UTILS ══
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function empty(msg){ return `<div class="empty"><span>📭</span>${msg}</div>`; }
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.opacity='1';
+  clearTimeout(el._t); el._t=setTimeout(()=>el.style.opacity='0',3000);
 }
 </script>
 </body>
