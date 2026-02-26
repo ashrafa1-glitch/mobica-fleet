@@ -84,6 +84,17 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
 <body>
 <div id="root"></div>
 
+<!-- Route Modal -->
+<div class="ov" id="rmodal">
+  <div class="modal" style="max-height:92vh">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="mt" style="margin:0">🗺 خطة الرحلة</div>
+      <button style="background:none;border:none;font-size:22px;cursor:pointer;color:#888" onclick="closeModal('rmodal')">✕</button>
+    </div>
+    <div id="rmodal-body"></div>
+  </div>
+</div>
+
 <!-- Assign Modal -->
 <div class="ov" id="amodal">
   <div class="modal">
@@ -140,7 +151,28 @@ const FLEET_DEF = {
   bus26:   {label:'أتوبيس',   cap:26, icon:'🚌'},
 };
 
-const LOCS = ['القاهرة','مدينة نصر','مصر الجديدة','المعادي','المقطم','حلوان','التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','المستقبل سيتي','بدر','العبور','الشروق','الرحاب','الشيخ زايد','6 أكتوبر','السادس من أكتوبر','الحرم','فيصل','إمبابة','عين شمس','المطرية','شبرا','السلام','النزهة','العباسية','وسط البلد','الزمالك','المهندسين','الدقي','الجيزة','الهرم','10 رمضان','15 مايو','الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','سيدي جابر','الرمل','أبوقير','برج العرب','القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ','المنصورة','دمياط','الزقازيق','بنى سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','الفيوم','بورسعيد','الإسماعيلية','السويس','العريش','الغردقة','دمنهور','شبين الكوم','المنطقة الصناعية 6 أكتوبر','المنطقة الصناعية 10 رمضان','المنطقة الصناعية برج العرب','المنطقة الصناعية العبور'];
+const LOCS = [
+  // 🏭 مواقع موبيكا
+  'مصنع موبيكا — أبورواش','المنطقة الصناعية أبورواش',
+  // 🏙 القاهرة الكبرى
+  'المنصورية','الهرم','فيصل','الجيزة','الدقي','المهندسين','الزمالك','إمبابة','أوسيم','كرداسة',
+  '6 أكتوبر','السادس من أكتوبر','الحرم','المنطقة الصناعية 6 أكتوبر',
+  'وسط البلد','العباسية','شبرا','السلام','النزهة','مدينة نصر','عين شمس','المطرية',
+  'مصر الجديدة','هليوبوليس','المعادي','المقطم','حلوان','15 مايو',
+  'التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','الشروق','الرحاب',
+  'المستقبل سيتي','بدر','العبور','المنطقة الصناعية العبور',
+  'الشيخ زايد','10 رمضان','المنطقة الصناعية 10 رمضان',
+  'القاهرة','السادات','أبوالنمرس','البدرشين','منشأة القناطر',
+  // 🌊 الإسكندرية
+  'الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','سيدي جابر','الرمل','أبوقير',
+  'برج العرب','المنطقة الصناعية برج العرب',
+  // 🏙 الدلتا
+  'القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ','دمنهور','شبين الكوم',
+  'المنصورة','دمياط','الزقازيق','بلبيس',
+  // 🗺 باقى المحافظات
+  'بنى سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','الفيوم',
+  'بورسعيد','الإسماعيلية','السويس','العريش','الغردقة',
+];
 
 // ══ STATE ══
 let U = null;
@@ -467,7 +499,8 @@ function renderPlan(){
           </div>
           <div style="font-size:13px;color:#555;margin-bottom:3px">👤 السائق: ${v.driver}</div>
           <div style="font-size:13px;color:#555;margin-bottom:3px">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
-          <div style="font-size:12px;color:#888">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''}</div>
+          <div style="font-size:12px;color:#888;margin-bottom:8px">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''}</div>
+          <button class="btn b-out b-xs" onclick="openRouteFromPlan(${JSON.stringify(g.ids).replace(/"/g,"'")},${getVehicles().findIndex(x=>x.id===v.id)})">🗺 خطة الرحلة</button>
         </div>`;
       });
     });
@@ -580,6 +613,11 @@ function saveVehicle(){
   renderVehicles();
 }
 
+function openRouteFromPlan(idsStr, vehIdx){
+  const ids = idsStr.split(',');
+  openRouteModal(vehIdx>=0?vehIdx:0, ids);
+}
+
 // ══ ASSIGN RENTAL ══
 function openAssignRental(i){
   const g=_autoPlan.rentalNeeded[i];
@@ -644,6 +682,232 @@ function printOrder(){
   <table><thead><tr><th>#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع السيارة المطلوب</th><th>رقم السيارة</th><th>السائق</th></tr></thead>
   <tbody>${rows}</tbody></table>
   <div class="sign"><div>مسؤول الحملة<br>عماد عبدالواحد</div><div>مكتب الإيجار الخارجى</div><div>مدير التركيبات<br>محمد فتحى</div></div>
+  <br><button onclick="print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨️ طباعة</button>
+  </body></html>`);
+  w.document.close();
+}
+
+// ══ GEOGRAPHIC ZONES (x=west-east, y=south-north, center=Cairo) ══
+const GEO = {
+  'مصنع موبيكا — أبورواش':  {x:-4, y:1},
+  'المنطقة الصناعية أبورواش':{x:-4, y:1},
+  'أوسيم':                   {x:-3, y:1},
+  'كرداسة':                  {x:-3, y:0},
+  '6 أكتوبر':                {x:-4, y:0},
+  'السادس من أكتوبر':        {x:-4, y:0},
+  'المنطقة الصناعية 6 أكتوبر':{x:-4,y:0},
+  'الهرم':                   {x:-2, y:-1},
+  'فيصل':                    {x:-2, y:0},
+  'الجيزة':                  {x:-1, y:0},
+  'المنصورية':               {x:-2, y:0},
+  'الدقي':                   {x:-1, y:1},
+  'المهندسين':               {x:-1, y:1},
+  'الزمالك':                 {x:0,  y:1},
+  'إمبابة':                  {x:-1, y:2},
+  'شبرا':                    {x:0,  y:3},
+  'وسط البلد':               {x:0,  y:0},
+  'العباسية':                {x:1,  y:1},
+  'السلام':                  {x:2,  y:2},
+  'النزهة':                  {x:1,  y:2},
+  'مدينة نصر':               {x:2,  y:1},
+  'عين شمس':                 {x:1,  y:3},
+  'المطرية':                 {x:1,  y:2},
+  'مصر الجديدة':             {x:2,  y:2},
+  'هليوبوليس':               {x:2,  y:2},
+  'المعادي':                 {x:1,  y:-2},
+  'المقطم':                  {x:2,  y:0},
+  'حلوان':                   {x:1,  y:-4},
+  '15 مايو':                 {x:1,  y:-4},
+  'الشروق':                  {x:4,  y:2},
+  'الرحاب':                  {x:4,  y:1},
+  'التجمع الأول':            {x:4,  y:0},
+  'التجمع الخامس':           {x:5,  y:0},
+  'القاهرة الجديدة':         {x:5,  y:1},
+  'مدينتي':                  {x:6,  y:0},
+  'المستقبل سيتي':           {x:6,  y:2},
+  'بدر':                     {x:5,  y:3},
+  'العبور':                  {x:3,  y:4},
+  '10 رمضان':                {x:4,  y:5},
+  'الشيخ زايد':              {x:-3, y:1},
+  'القاهرة':                 {x:0,  y:0},
+};
+
+function geoPos(loc){ return GEO[loc] || {x:0,y:0}; }
+
+function geoDistance(a,b){
+  const pa=geoPos(a), pb=geoPos(b);
+  return Math.sqrt(Math.pow(pa.x-pb.x,2)+Math.pow(pa.y-pb.y,2));
+}
+
+// Sort stops along a route (nearest-neighbor from first stop)
+function sortStops(stops){
+  if(stops.length<=1) return stops;
+  const result=[stops[0]];
+  const remaining=[...stops.slice(1)];
+  while(remaining.length){
+    const last=result[result.length-1];
+    let minD=Infinity, minI=0;
+    remaining.forEach((s,i)=>{
+      const d=geoDistance(last.loc,s.loc);
+      if(d<minD){minD=d;minI=i;}
+    });
+    result.push(remaining.splice(minI,1)[0]);
+  }
+  return result;
+}
+
+// ══ MULTI-STOP ROUTE MODAL ══
+let _routeStops=[]; // {loc, action:'pickup'|'dropoff', people, id}
+let _routeVehicle=null;
+
+function openRouteModal(vehIdx, requestIds){
+  const vs=getVehicles();
+  _routeVehicle={...vs[vehIdx], cap:FLEET_DEF[vs[vehIdx].type]?.cap||7};
+  _routeStops=[];
+  // Pre-populate from requests
+  const myReqs=REQS.filter(r=>requestIds.includes(r.id));
+  const pickupGroups={}, dropGroups={};
+  myReqs.forEach(r=>{
+    if(!pickupGroups[r.from_loc]) pickupGroups[r.from_loc]=0;
+    pickupGroups[r.from_loc]+=parseInt(r.techs)||0;
+    if(!dropGroups[r.dest]) dropGroups[r.dest]=0;
+    dropGroups[r.dest]+=parseInt(r.techs)||0;
+  });
+  Object.entries(pickupGroups).forEach(([loc,p])=>_routeStops.push({id:'s'+Date.now()+Math.random(),loc,action:'pickup',people:p}));
+  Object.entries(dropGroups).forEach(([loc,p])=>_routeStops.push({id:'s'+Date.now()+Math.random(),loc,action:'dropoff',people:p}));
+  _routeStops=sortStops(_routeStops);
+  renderRouteModal();
+  document.getElementById('rmodal').classList.add('open');
+}
+
+function renderRouteModal(){
+  const v=_routeVehicle;
+  const cap=v.cap;
+  const locOpts=LOCS.map(l=>`<option value="${l}">${l}</option>`).join('');
+  // Capacity per segment
+  let onBoard=0;
+  const stopsHTML=_routeStops.map((s,i)=>{
+    if(s.action==='pickup') onBoard+=s.people;
+    else onBoard-=s.people;
+    onBoard=Math.max(0,onBoard);
+    const col=onBoard>cap?'#c62828':onBoard>cap*.8?'#f57c00':'#2e7d32';
+    const actionLabel=s.action==='pickup'?'🟢 ركوب':'🔴 نزول';
+    return `<div style="background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;border-right:4px solid ${s.action==='pickup'?'#2e7d32':'#f57c00'}">
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <span style="font-weight:700;font-size:13px;min-width:20px">${i+1}.</span>
+        <select style="flex:1;padding:7px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit"
+          onchange="updateStop('${s.id}','loc',this.value)">
+          <option value="">— اختر —</option>${locOpts.replace(`value="${s.loc}"`,`value="${s.loc}" selected`)}
+        </select>
+        <select style="padding:7px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit"
+          onchange="updateStop('${s.id}','action',this.value)">
+          <option value="pickup"  ${s.action==='pickup'?'selected':''}>🟢 ركوب</option>
+          <option value="dropoff" ${s.action==='dropoff'?'selected':''}>🔴 نزول</option>
+        </select>
+        <input type="number" value="${s.people}" min="1" style="width:55px;padding:7px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;text-align:center"
+          onchange="updateStop('${s.id}','people',this.value)">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+        <span style="font-size:12px;color:${col}">على متن السيارة: <b>${onBoard}</b>/${cap}</span>
+        <div style="display:flex;gap:4px">
+          ${i>0?`<button class="btn b-out b-xs" onclick="moveStop('${s.id}',-1)">↑</button>`:''}
+          ${i<_routeStops.length-1?`<button class="btn b-out b-xs" onclick="moveStop('${s.id}',1)">↓</button>`:''}
+          <button class="btn b-red b-xs" onclick="removeStop('${s.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Evening return (reverse order, pickups become dropoffs)
+  const returnStops=[..._routeStops].reverse().map(s=>({...s,action:s.action==='pickup'?'dropoff':'pickup'}));
+  const returnHTML=returnStops.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:7px;background:#fff;border-radius:8px;margin-bottom:6px;font-size:13px">
+      <span style="font-weight:700">${i+1}.</span>
+      <span>${s.action==='pickup'?'🟢':'🔴'} ${s.loc||'—'}</span>
+      <span style="color:#888;margin-right:auto">${s.people} فرد</span>
+    </div>`).join('');
+
+  document.getElementById('rmodal-body').innerHTML=`
+    <div style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px">
+      ${FLEET_DEF[v.type]?.icon} ${v.plate} — ${v.driver} | سعة: ${cap} راكب
+    </div>
+    <div style="font-weight:700;font-size:14px;color:#1565c0;margin-bottom:8px">☀️ رحلة الصباح</div>
+    ${stopsHTML}
+    <button class="btn b-out b-sm" style="margin-bottom:16px" onclick="addStop()">+ محطة جديدة</button>
+    <button class="btn b-blue b-sm" style="margin-bottom:16px;margin-right:8px" onclick="autoSortStops()">🗺 ترتيب تلقائي</button>
+    <div style="font-weight:700;font-size:14px;color:#e65100;margin-bottom:8px">🌙 رحلة العودة (تلقائية)</div>
+    <div style="background:#fff8e1;border-radius:8px;padding:10px;margin-bottom:14px">${returnHTML||'<div class="empty">لا توجد محطات</div>'}</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-green" onclick="saveRoute()">✅ حفظ الخطة</button>
+      <button class="btn b-blue b-sm" onclick="printDriverSheet()">🖨️ ورقة السائق</button>
+      <button class="btn b-out" onclick="closeModal('rmodal')">إلغاء</button>
+    </div>`;
+}
+
+function addStop(){
+  _routeStops.push({id:'s'+Date.now(),loc:'',action:'pickup',people:1});
+  renderRouteModal();
+}
+
+function removeStop(id){
+  _routeStops=_routeStops.filter(s=>s.id!==id);
+  renderRouteModal();
+}
+
+function updateStop(id,field,value){
+  const s=_routeStops.find(x=>x.id===id);
+  if(s){ s[field]=field==='people'?parseInt(value)||1:value; renderRouteModal(); }
+}
+
+function moveStop(id,dir){
+  const i=_routeStops.findIndex(s=>s.id===id);
+  const j=i+dir;
+  if(j<0||j>=_routeStops.length) return;
+  [_routeStops[i],_routeStops[j]]=[_routeStops[j],_routeStops[i]];
+  renderRouteModal();
+}
+
+function autoSortStops(){
+  _routeStops=sortStops(_routeStops);
+  renderRouteModal();
+  toast('✅ تم الترتيب الجغرافي التلقائي');
+}
+
+function saveRoute(){
+  closeModal('rmodal');
+  toast('✅ تم حفظ خطة الرحلة');
+}
+
+function printDriverSheet(){
+  const v=_routeVehicle;
+  const returnStops=[..._routeStops].reverse().map(s=>({...s,action:s.action==='pickup'?'dropoff':'pickup'}));
+  let onBoard=0;
+  const morningRows=_routeStops.map((s,i)=>{
+    if(s.action==='pickup') onBoard+=s.people;
+    else onBoard=Math.max(0,onBoard-s.people);
+    return `<tr><td>${i+1}</td><td>${s.action==='pickup'?'🟢 ركوب':'🔴 نزول'}</td><td>${s.loc||'—'}</td><td>${s.people}</td><td>${onBoard}</td></tr>`;
+  }).join('');
+  onBoard=0;
+  const eveningRows=returnStops.map((s,i)=>{
+    if(s.action==='pickup') onBoard+=s.people;
+    else onBoard=Math.max(0,onBoard-s.people);
+    return `<tr><td>${i+1}</td><td>${s.action==='pickup'?'🟢 ركوب':'🔴 نزول'}</td><td>${s.loc||'—'}</td><td>${s.people}</td><td>${onBoard}</td></tr>`;
+  }).join('');
+  const date=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>ورقة سائق</title>
+  <style>body{font-family:Arial;padding:20px}h2,h3{color:#1565c0}table{width:100%;border-collapse:collapse;margin:10px 0}
+  th{background:#1565c0;color:#fff;padding:8px;text-align:right}td{padding:7px 8px;border-bottom:1px solid #ddd}
+  tr:nth-child(even){background:#f5f5f5}.header{background:#e3f2fd;padding:12px;border-radius:8px;margin-bottom:16px}
+  @media print{button{display:none}}</style></head><body>
+  <div class="header">
+    <h2>🚗 ورقة السائق — موبيكا</h2>
+    <p>📅 ${date} | السيارة: ${v.plate} | السائق: ${v.driver} | السعة: ${v?.cap||'—'} راكب</p>
+  </div>
+  <h3>☀️ رحلة الصباح</h3>
+  <table><thead><tr><th>#</th><th>النشاط</th><th>الموقع</th><th>عدد الأفراد</th><th>على المتن</th></tr></thead><tbody>${morningRows}</tbody></table>
+  <h3>🌙 رحلة العودة</h3>
+  <table><thead><tr><th>#</th><th>النشاط</th><th>الموقع</th><th>عدد الأفراد</th><th>على المتن</th></tr></thead><tbody>${eveningRows}</tbody></table>
   <br><button onclick="print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨️ طباعة</button>
   </body></html>`);
   w.document.close();
