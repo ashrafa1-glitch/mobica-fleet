@@ -10,7 +10,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:100vh;color:#1a1a2e}
-/* Login */
 .login-wrap{min-height:100vh;background:linear-gradient(160deg,#1565c0,#0d47a1);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
 .login-icon{font-size:64px;margin-bottom:10px}
 .login-h{color:#fff;font-size:26px;font-weight:800}
@@ -19,47 +18,41 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
 .box-title{font-size:15px;font-weight:700;color:#555;margin-bottom:14px}
 .inp{width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;font-family:inherit;margin-bottom:4px}
 .inp:focus{outline:none;border-color:#1565c0}
-.big-btn{display:block;width:100%;padding:15px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;font-size:15px;font-family:inherit;font-weight:600;color:#444;cursor:pointer;text-align:center;margin-bottom:10px}
+.big-btn{display:block;width:100%;padding:15px;border:2px solid #e0e0e0;border-radius:12px;background:#fff;font-size:15px;font-family:inherit;font-weight:600;color:#444;cursor:pointer;text-align:center;margin-bottom:10px;transition:all .15s}
 .big-btn:last-child{margin-bottom:0}
-.big-btn.sel{border-color:#1565c0;background:#e8f0fe;color:#1565c0}
+.big-btn.sel,.big-btn:active{border-color:#1565c0;background:#e8f0fe;color:#1565c0}
 .go-btn{width:100%;padding:15px;background:#1565c0;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:14px}
-.go-btn:active{opacity:.85}
-/* App */
 .topbar{background:#1565c0;color:#fff;padding:14px 16px;position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .tb-l{font-size:17px;font-weight:700}
 .tb-s{font-size:12px;opacity:.8;margin-top:1px}
-.tb-r{font-size:12px;opacity:.7}
 .content{padding:14px;padding-bottom:85px}
-/* Cards */
 .card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:16px;margin-bottom:12px}
-.ct{font-size:15px;font-weight:700;color:#1565c0;margin-bottom:14px}
-/* Form fields */
+.ct{font-size:15px;font-weight:700;color:#1565c0;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
 .fl{margin-bottom:13px}
 .fl label{display:block;font-size:13px;color:#666;font-weight:600;margin-bottom:5px}
 .fl select,.fl input{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:10px;font-size:15px;font-family:inherit;background:#fff}
 .fl select:focus,.fl input:focus{outline:none;border-color:#1565c0}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-/* Buttons */
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px;border-radius:10px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;width:100%}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px;border-radius:10px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;width:100%;transition:opacity .15s}
 .btn:active{opacity:.8}
 .b-blue{background:#1565c0;color:#fff}
 .b-green{background:#2e7d32;color:#fff}
 .b-orange{background:#e65100;color:#fff}
+.b-red{background:#c62828;color:#fff}
 .b-out{background:#fff;border:2px solid #1565c0;color:#1565c0}
 .b-sm{padding:9px 14px;font-size:13px;width:auto}
-/* Stats */
+.b-xs{padding:6px 10px;font-size:12px;width:auto}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
 .stat{background:#fff;border-radius:12px;padding:13px 8px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.07)}
 .sn{font-size:26px;font-weight:800;color:#1565c0}
 .sl{font-size:11px;color:#999;margin-top:2px}
-/* Tabs */
-.tabs{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.07)}
-.tab{flex:1;text-align:center;padding:10px 4px;border-radius:9px;font-size:13px;font-weight:600;color:#aaa;cursor:pointer}
+.tabs{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.07);overflow-x:auto}
+.tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:12px;font-weight:600;color:#aaa;cursor:pointer;white-space:nowrap;min-width:60px}
 .tab.on{background:#1565c0;color:#fff}
-/* Request cards */
 .rq{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:10px;border-right:4px solid #ddd;box-shadow:0 2px 6px rgba(0,0,0,.07)}
 .rq.pending{border-color:#f57c00}
 .rq.assigned{border-color:#2e7d32}
+.rq.approved{border-color:#1565c0}
 .rq-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
 .rq-team{font-weight:700;font-size:14px}
 .rq-route{font-size:13px;color:#555;margin-bottom:3px}
@@ -67,37 +60,34 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .bp{background:#fff3e0;color:#e65100}
 .ba{background:#e8f5e9;color:#2e7d32}
-/* Merge */
-.mc{background:#fff8e1;border:2px solid #ffc107;border-radius:12px;padding:14px;margin-bottom:12px}
-.mc-title{font-weight:700;font-size:14px;color:#e65100;margin-bottom:8px}
-.ba-row{display:flex;justify-content:space-around;align-items:center;margin:10px 0}
-.ba-num{text-align:center}
-.ba-big{font-size:32px;font-weight:900}
-.ba-lbl{font-size:11px;color:#999}
-.cap-bg{background:#e0e0e0;border-radius:6px;height:8px;overflow:hidden;margin:5px 0}
-.cap-fill{height:8px;border-radius:6px}
-/* Bottom nav */
+.bb{background:#e3f2fd;color:#1565c0}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #eee;display:flex;box-shadow:0 -2px 8px rgba(0,0,0,.08);z-index:50}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 12px;font-size:11px;color:#ccc;cursor:pointer}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 12px;font-size:10px;color:#ccc;cursor:pointer}
 .ni.on{color:#1565c0}
-.ni-ic{font-size:22px;margin-bottom:2px}
-/* Modal */
+.ni-ic{font-size:20px;margin-bottom:2px}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:none;align-items:flex-end}
 .ov.open{display:flex}
 .modal{background:#fff;border-radius:16px 16px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto}
 .mt{font-size:16px;font-weight:700;color:#1565c0;margin-bottom:14px}
-/* Empty */
 .empty{text-align:center;padding:32px;color:#ccc;font-size:14px}
-/* Toast */
 #toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.82);color:#fff;padding:10px 22px;border-radius:22px;font-size:13px;opacity:0;transition:opacity .3s;z-index:300;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+.veh-row{display:flex;align-items:center;gap:8px;padding:8px;background:#f9f9f9;border-radius:8px;margin-bottom:8px;font-size:13px}
+.veh-info{flex:1}
+.plan-card{border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.plan-company{background:#e8f5e9;border:2px solid #a5d6a7}
+.plan-rental{background:#fff3e0;border:2px solid #ffcc80}
+.divider{text-align:center;font-size:12px;color:#999;margin:10px 0;position:relative}
+.divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:#e0e0e0;z-index:0}
+.divider span{background:#eef2f7;padding:0 10px;position:relative;z-index:1}
 </style>
 </head>
 <body>
-
 <div id="root"></div>
+
+<!-- Assign Modal -->
 <div class="ov" id="amodal">
   <div class="modal">
-    <div class="mt">🔑 تحديد السيارة</div>
+    <div class="mt">🔑 تأكيد التعيين</div>
     <div id="ainfo" style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px;line-height:1.7"></div>
     <div class="fl"><label>رقم السيارة</label><input id="aplate" type="text" placeholder="اللوحة"></div>
     <div class="fl"><label>اسم السائق</label><input id="adriver" type="text" placeholder="الاسم"></div>
@@ -110,81 +100,113 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
       </select>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn b-green" onclick="confirmAssign()">✅ تأكيد</button>
-      <button class="btn b-out" onclick="closeModal()">إلغاء</button>
+      <button class="btn b-green" onclick="confirmAssign()">✅ اعتماد</button>
+      <button class="btn b-out" onclick="closeModal('amodal')">إلغاء</button>
     </div>
   </div>
 </div>
+
+<!-- Vehicle Edit Modal -->
+<div class="ov" id="vemodal">
+  <div class="modal">
+    <div class="mt" id="ve-title">تعديل سيارة</div>
+    <div class="fl"><label>رقم اللوحة</label><input id="ve-plate" type="text" placeholder="رقم اللوحة"></div>
+    <div class="fl"><label>اسم السائق</label><input id="ve-driver" type="text" placeholder="اسم السائق"></div>
+    <div class="fl"><label>النوع</label>
+      <select id="ve-type">
+        <option value="pickup">🛻 باكاب 4 ركاب</option>
+        <option value="suzuki">🚙 سوزوكى 7 ركاب</option>
+        <option value="micro14">🚐 ميكروباص 14 راكب</option>
+        <option value="bus26">🚌 أتوبيس 26 راكب</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-blue" onclick="saveVehicle()">💾 حفظ</button>
+      <button class="btn b-out" onclick="closeModal('vemodal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
 // ══ CONFIG ══
 const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
-// ══ ACTUAL MOBICA FLEET ══
-const FLEET = {
-  pickup:  { label:'باكاب 4 ركاب',    cap:4,  total:2, cost:0.8, icon:'🛻' },
-  suzuki:  { label:'سوزوكى 7 ركاب',   cap:7,  total:6, cost:1.0, icon:'🚙' },
-  micro14: { label:'ميكروباص 14 راكب',cap:14, total:2, cost:1.5, icon:'🚐' },
-  bus26:   { label:'أتوبيس 26 راكب',  cap:26, total:2, cost:2.5, icon:'🚌' },
+
+const FLEET_DEF = {
+  pickup:  {label:'باكاب',    cap:4,  icon:'🛻'},
+  suzuki:  {label:'سوزوكى',   cap:7,  icon:'🚙'},
+  micro14: {label:'ميكروباص', cap:14, icon:'🚐'},
+  bus26:   {label:'أتوبيس',   cap:26, icon:'🚌'},
 };
-// legacy aliases
-const CAR_CAP  = {pickup:4,suzuki:7,micro14:14,bus26:26};
-const CAR_COST = {pickup:0.8,suzuki:1,micro14:1.5,bus26:2.5};
-const CAR_LBL  = Object.fromEntries(Object.entries(FLEET).map(([k,v])=>[k,v.label]));
+
 const LOCS = ['القاهرة','مدينة نصر','مصر الجديدة','المعادي','المقطم','حلوان','التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','المستقبل سيتي','بدر','العبور','الشروق','الرحاب','الشيخ زايد','6 أكتوبر','السادس من أكتوبر','الحرم','فيصل','إمبابة','عين شمس','المطرية','شبرا','السلام','النزهة','العباسية','وسط البلد','الزمالك','المهندسين','الدقي','الجيزة','الهرم','10 رمضان','15 مايو','الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','سيدي جابر','الرمل','أبوقير','برج العرب','القليوبية','بنها','شبرا الخيمة','المحلة الكبرى','طنطا','كفر الشيخ','المنصورة','دمياط','الزقازيق','بنى سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','الفيوم','بورسعيد','الإسماعيلية','السويس','العريش','الغردقة','دمنهور','شبين الكوم','المنطقة الصناعية 6 أكتوبر','المنطقة الصناعية 10 رمضان','المنطقة الصناعية برج العرب','المنطقة الصناعية العبور'];
 
 // ══ STATE ══
-let U = null; // current user
+let U = null;
 let REQS = [];
 let ASSIGN_IDS = [];
+let _editVehIdx = -1;
+let _autoPlan = [];
 let CUR_TAB = 'reqs';
+
+// Default company vehicles
+const DEFAULT_VEHICLES = [
+  {id:'c1',type:'pickup', plate:'باكاب 1',   driver:'السائق 1'},
+  {id:'c2',type:'pickup', plate:'باكاب 2',   driver:'السائق 2'},
+  {id:'c3',type:'suzuki', plate:'سوزوكى 1',  driver:'السائق 3'},
+  {id:'c4',type:'suzuki', plate:'سوزوكى 2',  driver:'السائق 4'},
+  {id:'c5',type:'suzuki', plate:'سوزوكى 3',  driver:'السائق 5'},
+  {id:'c6',type:'suzuki', plate:'سوزوكى 4',  driver:'السائق 6'},
+  {id:'c7',type:'suzuki', plate:'سوزوكى 5',  driver:'السائق 7'},
+  {id:'c8',type:'suzuki', plate:'سوزوكى 6',  driver:'السائق 8'},
+  {id:'c9',type:'micro14',plate:'ميكروباص 1', driver:'السائق 9'},
+  {id:'c10',type:'micro14',plate:'ميكروباص 2',driver:'السائق 10'},
+  {id:'c11',type:'bus26', plate:'أتوبيس 1',  driver:'السائق 11'},
+  {id:'c12',type:'bus26', plate:'أتوبيس 2',  driver:'السائق 12'},
+];
+
+function getVehicles() {
+  try { return JSON.parse(localStorage.getItem('co_vehicles')||'null') || DEFAULT_VEHICLES; } catch(e){ return DEFAULT_VEHICLES; }
+}
+function saveVehicles(v){ try{localStorage.setItem('co_vehicles',JSON.stringify(v));}catch(e){} }
 
 // ══ BOOTSTRAP ══
 window.onload = () => {
-  if ('serviceWorker' in navigator)
-    navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
-  try { const s = localStorage.getItem('flt_u'); if(s) U = JSON.parse(s); } catch(e){}
+  if('serviceWorker' in navigator)
+    navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
+  try{ const s=localStorage.getItem('flt_u'); if(s) U=JSON.parse(s); }catch(e){}
   render();
 };
 
-// ══ RENDER ══
-function render() {
-  if (!U) renderLogin(1);
-  else    renderApp();
-}
+// ══ LOGIN ══
+function render(){ U ? renderApp() : renderLogin(1); }
 
 function renderLogin(step, data={}) {
   const R = document.getElementById('root');
-  if (step === 1) {
-    R.innerHTML = `
-    <div class="login-wrap">
+  if(step===1){
+    R.innerHTML=`<div class="login-wrap">
       <div class="login-icon">🚐</div>
       <div class="login-h">حملة موبيكا</div>
       <div class="login-s">إدارة نقل الفنيين</div>
       <div class="box">
         <div class="box-title">👤 ما اسمك؟</div>
         <input class="inp" id="L1" type="text" placeholder="اكتب اسمك الكامل">
-        <button class="go-btn" onclick="step1Next()">التالي ←</button>
-      </div>
-    </div>`;
-    setTimeout(()=>{ const i=document.getElementById('L1'); if(i) i.focus(); },100);
-  }
-  else if (step === 2) {
-    R.innerHTML = `
-    <div class="login-wrap">
+        <button class="go-btn" onclick="s1()">التالي ←</button>
+      </div></div>`;
+    setTimeout(()=>{const i=document.getElementById('L1');if(i)i.focus();},100);
+  } else if(step===2){
+    R.innerHTML=`<div class="login-wrap">
       <div class="login-icon">🚐</div>
       <div class="login-h">أهلاً ${data.name}</div>
       <div class="login-s">اختر دورك</div>
       <div class="box">
         <div class="box-title">🎯 ما دورك؟</div>
         <button class="big-btn" onclick="chooseRole('engineer','${data.name}')">👷 مهندس / مدير مجموعة</button>
-        <button class="big-btn" onclick="chooseRole('fleet_manager','${data.name}')">🚐 مسؤول الحملة (عماد)</button>
-      </div>
-    </div>`;
-  }
-  else if (step === 3) {
-    R.innerHTML = `
-    <div class="login-wrap">
+        <button class="big-btn" onclick="chooseRole('fleet_manager','${data.name}')">🚐 مسؤول الحملة</button>
+      </div></div>`;
+  } else if(step===3){
+    R.innerHTML=`<div class="login-wrap">
       <div class="login-icon">🚐</div>
       <div class="login-h">اختر مجموعتك</div>
       <div class="login-s">${data.name}</div>
@@ -194,45 +216,30 @@ function renderLogin(step, data={}) {
         <button class="big-btn" onclick="chooseTeam('B — سامى فؤاد','${data.name}')">مجموعة B — سامى فؤاد</button>
         <button class="big-btn" onclick="chooseTeam('C — حازم قاعود','${data.name}')">مجموعة C — حازم قاعود</button>
         <button class="big-btn" onclick="chooseTeam('D — هشام جمال','${data.name}')">مجموعة D — هشام جمال</button>
-      </div>
-    </div>`;
+      </div></div>`;
   }
 }
 
-function step1Next() {
-  const name = (document.getElementById('L1').value||'').trim();
-  if (!name) { toast('✋ اكتب اسمك أولاً'); return; }
-  renderLogin(2, {name});
-}
+function s1(){ const n=(document.getElementById('L1').value||'').trim(); if(!n){toast('✋ اكتب اسمك');return;} renderLogin(2,{name:n}); }
+function chooseRole(r,n){ if(r==='engineer'){renderLogin(3,{name:n});}else{login(n,r,'');} }
+function chooseTeam(t,n){ login(n,'engineer',t); }
+function login(name,role,team){ U={name,role,team}; try{localStorage.setItem('flt_u',JSON.stringify(U));}catch(e){} renderApp(); }
+function doLogout(){ U=null;REQS=[];try{localStorage.removeItem('flt_u');}catch(e){} render(); }
 
-function chooseRole(role, name) {
-  if (role === 'fleet_manager') {
-    U = {name, role, team:''};
-    try { localStorage.setItem('flt_u', JSON.stringify(U)); } catch(e){}
-    renderApp();
-  } else {
-    renderLogin(3, {name});
-  }
-}
+// ══ RENDER APP ══
+function renderApp(){
+  const R=document.getElementById('root');
+  const date=new Date().toLocaleDateString('ar-EG',{weekday:'short',day:'numeric',month:'short'});
+  const roleLabel=U.role==='engineer'?('مهندس — '+U.team):'مسؤول الحملة';
+  const isManager=U.role==='fleet_manager';
 
-function chooseTeam(team, name) {
-  U = {name, role:'engineer', team};
-  try { localStorage.setItem('flt_u', JSON.stringify(U)); } catch(e){}
-  renderApp();
-}
-
-// ══ APP ══
-function renderApp() {
-  const R = document.getElementById('root');
-  const date = new Date().toLocaleDateString('ar-EG',{weekday:'short',day:'numeric',month:'short'});
-  const roleLabel = U.role === 'engineer' ? ('مهندس — ' + U.team) : 'مسؤول الحملة';
-
-  if (U.role === 'engineer') {
-    const locOpts = LOCS.map(l=>`<option value="${l}">${l}</option>`).join('');
-    R.innerHTML = `
+  if(!isManager){
+    // ENGINEER — request form + read-only view
+    const locOpts=LOCS.map(l=>`<option value="${l}">${l}</option>`).join('');
+    R.innerHTML=`
     <div class="topbar">
       <div><div class="tb-l">🚐 حملة موبيكا</div><div class="tb-s">${U.name} | ${roleLabel}</div></div>
-      <div class="tb-r">${date}</div>
+      <div style="font-size:12px;opacity:.7">${date}</div>
     </div>
     <div class="content">
       <div class="card">
@@ -254,7 +261,7 @@ function renderApp() {
         <button class="btn b-blue" id="sbtn" onclick="submitReq()">📤 إرسال الطلب</button>
       </div>
       <div class="card">
-        <div class="ct">📋 طلباتي اليوم</div>
+        <div class="ct">📋 طلباتي اليوم <span style="font-size:12px;color:#999;font-weight:400">(للعرض فقط)</span></div>
         <div id="mylist"><div class="empty">⏳ جاري التحميل...</div></div>
       </div>
     </div>
@@ -265,28 +272,29 @@ function renderApp() {
     </div>`;
     loadMyReqs();
   } else {
-    R.innerHTML = `
+    // FLEET MANAGER
+    R.innerHTML=`
     <div class="topbar">
       <div><div class="tb-l">🚐 حملة موبيكا</div><div class="tb-s">${U.name} | ${roleLabel}</div></div>
-      <div class="tb-r">${date}</div>
+      <div style="font-size:12px;opacity:.7">${date}</div>
     </div>
     <div class="content">
       <div class="stats">
         <div class="stat"><div class="sn" id="st0">0</div><div class="sl">طلبات</div></div>
         <div class="stat"><div class="sn" id="st1">0</div><div class="sl">انتظار</div></div>
-        <div class="stat"><div class="sn" id="st2">0</div><div class="sl">محددة</div></div>
+        <div class="stat"><div class="sn" id="st2">0</div><div class="sl">معتمدة</div></div>
       </div>
-      <div style="margin-bottom:12px">
-        <button class="btn b-green" onclick="runAutoDistribute()">⚡ توزيع تلقائي</button>
-      </div>
+      <button class="btn b-green" style="margin-bottom:12px" onclick="runAutoDistribute()">⚡ توزيع تلقائي واعتماد</button>
       <div class="tabs">
-        <div class="tab on"  onclick="switchTab('reqs',this)">الطلبات</div>
-        <div class="tab"     onclick="switchTab('merge',this)">💡 تحسين</div>
-        <div class="tab"     onclick="switchTab('order',this)">📄 إيجار</div>
+        <div class="tab on"  onclick="fmTab('reqs',this)">الطلبات</div>
+        <div class="tab"     onclick="fmTab('plan',this)">📋 الخطة</div>
+        <div class="tab"     onclick="fmTab('order',this)">📄 إيجار</div>
+        <div class="tab"     onclick="fmTab('veh',this)">🚗 الأسطول</div>
       </div>
       <div id="tab-reqs"></div>
-      <div id="tab-merge" style="display:none"></div>
+      <div id="tab-plan"  style="display:none"></div>
       <div id="tab-order" style="display:none"></div>
+      <div id="tab-veh"   style="display:none"></div>
     </div>
     <div class="bnav">
       <div class="ni on"><div class="ni-ic">🏠</div>الرئيسية</div>
@@ -297,359 +305,294 @@ function renderApp() {
   }
 }
 
-function doLogout() {
-  U = null; REQS = [];
-  try { localStorage.removeItem('flt_u'); } catch(e){}
-  render();
-}
-
 // ══ ENGINEER ══
-async function submitReq() {
-  const team  = document.getElementById('e-team').value;
-  const from  = document.getElementById('e-from').value;
-  const dest  = document.getElementById('e-dest').value;
-  const techs = parseInt(document.getElementById('e-techs').value)||0;
-  if (!team)  return toast('✋ اختر المجموعة');
-  if (!from)  return toast('✋ اختر مكان التحرك');
-  if (!dest)  return toast('✋ اختر مكان الوصول');
-  if (!techs) return toast('✋ أدخل عدد الأفراد');
-  const btn = document.getElementById('sbtn');
-  btn.textContent='⏳ جاري...'; btn.disabled=true;
-  try {
-    const r = await api('addRequest',{team,from_loc:from,dest,techs,created_by:U.name,date:todayStr()});
-    if(r.ok){toast('✅ تم الإرسال — سيُخطر عماد');document.getElementById('e-techs').value='';loadMyReqs();}
+async function submitReq(){
+  const team=document.getElementById('e-team').value;
+  const from=document.getElementById('e-from').value;
+  const dest=document.getElementById('e-dest').value;
+  const techs=parseInt(document.getElementById('e-techs').value)||0;
+  if(!team) return toast('✋ اختر المجموعة');
+  if(!from) return toast('✋ اختر مكان التحرك');
+  if(!dest) return toast('✋ اختر مكان الوصول');
+  if(!techs) return toast('✋ أدخل عدد الأفراد');
+  const btn=document.getElementById('sbtn');
+  btn.textContent='⏳...'; btn.disabled=true;
+  try{
+    const r=await api('addRequest',{team,from_loc:from,dest,techs,created_by:U.name,date:todayStr()});
+    if(r.ok){toast('✅ تم الإرسال — سيُخطر مسؤول الحملة');document.getElementById('e-techs').value='';loadMyReqs();}
     else toast('❌ '+(r.error||'خطأ'));
-  } catch(e){toast('❌ تعذّر الاتصال');}
+  }catch(e){toast('❌ تعذّر الاتصال');}
   btn.textContent='📤 إرسال الطلب'; btn.disabled=false;
 }
 
-async function loadMyReqs() {
-  const el = document.getElementById('mylist');
-  if(!el) return;
-  el.innerHTML='<div class="empty">⏳ جاري التحميل...</div>';
-  try {
-    const r = await apiGet('getRequests',{date:todayStr()});
-    REQS = r.requests||[];
-    const mine = REQS.filter(x=>x.team===U.team||x.created_by===U.name);
-    el.innerHTML = mine.length ? mine.map(rqHTML).join('') : '<div class="empty">لا توجد طلبات اليوم 📭</div>';
-  } catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
+async function loadMyReqs(){
+  const el=document.getElementById('mylist'); if(!el) return;
+  el.innerHTML='<div class="empty">⏳...</div>';
+  try{
+    const r=await apiGet('getRequests',{date:todayStr()});
+    REQS=r.requests||[];
+    const mine=REQS.filter(x=>x.team===U.team||x.created_by===U.name);
+    el.innerHTML=mine.length?mine.map(r=>rqHTML(r,false)).join(''):'<div class="empty">لا توجد طلبات اليوم 📭</div>';
+  }catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
 }
 
 // ══ FLEET MANAGER ══
-async function loadAllReqs() {
-  const el = document.getElementById('tab-reqs');
-  if(!el) return;
-  el.innerHTML='<div class="empty">⏳ جاري التحميل...</div>';
-  try {
-    const r = await apiGet('getRequests',{date:todayStr()});
-    REQS = r.requests||[];
-    updStats();
-    if(CUR_TAB==='reqs')   renderFmReqs();
-    if(CUR_TAB==='merge')  renderMerge();
-    if(CUR_TAB==='order')  renderOrder();
-    else renderFmReqs();
-  } catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
+async function loadAllReqs(){
+  const el=document.getElementById('tab-reqs'); if(!el) return;
+  el.innerHTML='<div class="empty">⏳...</div>';
+  try{
+    const r=await apiGet('getRequests',{date:todayStr()});
+    REQS=r.requests||[];
+    updStats(); renderFmReqs();
+  }catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
 }
 
-function updStats() {
-  const t=document.getElementById('st0'),p=document.getElementById('st1'),a=document.getElementById('st2');
-  if(t) t.textContent=REQS.length;
-  if(p) p.textContent=REQS.filter(r=>r.status==='pending').length;
-  if(a) a.textContent=REQS.filter(r=>r.status==='assigned').length;
+function updStats(){
+  const e0=document.getElementById('st0'),e1=document.getElementById('st1'),e2=document.getElementById('st2');
+  if(e0) e0.textContent=REQS.length;
+  if(e1) e1.textContent=REQS.filter(r=>r.status==='pending').length;
+  if(e2) e2.textContent=REQS.filter(r=>r.status==='approved').length;
 }
 
-function switchTab(name, btn) {
-  CUR_TAB = name;
-  ['reqs','merge','order'].forEach(t=>{
-    const el=document.getElementById('tab-'+t);
-    if(el) el.style.display=t===name?'':'none';
-  });
+function fmTab(name,btn){
+  CUR_TAB=name;
+  ['reqs','plan','order','veh'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t===name?'':'none';});
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
   if(name==='reqs')  renderFmReqs();
-  if(name==='merge') renderMerge();
+  if(name==='plan')  renderPlan();
   if(name==='order') renderOrder();
+  if(name==='veh')   renderVehicles();
 }
 
-function renderFmReqs() {
-  const el=document.getElementById('tab-reqs');
-  if(!el) return;
-  el.innerHTML = REQS.length ? REQS.map(r=>rqHTML(r,true)).join('') : '<div class="empty">لا توجد طلبات اليوم 📭</div>';
+function renderFmReqs(){
+  const el=document.getElementById('tab-reqs'); if(!el) return;
+  el.innerHTML=REQS.length?REQS.map(r=>rqHTML(r,true)).join(''):'<div class="empty">لا توجد طلبات اليوم 📭</div>';
 }
 
-function rqHTML(r, mgr=false) {
-  const p=r.status==='pending';
-  const badge=p?'<span class="badge bp">⏳ انتظار</span>':'<span class="badge ba">✅ محدد</span>';
-  const veh=!p?`<div style="font-size:12px;color:#2e7d32;margin-top:4px">🔑 ${r.plate||''} — ${r.driver||''} (${CAR_LBL[r.car_type]||''})</div>`:'';
-  const btn=mgr&&p?`<button class="btn b-orange b-sm" style="margin-top:10px" onclick="openAssign('${r.id}')">🔑 تحديد السيارة</button>`:'';
-  return `<div class="rq ${r.status||'pending'}">
+function rqHTML(r,mgr=false){
+  const status=r.status||'pending';
+  const badge=status==='approved'?'<span class="badge bb">✅ معتمد</span>':status==='pending'?'<span class="badge bp">⏳ انتظار</span>':'<span class="badge ba">محدد</span>';
+  const veh=r.plate?`<div style="font-size:12px;color:#1565c0;margin-top:4px">🚗 ${r.plate} — ${r.driver||''} (${FLEET_DEF[r.car_type]?.label||r.car_type||''})</div>`:'';
+  return `<div class="rq ${status}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
     <div class="rq-route">📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}</div>
     <div class="rq-sub">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
-    ${veh}${btn}
+    ${veh}
   </div>`;
 }
 
-function renderMerge() {
-  const el=document.getElementById('tab-merge');
-  if(!el) return;
-  if(!REQS.length){el.innerHTML='<div class="empty">لا توجد طلبات 📭</div>';return;}
-  // Group by from+dest
-  const gs=[];
-  REQS.forEach(r=>{
-    const g=gs.find(x=>x.from===r.from_loc&&x.dest===r.dest);
-    if(g){g.ids.push(r.id);g.techs+=parseInt(r.techs)||0;g.rows.push(r);}
-    else gs.push({from:r.from_loc,dest:r.dest,ids:[r.id],techs:parseInt(r.techs)||0,rows:[r]});
-  });
-  // store groups globally — no Arabic in onclick
-  _groups = gs;
-  el.innerHTML = gs.map((g,gi)=>{
-    const cSep=g.rows.reduce((s,r)=>s+bf(parseInt(r.techs)||0).cost,0);
-    const nSep=g.rows.reduce((s,r)=>s+bf(parseInt(r.techs)||0).cnt,0);
-    const best=bf(g.techs);
-    const sav=Math.max(0,Math.round((cSep-best.cost)/cSep*100));
-    const cap=CAR_CAP[best.type];
-    const pct=Math.min(100,Math.round(g.techs/cap*100));
-    const col=g.techs>cap?'#c62828':g.techs>cap*.8?'#f57c00':'#2e7d32';
-    const multiRow = g.rows.length > 1;
-    return `<div class="mc" style="border-color:${multiRow?'#ffc107':'#ddd'}">
-      <div class="mc-title">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
-      <div style="font-size:12px;color:#666;margin-bottom:8px">${g.rows.map(r=>`👷 ${r.team||'—'} (${r.techs} فرد)`).join('<br>')}</div>
-      ${multiRow ? `
-      <div class="ba-row">
-        <div class="ba-num"><div class="ba-big" style="color:#e65100">${nSep}</div><div class="ba-lbl">سيارات منفردة</div></div>
-        <div style="font-size:24px;color:#999">→</div>
-        <div class="ba-num"><div class="ba-big" style="color:#2e7d32">${best.cnt}</div><div class="ba-lbl">بعد الدمج</div></div>
-      </div>
-      ${sav>0?`<div style="background:#2e7d32;color:#fff;display:inline-block;padding:3px 14px;border-radius:20px;font-size:12px;margin-bottom:8px;font-weight:700">💰 توفير ${sav}% من التكلفة</div>`:''}
-      ` : ''}
-      <div style="font-size:13px;margin-bottom:6px">🚐 ${CAR_LBL[best.type]} | 👥 ${g.techs} فرد</div>
-      <div class="cap-bg"><div class="cap-fill" style="background:${col};width:${pct}%"></div></div>
-      <div style="font-size:12px;color:${col};margin-bottom:10px">${g.techs} / ${cap} مقعد</div>
-      <button class="btn b-orange b-sm" onclick="openAssignGroup(${gi})">🔑 تعيين سيارة للمجموعة</button>
-    </div>`;
-  }).join('');
+// ══ AUTO DISTRIBUTE ══
+function runAutoDistribute(){
+  if(!REQS.length) return toast('⚠️ لا توجد طلبات — اضغط تحديث أولاً');
+  const plan=autoDistribute();
+  _autoPlan=plan;
+  // switch to plan tab
+  fmTab('plan', document.querySelectorAll('.tab')[1]);
 }
 
-function renderOrder() {
-  const el=document.getElementById('tab-order');
-  if(!el) return;
-  if(!REQS.length){el.innerHTML='<div class="empty">لا توجد طلبات 📭</div>';return;}
-  const rows=REQS.map((r,i)=>`<tr>
-    <td>${i+1}</td><td>${r.team||'—'}</td><td>${r.from_loc||'—'}</td><td>${r.dest||'—'}</td>
-    <td>${r.techs||0}</td><td>${CAR_LBL[r.car_type]||'—'}</td><td>${r.plate||'___'}</td><td>${r.driver||'___'}</td>
-  </tr>`).join('');
-  el.innerHTML=`<div class="card"><div class="ct">📄 أمر الإيجار</div>
-    <div style="overflow-x:auto;font-size:12px">
-      <table style="width:100%;border-collapse:collapse;min-width:400px">
-        <thead><tr style="background:#1565c0;color:#fff">
-          <th style="padding:6px">#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع</th><th>لوحة</th><th>سائق</th>
-        </tr></thead><tbody>${rows}</tbody>
-      </table>
-    </div>
-    <button class="btn b-blue" style="margin-top:12px" onclick="printOrder()">🖨️ طباعة</button>
-  </div>`;
-}
-
-function printOrder(){
-  const date=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
-  const rows=REQS.map((r,i)=>`<tr><td>${i+1}</td><td>${r.team||''}</td><td>${r.from_loc||''}</td><td>${r.dest||''}</td><td>${r.techs||0}</td><td>${CAR_LBL[r.car_type]||'—'}</td><td>${r.plate||'___'}</td><td>${r.driver||'___'}</td></tr>`).join('');
-  const w=window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>أمر إيجار</title><style>body{font-family:Arial;padding:20px}h2{text-align:center;color:#1565c0}table{width:100%;border-collapse:collapse;margin-top:14px}th{background:#1565c0;color:#fff;padding:8px;text-align:right}td{padding:7px 8px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#f5f5f5}.sign{display:flex;justify-content:space-between;margin-top:50px}.sign div{text-align:center;width:160px;border-top:1px solid #333;padding-top:6px;font-size:12px}@media print{button{display:none}}</style></head><body><h2>🚐 أمر إيجار سيارات — موبيكا</h2><p style="text-align:center;color:#777">📅 ${date} | مسؤول الحملة: عماد عبدالواحد</p><table><thead><tr><th>#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع السيارة</th><th>رقم السيارة</th><th>السائق</th></tr></thead><tbody>${rows}</tbody></table><div class="sign"><div>مسؤول الحملة<br>عماد عبدالواحد</div><div>مكتب الإيجار</div><div>مدير التركيبات<br>محمد فتحى</div></div><br><button onclick="print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨️ طباعة</button></body></html>`);
-  w.document.close();
-}
-
-// Best fit from Mobica fleet
-function bf(techs) {
-  const types = Object.keys(FLEET).sort((a,b)=>FLEET[a].cap-FLEET[b].cap); // smallest first
-  let best = null;
-  for (const t of types) {
-    const cap = FLEET[t].cap;
-    const cnt = Math.ceil(techs/cap);
-    const cost = cnt * FLEET[t].cost;
-    if (!best || cost < best.cost) best = {type:t, cnt, cost};
-  }
-  return best || {type:'bus26',cnt:1,cost:2.5};
-}
-
-// Auto-distribute all requests optimally using available fleet
-function runAutoDistribute() {
-  // switch to merge tab first
-  CUR_TAB = 'merge';
-  ['reqs','merge','order'].forEach(t=>{
-    const el=document.getElementById('tab-'+t);
-    if(el) el.style.display=t==='merge'?'':'none';
-  });
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    t.classList.toggle('on', i===1);
-  });
-  autoDistribute();
-}
-
-function autoDistribute() {
-  if (!REQS.length) {
-    const el=document.getElementById('tab-merge');
-    if(el) el.innerHTML='<div class="empty">⚠️ لا توجد طلبات — اضغط تحديث أولاً</div>';
-    return;
-  }
-
-  // Count available (unassigned) fleet slots
-  const used = {};
-  Object.keys(FLEET).forEach(k => used[k] = 0);
-  REQS.filter(r=>r.status==='assigned').forEach(r=>{ if(r.car_type&&used[r.car_type]!==undefined) used[r.car_type]++; });
+function autoDistribute(){
+  const vehicles=[...getVehicles()]; // company vehicles
+  const available=vehicles.map(v=>({...v,used:false}));
 
   // Group pending requests by route
-  const pending = REQS.filter(r=>r.status==='pending');
-  const groups = [];
+  const pending=REQS.filter(r=>r.status==='pending');
+  const groups=[];
   pending.forEach(r=>{
     const g=groups.find(x=>x.from===r.from_loc&&x.dest===r.dest);
     if(g){g.ids.push(r.id);g.techs+=parseInt(r.techs)||0;g.rows.push(r);}
     else groups.push({from:r.from_loc,dest:r.dest,ids:[r.id],techs:parseInt(r.techs)||0,rows:[r]});
   });
-
-  // Sort groups largest first
   groups.sort((a,b)=>b.techs-a.techs);
 
-  const plan = [];
-  const warnings = [];
+  const companyAssignments=[];
+  const rentalNeeded=[];
 
   groups.forEach(g=>{
-    // Find cheapest available vehicle type that fits
-    const types = Object.keys(FLEET).sort((a,b)=>FLEET[a].cap-FLEET[b].cap);
-    let assigned = false;
-    for (const t of types) {
-      const avail = FLEET[t].total - used[t];
-      if (avail > 0 && FLEET[t].cap >= g.techs) {
-        used[t]++;
-        plan.push({ ids:g.ids, type:t, label:FLEET[t].label, icon:FLEET[t].icon, from:g.from, dest:g.dest, techs:g.techs });
-        assigned = true;
+    let remaining=g.techs;
+    const assigned=[];
+
+    // Try to fit with company vehicles (smallest fit first)
+    const sorted=available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[a.type].cap-FLEET_DEF[b.type].cap);
+    for(const v of sorted){
+      if(remaining<=0) break;
+      if(FLEET_DEF[v.type].cap>=remaining){
+        v.used=true;
+        assigned.push({...v,techs:remaining});
+        remaining=0;
         break;
       }
     }
-    if (!assigned) {
-      // Need multiple cars — use largest available
-      let remaining = g.techs;
-      const types2 = Object.keys(FLEET).sort((a,b)=>FLEET[b].cap-FLEET[a].cap);
-      let tempIds = [...g.ids];
-      for (const t of types2) {
-        while (remaining > 0 && (FLEET[t].total - used[t]) > 0) {
-          used[t]++;
-          const cap = FLEET[t].cap;
-          plan.push({ ids:tempIds.splice(0,1), type:t, label:FLEET[t].label, icon:FLEET[t].icon, from:g.from, dest:g.dest, techs:Math.min(remaining,cap) });
-          remaining -= cap;
-        }
-        if (remaining <= 0) break;
+    // If still remaining, use largest available
+    if(remaining>0){
+      const byLarge=available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[b.type].cap-FLEET_DEF[a.type].cap);
+      for(const v of byLarge){
+        if(remaining<=0) break;
+        v.used=true;
+        const cap=FLEET_DEF[v.type].cap;
+        assigned.push({...v,techs:Math.min(remaining,cap)});
+        remaining-=cap;
       }
-      if (remaining > 0) warnings.push(`⚠️ ${g.from}→${g.dest}: تجاوز الطاقة بـ ${remaining} فرد`);
+    }
+
+    if(assigned.length>0){
+      companyAssignments.push({...g, vehicles:assigned, covered:g.techs-Math.max(0,remaining)});
+    }
+    if(remaining>0){
+      rentalNeeded.push({...g, techs:remaining, originalTechs:g.techs});
     }
   });
 
-  // Show plan
-  showAutoPlan(plan, warnings);
+  return {companyAssignments, rentalNeeded};
 }
 
-// ══ AUTO PLAN ══
-function showAutoPlan(plan, warnings) {
-  const el = document.getElementById('tab-merge');
-  if (!el) return;
+function renderPlan(){
+  const el=document.getElementById('tab-plan'); if(!el) return;
+  if(!_autoPlan||(!_autoPlan.companyAssignments&&!_autoPlan.rentalNeeded)){
+    el.innerHTML=`<div class="card"><div class="empty">اضغط "⚡ توزيع تلقائي" أولاً</div></div>`;
+    return;
+  }
+  const {companyAssignments,rentalNeeded}=_autoPlan;
+  let html='';
 
-  // Fleet availability summary
-  const used = {};
-  Object.keys(FLEET).forEach(k=>used[k]=0);
-  plan.forEach(p=>{ if(used[p.type]!==undefined) used[p.type]++; });
+  if(companyAssignments.length){
+    html+=`<div style="font-weight:700;font-size:14px;color:#2e7d32;margin-bottom:8px">🏢 سيارات الشركة (${companyAssignments.reduce((s,g)=>s+g.vehicles.length,0)} سيارة)</div>`;
+    companyAssignments.forEach(g=>{
+      g.vehicles.forEach(v=>{
+        const icon=FLEET_DEF[v.type]?.icon||'🚗';
+        html+=`<div class="plan-card plan-company">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-weight:700">${icon} ${v.plate}</span>
+            <span style="font-size:12px;color:#2e7d32;font-weight:700">سيارة الشركة ✅</span>
+          </div>
+          <div style="font-size:13px;color:#555;margin-bottom:3px">👤 السائق: ${v.driver}</div>
+          <div style="font-size:13px;color:#555;margin-bottom:3px">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
+          <div style="font-size:12px;color:#888">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''}</div>
+        </div>`;
+      });
+    });
+  }
 
-  const fleetBar = Object.entries(FLEET).map(([k,v])=>{
-    const u = used[k]||0;
-    const avail = v.total - u;
-    const col = avail===0?'#c62828':avail<v.total?'#f57c00':'#2e7d32';
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px">
-      <span>${v.icon} ${v.label}</span>
-      <span style="color:${col};font-weight:700">${u}/${v.total} مستخدمة</span>
+  if(rentalNeeded.length){
+    html+=`<div class="divider"><span>أمر الإيجار المطلوب</span></div>`;
+    html+=`<div style="font-weight:700;font-size:14px;color:#e65100;margin-bottom:8px">🔑 إيجار خارجى (${rentalNeeded.length} طلب)</div>`;
+    rentalNeeded.forEach((g,i)=>{
+      const best=bestFit(g.techs);
+      html+=`<div class="plan-card plan-rental">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-weight:700">${FLEET_DEF[best.type]?.icon||'🚗'} ${FLEET_DEF[best.type]?.label||''}</span>
+          <span style="font-size:12px;color:#e65100;font-weight:700">إيجار خارجى</span>
+        </div>
+        <div style="font-size:13px;color:#555;margin-bottom:3px">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
+        <div style="font-size:12px;color:#888;margin-bottom:10px">👥 ${g.techs} فرد محتاج نقل</div>
+        <button class="btn b-orange b-sm" onclick="openAssignRental(${i})">🔑 إضافة سيارة الإيجار</button>
+      </div>`;
+    });
+  }
+
+  if(!companyAssignments.length&&!rentalNeeded.length){
+    html='<div class="empty">✅ كل الطلبات معتمدة</div>';
+  }
+
+  html+=`<button class="btn b-green" style="margin-top:12px" onclick="approveAllCompany()">✅ اعتماد خطة الشركة</button>`;
+  el.innerHTML=html;
+}
+
+function renderOrder(){
+  const el=document.getElementById('tab-order'); if(!el) return;
+  if(!_autoPlan||!_autoPlan.rentalNeeded){
+    el.innerHTML='<div class="card"><div class="empty">اضغط "⚡ توزيع تلقائي" أولاً</div></div>';
+    return;
+  }
+  const {rentalNeeded}=_autoPlan;
+  if(!rentalNeeded.length){
+    el.innerHTML='<div class="card" style="text-align:center;padding:24px"><div style="font-size:48px">✅</div><div style="font-weight:700;color:#2e7d32;margin-top:8px">سيارات الشركة تغطي جميع الطلبات</div><div style="font-size:13px;color:#888;margin-top:4px">لا يوجد إيجار مطلوب اليوم</div></div>';
+    return;
+  }
+  const date=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  const rows=rentalNeeded.map((g,i)=>{
+    const best=bestFit(g.techs);
+    return `<div class="plan-card plan-rental">
+      <div style="font-weight:700;margin-bottom:6px">${i+1}. ${FLEET_DEF[best.type]?.icon} ${FLEET_DEF[best.type]?.label}</div>
+      <div style="font-size:13px;color:#555">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
+      <div style="font-size:12px;color:#888;margin-top:3px">👥 ${g.techs} فرد</div>
     </div>`;
   }).join('');
-
-  const planCards = plan.map((p,i)=>`
-    <div style="background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border-right:4px solid #1565c0;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-weight:700;font-size:14px">${p.icon} ${p.label}</span>
-        <span style="background:#e3f2fd;color:#1565c0;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700">سيارة ${i+1}</span>
-      </div>
-      <div style="font-size:13px;color:#555">📍 ${p.from||'—'} ➜ ${p.dest||'—'}</div>
-      <div style="font-size:12px;color:#888;margin-top:2px">👥 ${p.techs} فرد | سعة ${FLEET[p.type].cap}</div>
-    </div>`).join('');
-
-  el.innerHTML = `
-    <div class="card">
-      <div class="ct">🚗 الأسطول المتاح</div>
-      ${fleetBar}
+  el.innerHTML=`<div class="card">
+    <div class="ct">📄 أمر الإيجار — ${date}</div>
+    <div style="background:#fff3e0;border-radius:8px;padding:10px;margin-bottom:12px;font-size:13px">
+      🏢 سيارات الشركة تغطي ${_autoPlan.companyAssignments?.reduce((s,g)=>s+g.covered,0)||0} فرد<br>
+      🔑 الإيجار المطلوب: ${rentalNeeded.length} سيارة لـ ${rentalNeeded.reduce((s,g)=>s+g.techs,0)} فرد
     </div>
-    ${warnings.length?`<div style="background:#fff3e0;border:2px solid #f57c00;border-radius:10px;padding:12px;margin-bottom:12px">${warnings.map(w=>`<div style="font-size:13px;color:#e65100">${w}</div>`).join('')}</div>`:''}
-    <div class="card">
-      <div class="ct">✅ خطة التوزيع التلقائي — ${plan.length} سيارة</div>
-      ${planCards}
-      ${plan.length?`<button class="btn b-blue" style="margin-top:8px" onclick="applyAutoPlan()">✅ تطبيق الخطة</button>`:'<div class="empty">لا توجد طلبات معلّقة</div>'}
-    </div>`;
-
-  // store plan globally
-  window._autoPlan = plan;
+    ${rows}
+    <button class="btn b-blue" style="margin-top:10px" onclick="printOrder()">🖨️ طباعة أمر الإيجار</button>
+  </div>`;
 }
 
-function applyAutoPlan() {
-  const plan = window._autoPlan;
-  if (!plan||!plan.length) return;
-  // Open assign modal for first unassigned — or show batch assign UI
-  // For now show plan summary and let عماد assign plates manually per group
-  toast('✅ الخطة جاهزة — اضغط على كل مجموعة لإضافة رقم السيارة والسائق');
-  renderMergeWithPlan(plan);
-}
-
-function renderMergeWithPlan(plan) {
-  const el = document.getElementById('tab-merge');
-  if (!el) return;
-  _groups = plan.map(p=>({ ids:p.ids, from:p.from, dest:p.dest, techs:p.techs, rows: REQS.filter(r=>p.ids.includes(r.id)), suggestedType:p.type }));
-  el.innerHTML = plan.map((p,i)=>`
-    <div class="mc" style="border-color:#1565c0">
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-        <span style="font-weight:700">${p.icon} ${p.label}</span>
-        <span style="background:#e3f2fd;color:#1565c0;padding:2px 10px;border-radius:20px;font-size:12px">سيارة ${i+1}</span>
+function renderVehicles(){
+  const el=document.getElementById('tab-veh'); if(!el) return;
+  const vs=getVehicles();
+  const rows=vs.map((v,i)=>`
+    <div class="veh-row">
+      <div style="font-size:22px">${FLEET_DEF[v.type]?.icon||'🚗'}</div>
+      <div class="veh-info">
+        <div style="font-weight:700;font-size:13px">${v.plate}</div>
+        <div style="font-size:12px;color:#888">${v.driver} | ${FLEET_DEF[v.type]?.label||''}</div>
       </div>
-      <div style="font-size:13px;color:#555;margin-bottom:4px">📍 ${p.from||'—'} ➜ ${p.dest||'—'}</div>
-      <div style="font-size:12px;color:#888;margin-bottom:10px">👥 ${p.techs} فرد</div>
-      <button class="btn b-orange b-sm" onclick="openAssignGroup(${i})">🔑 إضافة رقم السيارة والسائق</button>
+      <button class="btn b-out b-xs" onclick="editVehicle(${i})">تعديل</button>
     </div>`).join('');
+  el.innerHTML=`<div class="card">
+    <div class="ct">🚗 سيارات الشركة (${vs.length}) <button class="btn b-blue b-xs" onclick="addVehicle()">+ إضافة</button></div>
+    ${rows||'<div class="empty">لا توجد سيارات</div>'}
+  </div>`;
 }
 
-// ══ MERGE GROUPS STORE ══
-let _groups = [];
+function editVehicle(i){
+  const vs=getVehicles();
+  _editVehIdx=i;
+  document.getElementById('ve-title').textContent='تعديل سيارة';
+  document.getElementById('ve-plate').value=vs[i].plate||'';
+  document.getElementById('ve-driver').value=vs[i].driver||'';
+  document.getElementById('ve-type').value=vs[i].type||'suzuki';
+  document.getElementById('vemodal').classList.add('open');
+}
 
+function addVehicle(){
+  _editVehIdx=-1;
+  document.getElementById('ve-title').textContent='إضافة سيارة';
+  document.getElementById('ve-plate').value='';
+  document.getElementById('ve-driver').value='';
+  document.getElementById('ve-type').value='suzuki';
+  document.getElementById('vemodal').classList.add('open');
+}
 
-function openAssign(id) {
-  const r=REQS.find(x=>x.id===id);
-  if(!r) return;
-  ASSIGN_IDS=[id];
-  const t=parseInt(r.techs)||0;
-  document.getElementById('ainfo').innerHTML=`👷 ${r.team}<br>📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}<br>👥 ${r.techs} فرد`;
-  document.getElementById('atype').selectedIndex=t<=4?0:t<=6?1:2;
+function saveVehicle(){
+  const plate=(document.getElementById('ve-plate').value||'').trim();
+  const driver=(document.getElementById('ve-driver').value||'').trim();
+  const type=document.getElementById('ve-type').value;
+  if(!plate||!driver) return toast('✋ أدخل اللوحة والسائق');
+  const vs=getVehicles();
+  if(_editVehIdx>=0){ vs[_editVehIdx]={...vs[_editVehIdx],plate,driver,type}; }
+  else { vs.push({id:'c'+Date.now(),plate,driver,type}); }
+  saveVehicles(vs);
+  closeModal('vemodal');
+  toast('✅ تم الحفظ');
+  renderVehicles();
+}
+
+// ══ ASSIGN RENTAL ══
+function openAssignRental(i){
+  const g=_autoPlan.rentalNeeded[i];
+  if(!g) return;
+  const best=bestFit(g.techs);
+  ASSIGN_IDS=g.ids;
+  document.getElementById('ainfo').innerHTML=
+    `📍 ${g.from||'—'} ➜ ${g.dest||'—'}<br>👥 ${g.techs} فرد<br>🚗 مقترح: ${FLEET_DEF[best.type]?.label}`;
+  document.getElementById('atype').value=best.type;
   document.getElementById('aplate').value='';
   document.getElementById('adriver').value='';
   document.getElementById('amodal').classList.add('open');
 }
-
-function openAssignGroup(gi) {
-  const g = _groups[gi];
-  if (!g) return;
-  ASSIGN_IDS = g.ids;
-  const best = bf(g.techs);
-  document.getElementById('ainfo').innerHTML =
-    `📍 ${g.from||'—'} ➜ ${g.dest||'—'}<br>👥 ${g.techs} فرد إجمالاً<br>` +
-    g.rows.map(r=>`👷 ${r.team||'—'}: ${r.techs} فرد`).join('<br>');
-  document.getElementById('atype').value = best.type;
-  document.getElementById('aplate').value='';
-  document.getElementById('adriver').value='';
-  document.getElementById('amodal').classList.add('open');
-}
-
-function closeModal(){document.getElementById('amodal').classList.remove('open');}
 
 async function confirmAssign(){
   const plate=(document.getElementById('aplate').value||'').trim();
@@ -658,10 +601,59 @@ async function confirmAssign(){
   if(!plate) return toast('✋ أدخل رقم السيارة');
   if(!driver) return toast('✋ أدخل اسم السائق');
   try{
-    const r=await api('assignVehicle',{ids:ASSIGN_IDS,plate,driver,car_type:type,car_type_label:CAR_LBL[type]});
-    if(r.ok){toast('✅ تم تحديد السيارة');closeModal();loadAllReqs();}
+    const r=await api('assignVehicle',{ids:ASSIGN_IDS,plate,driver,car_type:type,status:'approved'});
+    if(r.ok){toast('✅ تم الاعتماد');closeModal('amodal');loadAllReqs();}
     else toast('❌ '+(r.error||'خطأ'));
   }catch(e){toast('❌ تعذّر الاتصال');}
+}
+
+async function approveAllCompany(){
+  if(!_autoPlan?.companyAssignments?.length) return toast('لا توجد تعيينات');
+  let count=0;
+  for(const g of _autoPlan.companyAssignments){
+    for(let vi=0;vi<g.vehicles.length;vi++){
+      const v=g.vehicles[vi];
+      try{
+        await api('assignVehicle',{ids:g.ids,plate:v.plate,driver:v.driver,car_type:v.type,status:'approved'});
+        count++;
+      }catch(e){}
+    }
+  }
+  toast(`✅ تم اعتماد ${count} سيارة من الشركة`);
+  loadAllReqs();
+}
+
+// ══ PRINT ══
+function printOrder(){
+  if(!_autoPlan?.rentalNeeded?.length){toast('لا يوجد إيجار مطلوب');return;}
+  const date=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+  const rows=_autoPlan.rentalNeeded.map((g,i)=>{
+    const best=bestFit(g.techs);
+    return `<tr><td>${i+1}</td><td>${g.rows?.map(r=>r.team||'').join(' + ')||'—'}</td><td>${g.from||'—'}</td><td>${g.dest||'—'}</td><td>${g.techs}</td><td>${FLEET_DEF[best.type]?.label||''}</td><td>___________</td><td>___________</td></tr>`;
+  }).join('');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>أمر إيجار</title>
+  <style>body{font-family:Arial;padding:20px}h2{text-align:center;color:#1565c0}p{text-align:center;color:#777;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse}th{background:#1565c0;color:#fff;padding:8px;text-align:right}
+  td{padding:7px 8px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#f5f5f5}
+  .sign{display:flex;justify-content:space-between;margin-top:50px}
+  .sign div{text-align:center;width:160px;border-top:1px solid #333;padding-top:6px;font-size:12px}
+  @media print{button{display:none}}</style></head><body>
+  <h2>🔑 أمر إيجار سيارات — موبيكا</h2>
+  <p>📅 ${date} | مسؤول الحملة: عماد عبدالواحد | (بعد استبعاد سيارات الشركة)</p>
+  <table><thead><tr><th>#</th><th>الفريق</th><th>من</th><th>إلى</th><th>أفراد</th><th>نوع السيارة المطلوب</th><th>رقم السيارة</th><th>السائق</th></tr></thead>
+  <tbody>${rows}</tbody></table>
+  <div class="sign"><div>مسؤول الحملة<br>عماد عبدالواحد</div><div>مكتب الإيجار الخارجى</div><div>مدير التركيبات<br>محمد فتحى</div></div>
+  <br><button onclick="print()" style="padding:10px 24px;background:#1565c0;color:#fff;border:none;border-radius:8px;cursor:pointer">🖨️ طباعة</button>
+  </body></html>`);
+  w.document.close();
+}
+
+// ══ BEST FIT ══
+function bestFit(techs){
+  const types=Object.keys(FLEET_DEF).sort((a,b)=>FLEET_DEF[a].cap-FLEET_DEF[b].cap);
+  for(const t of types){ if(FLEET_DEF[t].cap>=techs) return {type:t}; }
+  return {type:'bus26'};
 }
 
 // ══ API ══
@@ -681,16 +673,15 @@ try{_demo=JSON.parse(localStorage.getItem('demo_r')||'[]');}catch(e){}
 function saveD(){try{localStorage.setItem('demo_r',JSON.stringify(_demo));}catch(e){}}
 function demoPost(action,data){
   if(action==='addRequest'){const id='R'+Date.now().toString(36).toUpperCase();_demo.push({id,status:'pending',...data});saveD();return Promise.resolve({ok:true,id});}
-  if(action==='assignVehicle'){(data.ids||[]).forEach(id=>{const r=_demo.find(x=>x.id===id);if(r){r.plate=data.plate;r.driver=data.driver;r.car_type=data.car_type;r.status='assigned';}});saveD();return Promise.resolve({ok:true});}
+  if(action==='assignVehicle'){(data.ids||[]).forEach(id=>{const r=_demo.find(x=>x.id===id);if(r){r.plate=data.plate;r.driver=data.driver;r.car_type=data.car_type;r.status=data.status||'approved';}});saveD();return Promise.resolve({ok:true});}
   return Promise.resolve({ok:false});
 }
 function demoGet(action,params){
   return Promise.resolve({ok:true,requests:_demo.filter(r=>!params.date||r.date===params.date)});
 }
-
-// ══ UTILS ══
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 function todayStr(){return new Date().toISOString().split('T')[0];}
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',3000);}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',3500);}
 </script>
 </body>
 </html>
