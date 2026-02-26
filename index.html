@@ -104,26 +104,30 @@ body{font-family:-apple-system,'Segoe UI',Tahoma,sans-serif;background:#f0f4f8;c
   <div class="login-title">حملة موبيكا</div>
   <div class="login-sub">إدارة نقل الفنيين</div>
   <div class="login-box">
-    <label class="lbl">الاسم</label>
-    <input class="txt-inp" id="inp-name" type="text" placeholder="اكتب اسمك هنا">
 
-    <label class="lbl">الدور</label>
-    <div class="choice-row" id="role-btns">
-      <button class="choice-btn" onclick="pickRole('engineer',this)">👷 مهندس<br>مدير مجموعة</button>
-      <button class="choice-btn" onclick="pickRole('fleet_manager',this)">🚐 مسؤول<br>الحملة (عماد)</button>
+    <!-- STEP 1: NAME -->
+    <div id="step1">
+      <label class="lbl">👤 اكتب اسمك</label>
+      <input class="txt-inp" id="inp-name" type="text" placeholder="الاسم الكامل">
+      <button class="login-btn" onclick="goStep2()">التالي ←</button>
     </div>
 
-    <div id="team-section">
-      <label class="lbl">المجموعة</label>
-      <div class="team-grid" id="team-btns">
-        <button class="choice-btn" onclick="pickTeam('A — أحمد حسن',this)">A<br>أحمد حسن</button>
-        <button class="choice-btn" onclick="pickTeam('B — سامى فؤاد',this)">B<br>سامى فؤاد</button>
-        <button class="choice-btn" onclick="pickTeam('C — حازم قاعود',this)">C<br>حازم قاعود</button>
-        <button class="choice-btn" onclick="pickTeam('D — هشام جمال',this)">D<br>هشام جمال</button>
-      </div>
+    <!-- STEP 2: ROLE -->
+    <div id="step2" style="display:none">
+      <label class="lbl">🎯 اختر دورك</label>
+      <button class="choice-btn full" style="margin-bottom:10px;padding:16px" onclick="pickRole('engineer',this)">👷 مهندس / مدير مجموعة</button>
+      <button class="choice-btn full" style="padding:16px" onclick="pickRole('fleet_manager',this)">🚐 مسؤول الحملة (عماد)</button>
     </div>
 
-    <button class="login-btn" onclick="doLogin()">دخول ←</button>
+    <!-- STEP 3: TEAM -->
+    <div id="step3" style="display:none">
+      <label class="lbl">👥 اختر مجموعتك</label>
+      <button class="choice-btn full" style="margin-bottom:10px;padding:14px" onclick="pickTeam('A — أحمد حسن',this)">مجموعة A — أحمد حسن</button>
+      <button class="choice-btn full" style="margin-bottom:10px;padding:14px" onclick="pickTeam('B — سامى فؤاد',this)">مجموعة B — سامى فؤاد</button>
+      <button class="choice-btn full" style="margin-bottom:10px;padding:14px" onclick="pickTeam('C — حازم قاعود',this)">مجموعة C — حازم قاعود</button>
+      <button class="choice-btn full" style="padding:14px" onclick="pickTeam('D — هشام جمال',this)">مجموعة D — هشام جمال</button>
+    </div>
+
   </div>
 </div>
 
@@ -272,26 +276,36 @@ window.onload = function() {
 };
 
 // ══ LOGIN ══
+function goStep2() {
+  const name = (document.getElementById('inp-name').value||'').trim();
+  if (!name) { alert('اكتب اسمك أولاً'); return; }
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = '';
+}
+
 function pickRole(r, btn) {
   selectedRole = r;
-  document.querySelectorAll('#role-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('#step2 .choice-btn').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
-  document.getElementById('team-section').style.display = r === 'engineer' ? '' : 'none';
-  selectedTeam = '';
-  document.querySelectorAll('#team-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+  setTimeout(() => {
+    document.getElementById('step2').style.display = 'none';
+    if (r === 'engineer') {
+      document.getElementById('step3').style.display = '';
+    } else {
+      doLogin();
+    }
+  }, 200);
 }
 
 function pickTeam(t, btn) {
   selectedTeam = t;
-  document.querySelectorAll('#team-btns .choice-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('#step3 .choice-btn').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
+  setTimeout(() => doLogin(), 200);
 }
 
 function doLogin() {
-  const name = (document.getElementById('inp-name').value || '').trim();
-  if (!name)         { alert('اكتب اسمك أولاً'); return; }
-  if (!selectedRole) { alert('اختر الدور أولاً'); return; }
-  if (selectedRole === 'engineer' && !selectedTeam) { alert('اختر المجموعة'); return; }
+  const name = (document.getElementById('inp-name').value||'').trim();
   user = { name, role: selectedRole, team: selectedTeam };
   try { localStorage.setItem('fleet_u', JSON.stringify(user)); } catch(e){}
   launchApp();
