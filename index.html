@@ -287,14 +287,16 @@ function pickRole(r, btn) {
   selectedRole = r;
   document.querySelectorAll('#step2 .choice-btn').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
-  setTimeout(() => {
-    document.getElementById('step2').style.display = 'none';
-    if (r === 'engineer') {
-      document.getElementById('step3').style.display = '';
-    } else {
-      doLogin();
-    }
-  }, 200);
+  document.getElementById('step2').style.display = 'none';
+  if (r === 'engineer') {
+    document.getElementById('step3').style.display = '';
+  } else {
+    // fleet_manager — ادخل مباشرة
+    const name = (document.getElementById('inp-name').value||'').trim() || 'مسؤول الحملة';
+    user = { name, role: 'fleet_manager', team: '' };
+    try { localStorage.setItem('fleet_u', JSON.stringify(user)); } catch(e){}
+    launchApp();
+  }
 }
 
 function pickTeam(t, btn) {
