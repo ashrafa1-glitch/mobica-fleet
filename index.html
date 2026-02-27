@@ -1418,16 +1418,23 @@ function bestFit(techs){
 // ══ API ══
 async function api(action,data){
   if(API_URL.includes('PASTE')) return demoPost(action,data);
-  // Google Apps Script بيعمل redirect — لازم نبعت GET مع الداتا في الـ URL
-  const q=new URLSearchParams({action, payload: JSON.stringify(data)});
-  const r=await fetch(API_URL+'?'+q, {redirect:'follow'});
+  const q=new URLSearchParams({action,...flattenObj(data)});
+  const r=await fetch(API_URL+'?'+q);
   return r.json();
 }
 async function apiGet(action,params){
   if(API_URL.includes('PASTE')) return demoGet(action,params);
   const q=new URLSearchParams({action,...params});
-  const r=await fetch(API_URL+'?'+q, {redirect:'follow'});
+  const r=await fetch(API_URL+'?'+q);
   return r.json();
+}
+// تحويل الـ object لـ flat params (arrays → JSON string)
+function flattenObj(obj){
+  const out={};
+  for(const [k,v] of Object.entries(obj||{})){
+    out[k] = Array.isArray(v) ? JSON.stringify(v) : (v==null?'':v);
+  }
+  return out;
 }
 let _demo=[];
 try{_demo=JSON.parse(localStorage.getItem('demo_r')||'[]');}catch(e){}
