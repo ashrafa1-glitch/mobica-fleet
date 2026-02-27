@@ -420,8 +420,11 @@ function renderApp(){
         <div class="ct">➕ طلب نقل جديد
           <span style="font-size:12px;color:#1565c0;font-weight:600">مجموعة ${U.team}</span>
         </div>
+        <div class="fl">
+          <label>🏢 اسم العميل / الموقع</label>
+          <input class="inp" id="e-client" type="text" placeholder="مثال: TMG — مدينتي | Emaar — القاهرة الجديدة">
+        </div>
         <div class="fr">
-          <div class="fl"><label>اسم العميل / الموقع</label><input class="inp" id="e-client" type="text" placeholder="مثال: TMG — مدينتي | Emaar — القاهرة الجديدة"></div>
           <div class="fl"><label>مكان التحرك</label><select id="e-from"><option value="">— اختر —</option>${locOpts}</select></div>
           <div class="fl"><label>مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
         </div>
