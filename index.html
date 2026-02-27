@@ -566,6 +566,15 @@ async function submitReq(){
       date: todayStr()
     });
     if(r.ok){
+      // حفظ فوري في localStorage
+      const newReq = {
+        id: r.id||('L'+Date.now()),
+        date: todayStr(), team, from_loc:from,
+        stop_loc:stop, dest, client, techs,
+        members: selectedMembers,
+        created_by: U.name, status:'pending'
+      };
+      addLocalReq(newReq);
       toast('✅ تم الإرسال — سيُخطر مسؤول الحملة');
       selectAllMembers(false);
       loadMyReqs();
@@ -574,16 +583,34 @@ async function submitReq(){
   btn.textContent='📤 إرسال الطلب'; btn.disabled=false;
 }
 
+// ── Local cache helpers ──────────────────────────────────
+function cacheKey(){ return 'reqs_'+todayStr(); }
+function saveLocalReqs(reqs){ try{localStorage.setItem(cacheKey(),JSON.stringify(reqs));}catch(e){} }
+function loadLocalReqs(){ try{return JSON.parse(localStorage.getItem(cacheKey())||'[]');}catch(e){return[];} }
+function addLocalReq(req){ const r=loadLocalReqs(); r.push(req); saveLocalReqs(r); }
+
 async function loadMyReqs(){
   const el=document.getElementById('mylist'); if(!el) return;
   el.innerHTML='<div class="empty">⏳...</div>';
+
+  // عرض الـ cache فوراً
+  const cached = loadLocalReqs();
+  if(cached.length){ REQS=cached; }
+
   try{
     const r=await apiGet('getRequests',{date:todayStr()});
-    REQS=r.requests||[];
-    const mine=REQS.filter(x=>x.team===U.team||x.created_by===U.name);
-    el.innerHTML=mine.length?mine.map(r=>rqHTML(r,false)).join(''):'<div class="empty">لا توجد طلبات اليوم 📭</div>';
-  }catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
-  // تحديث قائمة الأفراد المتبقين بعد كل تحميل
+    const serverReqs = r.requests||[];
+    // دمج السيرفر مع الـ cache (السيرفر له الأولوية)
+    if(serverReqs.length){
+      REQS = serverReqs;
+      saveLocalReqs(serverReqs); // حدّث الـ cache
+    } else {
+      REQS = cached; // استخدم الـ cache لو السيرفر فاضي
+    }
+  }catch(e){ REQS = cached; }
+
+  const mine=REQS.filter(x=>x.team===U.team||x.created_by===U.name);
+  el.innerHTML=mine.length?mine.map(r=>rqHTML(r,false)).join(''):'<div class="empty">لا توجد طلبات اليوم 📭</div>';
   renderRemainingMembers();
 }
 
@@ -632,11 +659,22 @@ function renderRemainingMembers(){
 async function loadAllReqs(){
   const el=document.getElementById('tab-reqs'); if(!el) return;
   el.innerHTML='<div class="empty">⏳...</div>';
+
+  const cached = loadLocalReqs();
+  if(cached.length){ REQS=cached; updStats(); renderFmReqs(); }
+
   try{
     const r=await apiGet('getRequests',{date:todayStr()});
-    REQS=r.requests||[];
-    updStats(); renderFmReqs();
-  }catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
+    const serverReqs=r.requests||[];
+    if(serverReqs.length){
+      REQS=serverReqs;
+      saveLocalReqs(serverReqs);
+    } else {
+      REQS=cached;
+    }
+  }catch(e){ REQS=cached; }
+
+  updStats(); renderFmReqs();
 }
 
 function updStats(){
