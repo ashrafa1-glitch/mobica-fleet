@@ -32,7 +32,7 @@ function setupSheets() {
   let rs = ss.getSheetByName(SHEET_REQUESTS);
   if (!rs) {
     rs = ss.insertSheet(SHEET_REQUESTS);
-    rs.appendRow(['id','date','team','from_loc','dest','techs','members','status',
+    rs.appendRow(['id','date','team','client','from_loc','dest','techs','members','status',
                   'plate','driver','car_type','created_by','created_at','notes']);
     rs.setFrozenRows(1);
     rs.getRange('1:1').setBackground('#1565c0').setFontColor('#fff').setFontWeight('bold');
@@ -69,8 +69,20 @@ function doGet(e) {
   const action = e.parameter.action || '';
   const date   = e.parameter.date   || today();
 
-  if (action === 'getRequests') return corsResponse(getRequests(date));
   if (action === 'ping')        return corsResponse({ ok: true, time: new Date().toISOString() });
+  if (action === 'getRequests') return corsResponse(getRequests(date));
+
+  // POST actions via GET (payload param)
+  if (e.parameter.payload) {
+    let body;
+    try { body = JSON.parse(e.parameter.payload); } catch(err) { return corsResponse({ok:false,error:'invalid payload'}); }
+    body.action = action;
+    if (action === 'addRequest')    return corsResponse(addRequest(body));
+    if (action === 'assignVehicle') return corsResponse(assignVehicle(body));
+    if (action === 'savePlan')      return corsResponse(savePlan(body));
+    if (action === 'deleteRequest') return corsResponse(deleteRequest(body));
+  }
+
   return corsResponse({ error: 'unknown action' });
 }
 
@@ -128,10 +140,11 @@ function addRequest(body) {
     id,
     body.date || today(),
     body.team        || '',
+    body.client      || '',
     body.from_loc    || '',
     body.dest        || '',
     body.techs       || 0,
-    membersStr,              // أسماء الأفراد
+    membersStr,
     'pending',
     '', '', '',              // plate, driver, car_type
     body.created_by  || '',
@@ -143,6 +156,7 @@ function addRequest(body) {
   const teamLabel = body.team || '—';
   const membersLine = membersStr ? `\n👤 الأفراد: ${membersStr}` : '';
   const msg = `🚐 *طلب نقل جديد*\n`
+    + `🏢 العميل: ${body.client || '—'}\n`
     + `👷 الفريق: ${teamLabel}\n`
     + `📍 من: ${body.from_loc || '—'} ➜ ${body.dest || '—'}\n`
     + `👥 عدد الأفراد: ${body.techs || 0}${membersLine}\n`
