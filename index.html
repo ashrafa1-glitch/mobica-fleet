@@ -421,6 +421,7 @@ function renderApp(){
           <span style="font-size:12px;color:#1565c0;font-weight:600">مجموعة ${U.team}</span>
         </div>
         <div class="fr">
+          <div class="fl"><label>اسم العميل / الموقع</label><input class="inp" id="e-client" type="text" placeholder="مثال: TMG — مدينتي | Emaar — القاهرة الجديدة"></div>
           <div class="fl"><label>مكان التحرك</label><select id="e-from"><option value="">— اختر —</option>${locOpts}</select></div>
           <div class="fl"><label>مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
         </div>
@@ -505,24 +506,27 @@ function bindMemberCbs(){
 // ══ ENGINEER ══
 async function submitReq(){
   const team = U.team; // تلقائي من الـ login
-  const from = document.getElementById('e-from').value;
-  const dest = document.getElementById('e-dest').value;
+  const client = (document.getElementById('e-client').value||'').trim();
+  const from   = document.getElementById('e-from').value;
+  const dest   = document.getElementById('e-dest').value;
 
   // الأفراد المحددين بالاسم
   const selectedMembers = [...document.querySelectorAll('.mem-cb:checked')].map(cb=>cb.value);
   const techs = selectedMembers.length;
 
-  if(!from) return toast('✋ اختر مكان التحرك');
-  if(!dest) return toast('✋ اختر مكان الوصول');
-  if(!techs) return toast('✋ اختر الأفراد المسافرين');
+  if(!client) return toast('✋ أدخل اسم العميل');
+  if(!from)   return toast('✋ اختر مكان التحرك');
+  if(!dest)   return toast('✋ اختر مكان الوصول');
+  if(!techs)  return toast('✋ اختر الأفراد المسافرين');
 
   const btn=document.getElementById('sbtn');
   btn.textContent='⏳...'; btn.disabled=true;
   try{
     const r=await api('addRequest',{
       team, from_loc:from, dest,
+      client,
       techs,
-      members: selectedMembers,   // أسماء الأفراد
+      members: selectedMembers,
       created_by: U.name,
       date: todayStr()
     });
@@ -632,8 +636,11 @@ function rqHTML(r,mgr=false){
     ? `<div style="margin-top:6px;padding:6px 8px;background:#f0f4ff;border-radius:8px;font-size:12px;color:#333;line-height:1.7">
         👥 ${r.members.join(' • ')}
        </div>` : '';
+  const clientBadge = r.client
+    ? `<div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:4px">🏢 ${r.client}</div>` : '';
   return `<div class="rq ${status}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
+    ${clientBadge}
     <div class="rq-route">📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}</div>
     <div class="rq-sub">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
     ${members}
