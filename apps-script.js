@@ -136,12 +136,29 @@ function getSheet() {
 function getRequests(date) {
   const sh   = getSheet();
   const data = sh.getDataRange().getValues();
+  if(data.length <= 1) return { ok: true, requests: [], date };
   const headers = data[0];
   const rows = data.slice(1)
-    .filter(r => r[1] === date || !date)
+    .filter(r => {
+      if(!date) return true;
+      // Google Sheets بيحوّل التاريخ لـ Date object — لازم نحوّله لـ string
+      const cellDate = r[1] instanceof Date
+        ? Utilities.formatDate(r[1], 'Africa/Cairo', 'yyyy-MM-dd')
+        : String(r[1]).substring(0, 10);
+      return cellDate === date;
+    })
     .map(r => {
       const obj = {};
-      headers.forEach((h, i) => obj[h] = r[i]);
+      headers.forEach((h, i) => {
+        // تحويل التواريخ لـ string
+        obj[h] = r[i] instanceof Date
+          ? Utilities.formatDate(r[i], 'Africa/Cairo', 'yyyy-MM-dd')
+          : r[i];
+      });
+      // members مخزّنة كـ string مفصولة بـ ، — حوّلها لـ array
+      if(obj.members && typeof obj.members === 'string' && obj.members){
+        obj.members = obj.members.split('،').map(s=>s.trim()).filter(Boolean);
+      }
       return obj;
     });
   return { ok: true, requests: rows, date };
