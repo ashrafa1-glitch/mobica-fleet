@@ -142,6 +142,33 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
   </div>
 </div>
 
+<!-- Modal استبدال السائق -->
+<div class="ov" id="replaceModal" style="display:none">
+  <div class="modal" style="max-width:420px">
+    <div class="mt">🔄 استبدال السائق / السيارة</div>
+    <div id="replace-current" style="background:#fff3e0;border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px"></div>
+    <div class="fl" style="margin-bottom:12px">
+      <label>اختر السيارة البديلة</label>
+      <select id="replace-veh" class="inp" style="padding:10px">
+        <option value="">— اختر —</option>
+      </select>
+    </div>
+    <div class="fl" style="margin-bottom:14px">
+      <label>سبب الاستبدال</label>
+      <select id="replace-reason" class="inp" style="padding:10px">
+        <option value="إجازة سائق">إجازة سائق</option>
+        <option value="عطل سيارة">عطل سيارة</option>
+        <option value="سيارة في مهمة أخرى">سيارة في مهمة أخرى</option>
+        <option value="أخرى">أخرى</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-green" onclick="confirmReplaceDriver()">✅ تأكيد الاستبدال</button>
+      <button class="btn b-out" onclick="closeModal('replaceModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -842,6 +869,7 @@ function renderPlan(){
             <span style="font-weight:700">${icon} ${v.plate}</span>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
               <span style="font-size:12px;color:#2e7d32;font-weight:700">سيارة الشركة ✅</span>
+              ${v._replaced?`<span style="background:#fff3e0;color:#e65100;font-size:11px;font-weight:700;padding:2px 7px;border-radius:8px">🔄 مستبدلة — ${v._reason||''}</span>`:''}
               ${mergedBadge}
             </div>
           </div>
@@ -849,7 +877,13 @@ function renderPlan(){
           ${fromStops}
           <div style="border-right:2px dashed #ccc;margin:5px 0 5px 8px;padding-right:8px">${destHtml}</div>
           <div style="font-size:12px;color:#888;margin-bottom:8px">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''} (سعة ${FLEET_DEF[v.type]?.cap||'?'})</div>
-          <button class="btn b-out b-xs" onclick="openRouteFromPlan(${JSON.stringify(g.ids).replace(/"/g,"'")},${getVehicles().findIndex(x=>x.id===v.id)})">🗺 خطة الرحلة</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn b-out b-xs" onclick="openRouteFromPlan(${JSON.stringify(g.ids).replace(/"/g,"'")},${getVehicles().findIndex(x=>x.id===v.id)})">🗺 خطة الرحلة</button>
+            <button class="btn b-xs" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80"
+              onclick="openReplaceDriver('${v.id}','${v.plate}','${v.driver}',${JSON.stringify(g.ids).replace(/"/g,"'")})">
+              🔄 استبدال السائق
+            </button>
+          </div>
         </div>`;
       });
     });
@@ -993,6 +1027,58 @@ async function confirmAssign(){
     if(r.ok){toast('✅ تم الاعتماد');closeModal('amodal');loadAllReqs();}
     else toast('❌ '+(r.error||'خطأ'));
   }catch(e){toast('❌ تعذّر الاتصال');}
+}
+
+// ══ REPLACE DRIVER ══
+let _replaceCtx = null; // {oldVehId, oldPlate, oldDriver, groupIds}
+
+function openReplaceDriver(vehId, plate, driver, groupIds){
+  _replaceCtx = {vehId, plate, driver, groupIds: Array.isArray(groupIds)?groupIds:String(groupIds).split(',')};
+
+  // عرض السيارة الحالية
+  document.getElementById('replace-current').innerHTML =
+    `السيارة الحالية: <b>${plate}</b> — السائق: <b>${driver}</b>`;
+
+  // تعبئة قائمة السيارات البديلة (كل السيارات ما عدا الحالية)
+  const sel = document.getElementById('replace-veh');
+  sel.innerHTML = '<option value="">— اختر —</option>' +
+    getVehicles()
+      .filter(v => v.id !== vehId)
+      .map(v => `<option value="${v.id}">${FLEET_DEF[v.type]?.icon||'🚗'} ${v.plate} — ${v.driver} (${FLEET_DEF[v.type]?.label||''}، سعة ${FLEET_DEF[v.type]?.cap||'?'})</option>`)
+      .join('');
+
+  document.getElementById('replaceModal').style.display='flex';
+}
+
+function confirmReplaceDriver(){
+  if(!_replaceCtx) return;
+  const newVehId = document.getElementById('replace-veh').value;
+  const reason   = document.getElementById('replace-reason').value;
+  if(!newVehId) return toast('✋ اختر السيارة البديلة');
+
+  const newVeh = getVehicles().find(v=>v.id===newVehId);
+  if(!newVeh) return toast('❌ سيارة غير موجودة');
+
+  // تحديث _autoPlan في الذاكرة
+  if(_autoPlan?.companyAssignments){
+    _autoPlan.companyAssignments.forEach(g=>{
+      g.vehicles.forEach(v=>{
+        if(v.id === _replaceCtx.vehId){
+          v.id     = newVeh.id;
+          v.plate  = newVeh.plate;
+          v.driver = newVeh.driver;
+          v.type   = newVeh.type;
+          v._replaced = true;
+          v._replacedFrom = `${_replaceCtx.plate} — ${_replaceCtx.driver}`;
+          v._reason = reason;
+        }
+      });
+    });
+  }
+
+  toast(`✅ تم استبدال السيارة — ${reason}`);
+  closeModal('replaceModal');
+  renderPlan(); // تحديث العرض
 }
 
 async function approveAllCompany(){
