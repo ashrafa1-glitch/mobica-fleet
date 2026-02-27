@@ -1418,13 +1418,15 @@ function bestFit(techs){
 // ══ API ══
 async function api(action,data){
   if(API_URL.includes('PASTE')) return demoPost(action,data);
-  const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+  // Google Apps Script بيعمل redirect — لازم نبعت GET مع الداتا في الـ URL
+  const q=new URLSearchParams({action, payload: JSON.stringify(data)});
+  const r=await fetch(API_URL+'?'+q, {redirect:'follow'});
   return r.json();
 }
 async function apiGet(action,params){
   if(API_URL.includes('PASTE')) return demoGet(action,params);
   const q=new URLSearchParams({action,...params});
-  const r=await fetch(API_URL+'?'+q);
+  const r=await fetch(API_URL+'?'+q, {redirect:'follow'});
   return r.json();
 }
 let _demo=[];
