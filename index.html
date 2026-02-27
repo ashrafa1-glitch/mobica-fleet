@@ -104,10 +104,12 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
     <div class="fl"><label>اسم السائق</label><input id="adriver" type="text" placeholder="الاسم"></div>
     <div class="fl"><label>نوع السيارة</label>
       <select id="atype">
-        <option value="pickup">🛻 باكاب 4 ركاب</option>
-        <option value="suzuki">🚙 سوزوكى 7 ركاب</option>
-        <option value="micro14">🚐 ميكروباص 14 راكب</option>
-        <option value="bus26">🚌 أتوبيس 26 راكب</option>
+        <option value="pickup">🛻 دبل — 4 ركاب</option>
+        <option value="van">🚐 فان — 7 ركاب</option>
+        <option value="micro14">🚌 ميكروباص — 14 راكب</option>
+        <option value="minibus">🚎 ميني باص — 20 راكب</option>
+        <option value="bus26">🚍 أتوبيس — 45 راكب</option>
+        <option value="truck">🚛 دبابة — 3 ركاب</option>
       </select>
     </div>
     <div style="display:flex;gap:8px">
@@ -125,10 +127,12 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
     <div class="fl"><label>اسم السائق</label><input id="ve-driver" type="text" placeholder="اسم السائق"></div>
     <div class="fl"><label>النوع</label>
       <select id="ve-type">
-        <option value="pickup">🛻 باكاب 4 ركاب</option>
-        <option value="suzuki">🚙 سوزوكى 7 ركاب</option>
-        <option value="micro14">🚐 ميكروباص 14 راكب</option>
-        <option value="bus26">🚌 أتوبيس 26 راكب</option>
+        <option value="pickup">🛻 دبل — 4 ركاب</option>
+        <option value="van">🚐 فان — 7 ركاب</option>
+        <option value="micro14">🚌 ميكروباص — 14 راكب</option>
+        <option value="minibus">🚎 ميني باص — 20 راكب</option>
+        <option value="bus26">🚍 أتوبيس — 45 راكب</option>
+        <option value="truck">🚛 دبابة — 3 ركاب</option>
       </select>
     </div>
     <div style="display:flex;gap:8px">
@@ -142,13 +146,135 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
 
 <script>
 // ══ CONFIG ══
-const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+// ══ ضع رابط الـ Apps Script هنا بعد النشر ══
+const API_URL = localStorage.getItem('fleetApiUrl') || 'PASTE_APPS_SCRIPT_URL_HERE';
+
+// ══ USERS & PASSWORDS ══
+// ⚠️ الباسوردات مؤقتة — سيتم تحديثها من أشرف
+const USERS = [
+  { name:'عماد عبدالواحد',  role:'fleet_manager', team:'',  password:'fleet2026' },
+  { name:'أشرف قاسم',       role:'fleet_manager', team:'',  password:'ashraf2026' },
+  { name:'أحمد حسن',        role:'engineer',      team:'A', password:'teamA2026' },
+  { name:'سامى فؤاد',       role:'engineer',      team:'B', password:'teamB2026' },
+  { name:'حازم قاعود',      role:'engineer',      team:'C', password:'teamC2026' },
+  { name:'هشام جمال',       role:'engineer',      team:'D', password:'teamD2026' },
+];
+
+// ══ TEAM MEMBERS ══
+const TEAM_MEMBERS = {
+  'A': [
+    // مهندسون
+    'م. محمد عبدالعال',
+    // مشرفون
+    'سعيد زهران','سمير مرقص','السيد شوقى السيد عبدالمجيد',
+    // فنيون
+    'طلعت اسماعيل عبدالحميد عوض','محمد صلاح عبدالجواد','حماده سعيد مشحوت',
+    'احمد عثمان حسين حسن','حسن جابر سعد','على كحيل جادالله معوض',
+    'خالد محمود عفيفى','سيد ابوبكر ابوشناف','فرحات حسين عبدالمزل ابوالعنين',
+    'محمود عبدالله الغريب محمد','وحيد السيد غباشى محمد','محمد كيلانى عبده محمد',
+    'سيد صلاح الدين ابراهيم حسن','محمود صديق حسن مرسى','محمد حسن فرغلى عبدالفتاح',
+    'محمد ابراهيم سيد ابراهيم','نصر محمد رفعت','طارق صلاح سلام واكد',
+    'خالد محمد طه مسعود','ممدوح سليمان محمد سليمان',
+  ],
+  'B': [
+    // مهندسون
+    'م. محسن طه','م. مختار محمد',
+    // مسئول + مشرفون
+    'خالد محمد الزناتى محمد خليفه','خالد السيد','احمد مسعود شربينى سليم','حسن خليل حسن',
+    // فنيون
+    'اسامه سمير احمد صقر','عارف جابر عبدالله درن','احمد محمود احمد الطيب',
+    'عماد فوزى عبدالفتاح الشناوى','محمد عبدالعزيز محمد عمر','محمود كمال محمد سليم نصير',
+    'محمود خلف عطية فراج','محمود عبدالمنعم محمد الزهيرى','شريف حمدى ادريس عبدالواحد',
+    'احمد منصور احمد الملخانى','محمد على على احمد','محمد محمود محمد السيد',
+    'محمود حنفى محمود احمد','سيد يوسف السيد السيد','طارق محمد عبدالفتاح على',
+    'مصطفى حجاج محمود عبود','محمد حامد سيد عثمان','حسن منصور حسين حسن',
+    'تامر احمد محمد عتمان','حسين هاشم احمد الصاوى','عبده سعيد عبده',
+    'احمد جراد السيد','عادل محسن عبدالحفيظ','ياسر محمد على محمود',
+    'محمود عبدالله ابوسريع محمد','عبدالحميد عبدالحكيم عبدالحميد الشيمى','محمد صلاح على امين',
+    'محمد احمد محمد عمار','حسين سيد عبدالغنى عبدالرحمن','خالد احمد احمد ابوعيشة',
+    'ناصر عبدالمنعم عبدالله','يوسف فرج يوسف حسن','فتحى السيد ابراهيم سلامه',
+    'حسنى يوسف محمد نصار','ماهر حسين حسن','يحيى جمعه احمد محمد',
+    'محمد ابوالحسن محمد محمد','فرج فتوح فرج حنيش','محمود مجدى كامل عبد الخير',
+    'ابراهيم السيد ابراهيم السيد','سامى فتحى ابراهيم ابراهيم',
+    'احمد عبداللطيف عطية ابوزيد','احمد عبدالحميد فرج','خالد سيد محمد',
+    'محمد ربيع الرفاعى فتوح','صبرى على احمد','محمد مطاوع حافظ',
+    'ادهم ايمن عبدالله','يوسف خالد محمود عفيفى','مبروك محمد مبروك فرج',
+    'عمرو سامح طه عبدالرحمن محمد','عبدالرحمن سامى السيد فتح الله',
+  ],
+  'C': [
+    // مهندسون
+    'احمد محمد حسنى','كريم محمود فتحى','عمر عدنان عبدالله حسين',
+    // مشرفون
+    'هشام حسن حماد عبداللطيف','عنتر سالم عطية سالم','محمد السيد محمد السعدنى',
+    // فنيون
+    'السيد كرم محمد عبدالرحمن الغرباوى','سعد احمد محمود سعد','محمود عبدالرازق محمد عيسى',
+    'محسن محمد عبدالعزيز احمد','السيد صلاح السيد رمضان','هانى عثمان رزق عثمان',
+    'حسن رضا عبدالحى احمد','عماد محمد رمضان','حسن يوسف عبدالوهاب',
+    'احمد عبدالمنعم ابوعمرة عبدالعال','محمد سمير محمد قطب','احمد شكرى ابوسريع',
+    'محمود عبداللطيف محمود','ابراهيم موريس صليب مسعود','خالد مصطفى سعيد مصطفى',
+    'اشرف عبدالفتاح السيد احمد','بديع رواش بديع','هشام عبدالموجود العزب اسماعيل',
+    'محمد ممدوح عبدالعزيز محمود','حسن محمد حسن','محمود عبدالحميد سالم جمعه',
+    'سلامه فوزى سلامه نصرالله','مصطفى محمود السيد محمود','محمد محمد زكريا',
+    'ناصر عبداللطيف عامر مصطفى','مختار مرسى محمد','ناجى محمود لمعى',
+    'محسن حسن علام','طارق يحيى احمد','ناصر امين',
+  ],
+  'D': [
+    // مهندسون
+    'م. عبد العزيز عبده','على سامى محمد نورالدين عبدالرحمن',
+    'محمد ابراهيم على عبدالواحد','محمود السيد عبدالعزيز عطيه','عمر خالد عبدالقادر',
+    // مسئول + مشرفون
+    'مبروك السيد عبدالله الاسود','اسامه عبدالله معوض مخلوف',
+    'حاتم زكريا عبدالحميد سالم','محمد عمر محمد عمر','احمد احمد محمود رزق',
+    // فنيون
+    'صلاح عبدالمنعم على سليمان','احمد رمضان احمد محمد','احمد محمد عبدالمنعم عبدالنبى',
+    'عبدالله على محجوب','محمد مرغنى عبدالعزيز محمد','نور شعيب نور هندى',
+    'مصطفى محمد عبدالحميد','يوسف ايوب السيد علوان','ناصر عثمان حسين حسن',
+    'جمال انور','ابورحاب عبدالعليم محمد ابورحاب','فريد محمد نجيب ابوالريش عمار',
+    'عمرو عادل صلاح عبدالحافظ','وائل محمد عبدالكريم حسن','احمد زكى فهمى عبدالصمد',
+    'محمود رزق ابراهيم عبدالمجيد','علاء الدين خلف عطية فراج','رجب عوده سالم شحاته',
+    'شعبان عيد عبدالجواد','صلاح فيصل عبدالمقصود كشك','محمود عبدالله سيد محمد',
+    'محمد سعيد احمد السيد','احمد عبدالرحيم عزالدين','اشرف محمد محمد ابراهيم',
+    'اسامه محمد محمد ابراهيم','حسن احمد محمد محمد','محمد حسين محمد شلبى',
+    'محمد محمد ابراهيم','خالد ابراهيم عبدالحميد','احمد دسوقى صابر دسوقى',
+    'شرف عبدالله شرف غريب','عامر توفيق فؤاد بيومى','محارب عبدالرحيم محمد',
+    'حسام احمد عبدالله متولى','محمد حسين محمد','محمود ابوالحسن محمد',
+    'خالد خلف خليفه','كمال علاء كمال على','وليد ربيع الشحات',
+    'عبد الحميد بدوى','داود فاروق داود داعوش',
+  ],
+};
+
+// ── Google Maps helper ──────────────────────────────────
+// مواقع فيها التباس → نستخدم إحداثيات مباشرة أو query أدق
+const MAPS_OVERRIDE = {
+  'المنصورية':           'https://maps.google.com/?q=30.1833,31.1091',  // المنصورية — قرية تابعة لمركز منشأة القناطر، الجيزة
+  'منشأة القناطر':      'https://maps.google.com/?q=30.1833,31.1091',
+  'مصنع موبيكا — أبورواش': 'https://maps.google.com/?q=30.0850,30.9300',
+  'أوسيم':              'https://maps.google.com/?q=30.1020,31.0780',
+  'كرداسة':             'https://maps.google.com/?q=30.0350,31.0980',
+  'البدرشين':           'https://maps.google.com/?q=29.8500,31.2500',
+  'أبوالنمرس':          'https://maps.google.com/?q=30.0150,31.0500',
+};
+
+function mapsUrl(loc){
+  if(!loc) return '#';
+  if(MAPS_OVERRIDE[loc]) return MAPS_OVERRIDE[loc];
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(loc+' مصر');
+}
+function mapsBtn(loc, size='sm'){
+  if(!loc) return '';
+  return `<a href="${mapsUrl(loc)}" target="_blank" rel="noopener"
+    style="display:inline-flex;align-items:center;gap:4px;padding:${size==='xs'?'4px 8px':'6px 10px'};
+    background:#4285f4;color:#fff;border-radius:7px;font-size:${size==='xs'?'11px':'12px'};
+    font-weight:700;text-decoration:none;white-space:nowrap">📍 خريطة</a>`;
+}
 
 const FLEET_DEF = {
-  pickup:  {label:'باكاب',    cap:4,  icon:'🛻'},
-  suzuki:  {label:'سوزوكى',   cap:7,  icon:'🚙'},
-  micro14: {label:'ميكروباص', cap:14, icon:'🚐'},
-  bus26:   {label:'أتوبيس',   cap:26, icon:'🚌'},
+  pickup:  {label:'دبل',       cap:4,  icon:'🛻'},
+  van:     {label:'فان',       cap:7,  icon:'🚐'},
+  micro14: {label:'ميكروباص',  cap:14, icon:'🚌'},
+  minibus: {label:'ميني باص',  cap:20, icon:'🚎'},
+  bus26:   {label:'أتوبيس',    cap:45, icon:'🚍'},
+  truck:   {label:'دبابة',     cap:3,  icon:'🚛'},
 };
 
 const LOCS = [
@@ -162,7 +288,7 @@ const LOCS = [
   'التجمع الأول','التجمع الخامس','القاهرة الجديدة','مدينتي','الشروق','الرحاب',
   'المستقبل سيتي','بدر','العبور','المنطقة الصناعية العبور',
   'الشيخ زايد','10 رمضان','المنطقة الصناعية 10 رمضان',
-  'القاهرة','السادات','أبوالنمرس','البدرشين','منشأة القناطر',
+  'القاهرة','السادات','أبوالنمرس','البدرشين',
   // 🌊 الإسكندرية
   'الإسكندرية','العجمي','المنتزه','محرم بك','سيدي بشر','ميامي','سيدي جابر','الرمل','أبوقير',
   'برج العرب','المنطقة الصناعية برج العرب',
@@ -182,20 +308,21 @@ let _editVehIdx = -1;
 let _autoPlan = [];
 let CUR_TAB = 'reqs';
 
-// Default company vehicles
+// ── أسطول موبيكا الفعلي ──────────────────────────────────
 const DEFAULT_VEHICLES = [
-  {id:'c1',type:'pickup', plate:'باكاب 1',   driver:'السائق 1'},
-  {id:'c2',type:'pickup', plate:'باكاب 2',   driver:'السائق 2'},
-  {id:'c3',type:'suzuki', plate:'سوزوكى 1',  driver:'السائق 3'},
-  {id:'c4',type:'suzuki', plate:'سوزوكى 2',  driver:'السائق 4'},
-  {id:'c5',type:'suzuki', plate:'سوزوكى 3',  driver:'السائق 5'},
-  {id:'c6',type:'suzuki', plate:'سوزوكى 4',  driver:'السائق 6'},
-  {id:'c7',type:'suzuki', plate:'سوزوكى 5',  driver:'السائق 7'},
-  {id:'c8',type:'suzuki', plate:'سوزوكى 6',  driver:'السائق 8'},
-  {id:'c9',type:'micro14',plate:'ميكروباص 1', driver:'السائق 9'},
-  {id:'c10',type:'micro14',plate:'ميكروباص 2',driver:'السائق 10'},
-  {id:'c11',type:'bus26', plate:'أتوبيس 1',  driver:'السائق 11'},
-  {id:'c12',type:'bus26', plate:'أتوبيس 2',  driver:'السائق 12'},
+  {id:'c1',  type:'van',     plate:'أ م ٠٨٩١', driver:'أبوبكر نصر عبدالواحد'},
+  {id:'c2',  type:'micro14', plate:'ق ر ٦٣٥٧', driver:'عبدالله ابراهيم'},
+  {id:'c3',  type:'micro14', plate:'ل ر ٦٩٧١', driver:'محمد ربيع عبدالعاطى'},
+  {id:'c4',  type:'van',     plate:'ص ب ٧١٢٦', driver:'محمد احمد عبدالمجيد'},
+  {id:'c5',  type:'van',     plate:'م ق ٣٨٩٧', driver:'محمد صديق تركى طنطاوى'},
+  {id:'c6',  type:'pickup',  plate:'ر ج ٢١٦٩', driver:'عماد محمد عبده'},
+  {id:'c7',  type:'truck',   plate:'ق ص ١١٩٢', driver:'احمد جمال صالح'},
+  {id:'c8',  type:'pickup',  plate:'ف ب ١٦٤٥', driver:'مصطفى عبدالفتاح'},
+  {id:'c9',  type:'pickup',  plate:'ف ب ١٦٧٥', driver:'اشرف صلاح محمد'},
+  {id:'c10', type:'minibus', plate:'و ر ٠١٣٧', driver:'خالد فتحى نصر'},
+  {id:'c11', type:'minibus', plate:'د ن ١١٣٢', driver:'محمد سيد عبدالمؤمن'},
+  {id:'c12', type:'van',     plate:'س ا ٤٩١٨', driver:'حسين على خليل'},
+  {id:'c13', type:'bus26',   plate:'ق ر ٦٣٢٨', driver:'سمير عبدالعظيم على'},
 ];
 
 function getVehicles() {
@@ -212,50 +339,65 @@ window.onload = () => {
 };
 
 // ══ LOGIN ══
-function render(){ U ? renderApp() : renderLogin(1); }
+function render(){ U ? renderApp() : renderLogin(); }
 
-function renderLogin(step, data={}) {
+function renderLogin() {
   const R = document.getElementById('root');
-  if(step===1){
-    R.innerHTML=`<div class="login-wrap">
-      <div class="login-icon">🚐</div>
-      <div class="login-h">حملة موبيكا</div>
-      <div class="login-s">إدارة نقل الفنيين</div>
-      <div class="box">
-        <div class="box-title">👤 ما اسمك؟</div>
-        <input class="inp" id="L1" type="text" placeholder="اكتب اسمك الكامل">
-        <button class="go-btn" onclick="s1()">التالي ←</button>
-      </div></div>`;
-    setTimeout(()=>{const i=document.getElementById('L1');if(i)i.focus();},100);
-  } else if(step===2){
-    R.innerHTML=`<div class="login-wrap">
-      <div class="login-icon">🚐</div>
-      <div class="login-h">أهلاً ${data.name}</div>
-      <div class="login-s">اختر دورك</div>
-      <div class="box">
-        <div class="box-title">🎯 ما دورك؟</div>
-        <button class="big-btn" onclick="chooseRole('engineer','${data.name}')">👷 مهندس / مدير مجموعة</button>
-        <button class="big-btn" onclick="chooseRole('fleet_manager','${data.name}')">🚐 مسؤول الحملة</button>
-      </div></div>`;
-  } else if(step===3){
-    R.innerHTML=`<div class="login-wrap">
-      <div class="login-icon">🚐</div>
-      <div class="login-h">اختر مجموعتك</div>
-      <div class="login-s">${data.name}</div>
-      <div class="box">
-        <div class="box-title">👥 المجموعة</div>
-        <button class="big-btn" onclick="chooseTeam('A — أحمد حسن','${data.name}')">مجموعة A — أحمد حسن</button>
-        <button class="big-btn" onclick="chooseTeam('B — سامى فؤاد','${data.name}')">مجموعة B — سامى فؤاد</button>
-        <button class="big-btn" onclick="chooseTeam('C — حازم قاعود','${data.name}')">مجموعة C — حازم قاعود</button>
-        <button class="big-btn" onclick="chooseTeam('D — هشام جمال','${data.name}')">مجموعة D — هشام جمال</button>
-      </div></div>`;
-  }
+  const apiUrl = localStorage.getItem('fleetApiUrl')||'';
+  R.innerHTML=`<div class="login-wrap">
+    <div class="login-icon">🚐</div>
+    <div class="login-h">حملة موبيكا</div>
+    <div class="login-s">إدارة نقل الفنيين</div>
+    <div class="box">
+      <div class="box-title">👤 تسجيل الدخول</div>
+
+      <div class="fl" style="margin-bottom:14px">
+        <label>الاسم</label>
+        <select class="inp" id="L-name" style="padding:12px">
+          <option value="">— اختر اسمك —</option>
+          ${USERS.map(u=>`<option value="${u.name}">${u.name}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="fl" style="margin-bottom:14px">
+        <label>كلمة المرور</label>
+        <input class="inp" id="L-pass" type="password" placeholder="••••••••">
+      </div>
+
+      <button class="go-btn" onclick="doLogin()">دخول ←</button>
+
+      <div style="margin-top:14px;border-top:1px solid #eee;padding-top:10px">
+        <div style="font-size:11px;color:#aaa;margin-bottom:4px">⚙️ رابط Apps Script</div>
+        <input class="inp" id="apiUrlInp" type="url" placeholder="https://script.google.com/..."
+          style="font-size:12px;padding:9px" value="${apiUrl}">
+        <button onclick="saveApiUrl()" style="margin-top:6px;padding:7px 14px;background:#e3f2fd;color:#1565c0;border:none;border-radius:8px;font-size:12px;cursor:pointer">💾 حفظ الرابط</button>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{ const s=document.getElementById('L-name'); if(s) s.focus(); },100);
 }
 
-function s1(){ const n=(document.getElementById('L1').value||'').trim(); if(!n){toast('✋ اكتب اسمك');return;} renderLogin(2,{name:n}); }
-function chooseRole(r,n){ if(r==='engineer'){renderLogin(3,{name:n});}else{login(n,r,'');} }
-function chooseTeam(t,n){ login(n,'engineer',t); }
-function login(name,role,team){ U={name,role,team}; try{localStorage.setItem('flt_u',JSON.stringify(U));}catch(e){} renderApp(); }
+function saveApiUrl(){
+  const v=(document.getElementById('apiUrlInp').value||'').trim();
+  if(v.startsWith('http')){ localStorage.setItem('fleetApiUrl',v); toast('✅ تم حفظ الرابط'); }
+  else toast('✋ رابط غير صحيح');
+}
+
+function doLogin(){
+  const name = (document.getElementById('L-name').value||'').trim();
+  const pass = (document.getElementById('L-pass').value||'').trim();
+  if(!name) return toast('✋ اختر اسمك');
+  if(!pass) return toast('✋ أدخل كلمة المرور');
+  const user = USERS.find(u=>u.name===name && u.password===pass);
+  if(!user) return toast('❌ كلمة المرور غلط');
+  login(user.name, user.role, user.team);
+}
+
+function login(name,role,team){
+  U={name,role,team};
+  try{localStorage.setItem('flt_u',JSON.stringify(U));}catch(e){}
+  renderApp();
+}
 function doLogout(){ U=null;REQS=[];try{localStorage.removeItem('flt_u');}catch(e){} render(); }
 
 // ══ RENDER APP ══
@@ -275,21 +417,27 @@ function renderApp(){
     </div>
     <div class="content">
       <div class="card">
-        <div class="ct">➕ طلب نقل جديد</div>
-        <div class="fl"><label>المجموعة</label>
-          <select id="e-team">
-            <option value="">— اختر —</option>
-            <option value="A — أحمد حسن" ${U.team==='A — أحمد حسن'?'selected':''}>A — أحمد حسن</option>
-            <option value="B — سامى فؤاد" ${U.team==='B — سامى فؤاد'?'selected':''}>B — سامى فؤاد</option>
-            <option value="C — حازم قاعود" ${U.team==='C — حازم قاعود'?'selected':''}>C — حازم قاعود</option>
-            <option value="D — هشام جمال" ${U.team==='D — هشام جمال'?'selected':''}>D — هشام جمال</option>
-          </select>
+        <div class="ct">➕ طلب نقل جديد
+          <span style="font-size:12px;color:#1565c0;font-weight:600">مجموعة ${U.team}</span>
         </div>
         <div class="fr">
           <div class="fl"><label>مكان التحرك</label><select id="e-from"><option value="">— اختر —</option>${locOpts}</select></div>
           <div class="fl"><label>مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
         </div>
-        <div class="fl"><label>عدد الأفراد</label><input id="e-techs" type="number" min="1" placeholder="0" inputmode="numeric"></div>
+        <!-- اختيار الأفراد بالاسم -->
+        <div class="fl">
+          <label>الأفراد المسافرون</label>
+          <div id="members-list" style="border:2px solid #e0e0e0;border-radius:10px;padding:10px;background:#fafafa;max-height:220px;overflow-y:auto">
+            <div class="empty" style="padding:12px">⏳ جارى تحميل الأفراد...</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <span id="sel-count" style="font-size:12px;color:#1565c0;font-weight:700">0 فرد محدد</span>
+            <div style="display:flex;gap:6px">
+              <button type="button" onclick="selectAllMembers(true)"  style="font-size:11px;padding:4px 10px;background:#e8f5e9;color:#2e7d32;border:none;border-radius:6px;cursor:pointer">تحديد الكل</button>
+              <button type="button" onclick="selectAllMembers(false)" style="font-size:11px;padding:4px 10px;background:#fce4ec;color:#c62828;border:none;border-radius:6px;cursor:pointer">إلغاء الكل</button>
+            </div>
+          </div>
+        </div>
         <button class="btn b-blue" id="sbtn" onclick="submitReq()">📤 إرسال الطلب</button>
       </div>
       <div class="card">
@@ -302,7 +450,7 @@ function renderApp(){
       <div class="ni" onclick="loadMyReqs()"><div class="ni-ic">🔄</div>تحديث</div>
       <div class="ni" onclick="doLogout()"><div class="ni-ic">🚪</div>خروج</div>
     </div>`;
-    loadMyReqs();
+    loadMyReqs(); // سيستدعي renderRemainingMembers تلقائياً
   } else {
     // FLEET MANAGER
     R.innerHTML=`
@@ -337,22 +485,52 @@ function renderApp(){
   }
 }
 
+// ══ MEMBER SELECTION ══
+function selectAllMembers(val){
+  document.querySelectorAll('.mem-cb').forEach(cb=>cb.checked=val);
+  updateSelCount();
+}
+function updateSelCount(){
+  const n=document.querySelectorAll('.mem-cb:checked').length;
+  const el=document.getElementById('sel-count');
+  if(el) el.textContent=n+' فرد محدد';
+}
+// ربط الـ checkboxes بعد render
+function bindMemberCbs(){
+  document.querySelectorAll('.mem-cb').forEach(cb=>{
+    cb.addEventListener('change', updateSelCount);
+  });
+}
+
 // ══ ENGINEER ══
 async function submitReq(){
-  const team=document.getElementById('e-team').value;
-  const from=document.getElementById('e-from').value;
-  const dest=document.getElementById('e-dest').value;
-  const techs=parseInt(document.getElementById('e-techs').value)||0;
-  if(!team) return toast('✋ اختر المجموعة');
+  const team = U.team; // تلقائي من الـ login
+  const from = document.getElementById('e-from').value;
+  const dest = document.getElementById('e-dest').value;
+
+  // الأفراد المحددين بالاسم
+  const selectedMembers = [...document.querySelectorAll('.mem-cb:checked')].map(cb=>cb.value);
+  const techs = selectedMembers.length;
+
   if(!from) return toast('✋ اختر مكان التحرك');
   if(!dest) return toast('✋ اختر مكان الوصول');
-  if(!techs) return toast('✋ أدخل عدد الأفراد');
+  if(!techs) return toast('✋ اختر الأفراد المسافرين');
+
   const btn=document.getElementById('sbtn');
   btn.textContent='⏳...'; btn.disabled=true;
   try{
-    const r=await api('addRequest',{team,from_loc:from,dest,techs,created_by:U.name,date:todayStr()});
-    if(r.ok){toast('✅ تم الإرسال — سيُخطر مسؤول الحملة');document.getElementById('e-techs').value='';loadMyReqs();}
-    else toast('❌ '+(r.error||'خطأ'));
+    const r=await api('addRequest',{
+      team, from_loc:from, dest,
+      techs,
+      members: selectedMembers,   // أسماء الأفراد
+      created_by: U.name,
+      date: todayStr()
+    });
+    if(r.ok){
+      toast('✅ تم الإرسال — سيُخطر مسؤول الحملة');
+      selectAllMembers(false);
+      loadMyReqs();
+    } else toast('❌ '+(r.error||'خطأ'));
   }catch(e){toast('❌ تعذّر الاتصال');}
   btn.textContent='📤 إرسال الطلب'; btn.disabled=false;
 }
@@ -366,6 +544,49 @@ async function loadMyReqs(){
     const mine=REQS.filter(x=>x.team===U.team||x.created_by===U.name);
     el.innerHTML=mine.length?mine.map(r=>rqHTML(r,false)).join(''):'<div class="empty">لا توجد طلبات اليوم 📭</div>';
   }catch(e){el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>';}
+  // تحديث قائمة الأفراد المتبقين بعد كل تحميل
+  renderRemainingMembers();
+}
+
+// الأفراد المحددين في طلبات اليوم السابقة
+function getAssignedMembers(){
+  const myReqs = REQS.filter(x=>x.team===U.team||x.created_by===U.name);
+  const assigned = new Set();
+  myReqs.forEach(r=>{
+    const mems = Array.isArray(r.members) ? r.members
+      : typeof r.members==='string' && r.members ? r.members.split('،').map(s=>s.trim())
+      : [];
+    mems.forEach(m=>{ if(m) assigned.add(m); });
+  });
+  return assigned;
+}
+
+// عرض الأفراد المتبقين فقط (اللي مش في طلب سابق)
+function renderRemainingMembers(){
+  const el=document.getElementById('members-list'); if(!el) return;
+  const allMembers = TEAM_MEMBERS[U?.team] || [];
+  const assigned   = getAssignedMembers();
+  const remaining  = allMembers.filter(m=>!assigned.has(m));
+
+  if(!remaining.length){
+    el.innerHTML='<div class="empty" style="padding:12px;color:#e65100">✅ تم تحديد جميع أفراد المجموعة في طلبات اليوم</div>';
+    return;
+  }
+
+  el.innerHTML = remaining.map(m=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid #f0f0f0;cursor:pointer;font-size:14px">
+      <input type="checkbox" class="mem-cb" value="${m}"
+        style="width:18px;height:18px;cursor:pointer;accent-color:#1565c0">
+      <span>${m}</span>
+    </label>`).join('');
+
+  // عداد
+  const total = allMembers.length;
+  const done  = assigned.size;
+  const cnt   = document.getElementById('sel-count');
+  if(cnt) cnt.textContent=`0 محدد | متبقى ${remaining.length} من ${total}`;
+
+  bindMemberCbs();
 }
 
 // ══ FLEET MANAGER ══
@@ -406,10 +627,16 @@ function rqHTML(r,mgr=false){
   const status=r.status||'pending';
   const badge=status==='approved'?'<span class="badge bb">✅ معتمد</span>':status==='pending'?'<span class="badge bp">⏳ انتظار</span>':'<span class="badge ba">محدد</span>';
   const veh=r.plate?`<div style="font-size:12px;color:#1565c0;margin-top:4px">🚗 ${r.plate} — ${r.driver||''} (${FLEET_DEF[r.car_type]?.label||r.car_type||''})</div>`:'';
+  // أسماء الأفراد
+  const members=Array.isArray(r.members)&&r.members.length
+    ? `<div style="margin-top:6px;padding:6px 8px;background:#f0f4ff;border-radius:8px;font-size:12px;color:#333;line-height:1.7">
+        👥 ${r.members.join(' • ')}
+       </div>` : '';
   return `<div class="rq ${status}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
     <div class="rq-route">📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}</div>
     <div class="rq-sub">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
+    ${members}
     ${veh}
   </div>`;
 }
@@ -423,59 +650,123 @@ function runAutoDistribute(){
   fmTab('plan', document.querySelectorAll('.tab')[1]);
 }
 
-function autoDistribute(){
-  const vehicles=[...getVehicles()]; // company vehicles
-  const available=vehicles.map(v=>({...v,used:false}));
+// ══ GEO CLUSTERING ══
+// يجمّع الطلبات اللي:
+//   1. الوجهات قريبة (destThreshold)
+//   2. ونقاط الانطلاق قريبة أو على نفس المسار (fromThreshold)
+// → سيارة واحدة متعددة نقاط الركوب بدل كذا سيارة
+function clusterRequests(pending, destThreshold, fromThreshold){
+  // ترتيب تنازلي بالأفراد (الأكبر يكون seed أول)
+  const sorted = [...pending].sort((a,b)=>(parseInt(b.techs)||0)-(parseInt(a.techs)||0));
 
-  // Group pending requests by route
-  const pending=REQS.filter(r=>r.status==='pending');
-  const groups=[];
-  pending.forEach(r=>{
-    const g=groups.find(x=>x.from===r.from_loc&&x.dest===r.dest);
-    if(g){g.ids.push(r.id);g.techs+=parseInt(r.techs)||0;g.rows.push(r);}
-    else groups.push({from:r.from_loc,dest:r.dest,ids:[r.id],techs:parseInt(r.techs)||0,rows:[r]});
+  const clusters = [];
+
+  sorted.forEach(r=>{
+    let placed = false;
+    for(const cl of clusters){
+      // شرط 1: كل الوجهات في الـ cluster قريبة من وجهة الطلب الجديد
+      const destOk = cl.every(x=> geoDistance(x.dest||'', r.dest||'') <= destThreshold);
+      // شرط 2: كل نقاط الانطلاق قريبة (الفني يقدر يتحرك للالتقاء)
+      const fromOk = cl.every(x=> geoDistance(x.from_loc||'', r.from_loc||'') <= fromThreshold);
+
+      if(destOk && fromOk){
+        cl.push(r);
+        placed = true;
+        break;
+      }
+    }
+    if(!placed) clusters.push([r]);
   });
-  groups.sort((a,b)=>b.techs-a.techs);
 
-  const companyAssignments=[];
-  const rentalNeeded=[];
+  return clusters.map(cl=>{
+    const ids   = cl.map(x=>x.id);
+    const techs = cl.reduce((s,x)=>s+parseInt(x.techs||0), 0);
+    const dests = [...new Set(cl.map(x=>x.dest).filter(Boolean))];
+    const froms = [...new Set(cl.map(x=>x.from_loc).filter(Boolean))];
 
-  groups.forEach(g=>{
-    let remaining=g.techs;
-    const assigned=[];
+    // نقطة الانطلاق الرئيسية = اللي فيها أكتر ناس
+    const primaryFrom = froms.reduce((best,f)=>{
+      const cntF    = cl.filter(x=>x.from_loc===f).reduce((s,x)=>s+parseInt(x.techs||0),0);
+      const cntBest = cl.filter(x=>x.from_loc===best).reduce((s,x)=>s+parseInt(x.techs||0),0);
+      return cntF > cntBest ? f : best;
+    }, froms[0]);
 
-    // Try to fit with company vehicles (smallest fit first)
-    const sorted=available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[a.type].cap-FLEET_DEF[b.type].cap);
-    for(const v of sorted){
+    return {
+      from:         primaryFrom,
+      froms,                          // كل نقاط الركوب
+      dests,
+      ids,
+      techs,
+      rows:         cl,
+      merged:       dests.length>1 || froms.length>1,
+      mergedDests:  dests.length>1,
+      mergedFroms:  froms.length>1,   // ← نقاط ركوب متعددة
+    };
+  }).sort((a,b)=>b.techs-a.techs);
+}
+
+function autoDistribute(){
+  const vehicles = [...getVehicles()];
+  const available = vehicles.map(v=>({...v, used:false}));
+
+  const pending = REQS.filter(r=>r.status==='pending');
+
+  // 🔑 Geo-cluster:
+  //   DEST_THRESHOLD = 3 → وجهات في نفس المنطقة تتدمج
+  //   FROM_THRESHOLD = 4 → نقاط انطلاق قريبة تتدمج (الفني يتحرك للالتقاء)
+  const DEST_THRESHOLD = 3.0;
+  const FROM_THRESHOLD = 4.0;
+  const clusters = clusterRequests(pending, DEST_THRESHOLD, FROM_THRESHOLD);
+
+  const companyAssignments = [];
+  const rentalNeeded = [];
+
+  clusters.forEach(g=>{
+    let remaining = g.techs;
+    const assigned = [];
+
+    // Try smallest vehicle that fits all techs first
+    const bySmall = available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[a.type].cap-FLEET_DEF[b.type].cap);
+    for(const v of bySmall){
       if(remaining<=0) break;
-      if(FLEET_DEF[v.type].cap>=remaining){
+      if(FLEET_DEF[v.type].cap >= remaining){
         v.used=true;
-        assigned.push({...v,techs:remaining});
+        assigned.push({...v, techs:remaining});
         remaining=0;
         break;
       }
     }
-    // If still remaining, use largest available
+    // If still remaining, fill with largest available
     if(remaining>0){
-      const byLarge=available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[b.type].cap-FLEET_DEF[a.type].cap);
+      const byLarge = available.filter(v=>!v.used).sort((a,b)=>FLEET_DEF[b.type].cap-FLEET_DEF[a.type].cap);
       for(const v of byLarge){
         if(remaining<=0) break;
         v.used=true;
-        const cap=FLEET_DEF[v.type].cap;
-        assigned.push({...v,techs:Math.min(remaining,cap)});
-        remaining-=cap;
+        const cap = FLEET_DEF[v.type].cap;
+        assigned.push({...v, techs:Math.min(remaining,cap)});
+        remaining -= cap;
       }
     }
 
     if(assigned.length>0){
-      companyAssignments.push({...g, vehicles:assigned, covered:g.techs-Math.max(0,remaining)});
+      companyAssignments.push({
+        ...g,
+        dest: g.dests.join(' + '),
+        vehicles: assigned,
+        covered: g.techs - Math.max(0, remaining)
+      });
     }
     if(remaining>0){
-      rentalNeeded.push({...g, techs:remaining, originalTechs:g.techs});
+      rentalNeeded.push({...g, dest:g.dests.join(' + '), techs:remaining, originalTechs:g.techs});
     }
   });
 
-  return {companyAssignments, rentalNeeded};
+  // حساب التوفير
+  const originalCars = pending.length; // لو كل طلب لوحده سيارة
+  const usedCars = companyAssignments.reduce((s,g)=>s+g.vehicles.length,0) + rentalNeeded.length;
+  const saved = Math.max(0, originalCars - usedCars);
+
+  return {companyAssignments, rentalNeeded, saved, originalCars};
 }
 
 function renderPlan(){
@@ -487,19 +778,59 @@ function renderPlan(){
   const {companyAssignments,rentalNeeded}=_autoPlan;
   let html='';
 
+  // بادج التوفير في الأعلى
+  if(_autoPlan.saved>0){
+    html+=`<div style="background:#e8f5e9;border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:28px">💡</span>
+      <div>
+        <div style="font-weight:700;color:#2e7d32;font-size:14px">تم توفير ${_autoPlan.saved} سيارة بالدمج الذكي!</div>
+        <div style="font-size:12px;color:#555">من ${_autoPlan.originalCars} طلب → ${_autoPlan.originalCars - _autoPlan.saved} سيارة فعلية</div>
+      </div>
+    </div>`;
+  }
+
   if(companyAssignments.length){
     html+=`<div style="font-weight:700;font-size:14px;color:#2e7d32;margin-bottom:8px">🏢 سيارات الشركة (${companyAssignments.reduce((s,g)=>s+g.vehicles.length,0)} سيارة)</div>`;
     companyAssignments.forEach(g=>{
+      // بادجات الدمج
+      const badges = [];
+      if(g.mergedDests) badges.push(`<span style="background:#e3f2fd;color:#1565c0;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:4px">🔗 ${g.dests.length} وجهة</span>`);
+      if(g.mergedFroms) badges.push(`<span style="background:#fff3e0;color:#e65100;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:4px">📌 ${g.froms.length} نقطة ركوب</span>`);
+      const mergedBadge = badges.join('');
+
+      // نقاط الركوب (pickup stops)
+      const fromStops = g.froms && g.froms.length > 1
+        ? g.froms.map((f,i)=>{
+            const cnt = g.rows.filter(r=>r.from_loc===f).reduce((s,r)=>s+parseInt(r.techs||0),0);
+            const isPrimary = f === g.from;
+            return `<div style="font-size:12px;color:${isPrimary?'#2e7d32':'#e65100'};margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span>${isPrimary?'🟢 تحرك من':'🔸 التقاء في'} <b>${f}</b> — ${cnt} فرد</span>
+              ${mapsBtn(f,'xs')}
+              ${!isPrimary?'<span style="font-size:11px;color:#999">(الفني يتحرك للالتقاء)</span>':''}
+            </div>`;
+          }).join('')
+        : `<div style="font-size:13px;color:#2e7d32;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+             🟢 تحرك من <b>${g.from||'—'}</b> ${mapsBtn(g.from,'xs')}
+           </div>`;
+
+      // نقاط الإنزال (drop stops)
+      const destHtml = g.dests && g.dests.length > 1
+        ? g.dests.map((d,i)=>`<div style="font-size:13px;color:#555;margin-bottom:4px;display:flex;align-items:center;gap:6px">🔴 إنزال في <b>${d}</b> ${mapsBtn(d,'xs')}</div>`).join('')
+        : `<div style="font-size:13px;color:#555;margin-bottom:4px;display:flex;align-items:center;gap:6px">🔴 إنزال في <b>${g.dest||'—'}</b> ${mapsBtn(g.dest,'xs')}</div>`;
       g.vehicles.forEach(v=>{
         const icon=FLEET_DEF[v.type]?.icon||'🚗';
         html+=`<div class="plan-card plan-company">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
             <span style="font-weight:700">${icon} ${v.plate}</span>
-            <span style="font-size:12px;color:#2e7d32;font-weight:700">سيارة الشركة ✅</span>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <span style="font-size:12px;color:#2e7d32;font-weight:700">سيارة الشركة ✅</span>
+              ${mergedBadge}
+            </div>
           </div>
-          <div style="font-size:13px;color:#555;margin-bottom:3px">👤 السائق: ${v.driver}</div>
-          <div style="font-size:13px;color:#555;margin-bottom:3px">📍 ${g.from||'—'} ➜ ${g.dest||'—'}</div>
-          <div style="font-size:12px;color:#888;margin-bottom:8px">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''}</div>
+          <div style="font-size:13px;color:#555;margin-bottom:6px">👤 السائق: ${v.driver}</div>
+          ${fromStops}
+          <div style="border-right:2px dashed #ccc;margin:5px 0 5px 8px;padding-right:8px">${destHtml}</div>
+          <div style="font-size:12px;color:#888;margin-bottom:8px">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''} (سعة ${FLEET_DEF[v.type]?.cap||'?'})</div>
           <button class="btn b-out b-xs" onclick="openRouteFromPlan(${JSON.stringify(g.ids).replace(/"/g,"'")},${getVehicles().findIndex(x=>x.id===v.id)})">🗺 خطة الرحلة</button>
         </div>`;
       });
@@ -614,7 +945,8 @@ function saveVehicle(){
 }
 
 function openRouteFromPlan(idsStr, vehIdx){
-  const ids = idsStr.split(',');
+  // idsStr ممكن يكون array مفصولة بـ comma
+  const ids = Array.isArray(idsStr) ? idsStr : String(idsStr).split(',').map(x=>x.trim()).filter(Boolean);
   openRouteModal(vehIdx>=0?vehIdx:0, ids);
 }
 
@@ -648,16 +980,49 @@ async function confirmAssign(){
 async function approveAllCompany(){
   if(!_autoPlan?.companyAssignments?.length) return toast('لا توجد تعيينات');
   let count=0;
+
+  // بناء payload كامل للـ savePlan
+  const planPayload = [];
+
   for(const g of _autoPlan.companyAssignments){
-    for(let vi=0;vi<g.vehicles.length;vi++){
-      const v=g.vehicles[vi];
+    for(const v of g.vehicles){
       try{
-        await api('assignVehicle',{ids:g.ids,plate:v.plate,driver:v.driver,car_type:v.type,status:'approved'});
+        await api('assignVehicle',{
+          ids:     g.ids,
+          plate:   v.plate,
+          driver:  v.driver,
+          car_type:v.type,
+          status:  'approved'
+        });
         count++;
       }catch(e){}
+
+      // جمع بيانات الخطة لإرسال إشعارات نقاط الالتقاء
+      planPayload.push({
+        plate:     v.plate,
+        driver:    v.driver,
+        car_type:  v.type,
+        primaryFrom: g.from,
+        allFroms:  g.froms || [g.from],
+        dests:     g.dests || [g.dest],
+        techs:     v.techs,
+        ids:       g.ids,
+        mergedFroms: g.mergedFroms || false,
+        rows:      g.rows || [],
+      });
     }
   }
-  toast(`✅ تم اعتماد ${count} سيارة من الشركة`);
+
+  // إرسال الخطة الكاملة → Apps Script يبعت Telegram للفنيين
+  try{
+    await api('savePlan',{
+      date:  todayStr(),
+      plan:  planPayload,
+      approved_by: U.name,
+    });
+  }catch(e){ console.warn('savePlan error',e); }
+
+  toast(`✅ تم اعتماد ${count} سيارة — تم إشعار الفرق`);
   loadAllReqs();
 }
 
@@ -699,7 +1064,9 @@ const GEO = {
   'الهرم':                   {x:-2, y:-1},
   'فيصل':                    {x:-2, y:0},
   'الجيزة':                  {x:-1, y:0},
-  'المنصورية':               {x:-2, y:0},
+  'المنصورية':               {x:-2, y:1},   // منشأة القناطر — شمال غرب الجيزة
+  'البدرشين':                {x:-1, y:-3},
+  'أبوالنمرس':               {x:-3, y:-1},
   'الدقي':                   {x:-1, y:1},
   'المهندسين':               {x:-1, y:1},
   'الزمالك':                 {x:0,  y:1},
@@ -764,7 +1131,7 @@ function openRouteModal(vehIdx, requestIds){
   const vs=getVehicles();
   _routeVehicle={...vs[vehIdx], cap:FLEET_DEF[vs[vehIdx].type]?.cap||7};
   _routeStops=[];
-  // Pre-populate from requests
+  // Pre-populate from requests — نقاط ركوب وإنزال حقيقية
   const myReqs=REQS.filter(r=>requestIds.includes(r.id));
   const pickupGroups={}, dropGroups={};
   myReqs.forEach(r=>{
@@ -773,9 +1140,26 @@ function openRouteModal(vehIdx, requestIds){
     if(!dropGroups[r.dest]) dropGroups[r.dest]=0;
     dropGroups[r.dest]+=parseInt(r.techs)||0;
   });
-  Object.entries(pickupGroups).forEach(([loc,p])=>_routeStops.push({id:'s'+Date.now()+Math.random(),loc,action:'pickup',people:p}));
-  Object.entries(dropGroups).forEach(([loc,p])=>_routeStops.push({id:'s'+Date.now()+Math.random(),loc,action:'dropoff',people:p}));
-  _routeStops=sortStops(_routeStops);
+
+  // ترتيب نقاط الركوب: الأكبر (primary) أول، والباقي عليه بادج "التقاء"
+  const pickupEntries = Object.entries(pickupGroups).sort((a,b)=>b[1]-a[1]);
+  const primaryFrom = pickupEntries[0]?.[0];
+
+  pickupEntries.forEach(([loc,p],i)=>{
+    _routeStops.push({
+      id:'s'+Date.now()+Math.random(),
+      loc, action:'pickup', people:p,
+      note: i>0 ? '📌 نقطة التقاء' : '🟢 نقطة التحرك'
+    });
+  });
+  Object.entries(dropGroups).forEach(([loc,p])=>{
+    _routeStops.push({id:'s'+Date.now()+Math.random(),loc,action:'dropoff',people:p,note:'🔴 إنزال'});
+  });
+
+  // ترتيب جغرافي ذكي: pickups أولاً (بالترتيب الجغرافي)، ثم dropoffs
+  const pickupStops = _routeStops.filter(s=>s.action==='pickup');
+  const dropStops   = _routeStops.filter(s=>s.action==='dropoff');
+  _routeStops = [...sortStops(pickupStops), ...sortStops(dropStops)];
   renderRouteModal();
   document.getElementById('rmodal').classList.add('open');
 }
@@ -791,8 +1175,12 @@ function renderRouteModal(){
     else onBoard-=s.people;
     onBoard=Math.max(0,onBoard);
     const col=onBoard>cap?'#c62828':onBoard>cap*.8?'#f57c00':'#2e7d32';
-    const actionLabel=s.action==='pickup'?'🟢 ركوب':'🔴 نزول';
+    const actionLabel=s.note||(s.action==='pickup'?'🟢 ركوب':'🔴 نزول');
+    const noteTag=s.note&&s.action==='pickup'&&i>0
+      ?`<div style="font-size:11px;color:#e65100;font-weight:700;margin-bottom:4px">📌 نقطة التقاء — الفني يتحرك لمقابلة السيارة هنا</div>`:
+      s.action==='pickup'&&i===0?`<div style="font-size:11px;color:#2e7d32;font-weight:700;margin-bottom:4px">🟢 نقطة التحرك الرئيسية</div>`:'';
     return `<div style="background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;border-right:4px solid ${s.action==='pickup'?'#2e7d32':'#f57c00'}">
+      ${noteTag}
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <span style="font-weight:700;font-size:13px;min-width:20px">${i+1}.</span>
         <select style="flex:1;padding:7px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit"
@@ -807,8 +1195,11 @@ function renderRouteModal(){
         <input type="number" value="${s.people}" min="1" style="width:55px;padding:7px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;text-align:center"
           onchange="updateStop('${s.id}','people',this.value)">
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-        <span style="font-size:12px;color:${col}">على متن السيارة: <b>${onBoard}</b>/${cap}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;flex-wrap:wrap;gap:4px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:${col}">على متن: <b>${onBoard}</b>/${cap}</span>
+          ${s.loc?`<a href="${mapsUrl(s.loc)}" target="_blank" rel="noopener" style="font-size:11px;background:#4285f4;color:#fff;padding:3px 7px;border-radius:6px;text-decoration:none">📍 خريطة</a>`:''}
+        </div>
         <div style="display:flex;gap:4px">
           ${i>0?`<button class="btn b-out b-xs" onclick="moveStop('${s.id}',-1)">↑</button>`:''}
           ${i<_routeStops.length-1?`<button class="btn b-out b-xs" onclick="moveStop('${s.id}',1)">↓</button>`:''}
