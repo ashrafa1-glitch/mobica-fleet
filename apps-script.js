@@ -71,24 +71,36 @@ function corsResponse(data) {
 
 // ── GET handler ──────────────────────────────────────────
 function doGet(e) {
-  const action = e.parameter.action || '';
-  const date   = e.parameter.date   || today();
+  const p      = e.parameter || {};
+  const action = p.action || '';
 
   if (action === 'ping')        return corsResponse({ ok: true, time: new Date().toISOString() });
-  if (action === 'getRequests') return corsResponse(getRequests(date));
+  if (action === 'getRequests') return corsResponse(getRequests(p.date || today()));
 
-  // POST actions via GET (payload param)
-  if (e.parameter.payload) {
-    let body;
-    try { body = JSON.parse(e.parameter.payload); } catch(err) { return corsResponse({ok:false,error:'invalid payload'}); }
-    body.action = action;
-    if (action === 'addRequest')    return corsResponse(addRequest(body));
-    if (action === 'assignVehicle') return corsResponse(assignVehicle(body));
-    if (action === 'savePlan')      return corsResponse(savePlan(body));
-    if (action === 'deleteRequest') return corsResponse(deleteRequest(body));
+  // كل الـ actions بتيجي كـ GET params
+  const body = parseParams(p);
+  if (action === 'addRequest')    return corsResponse(addRequest(body));
+  if (action === 'assignVehicle') return corsResponse(assignVehicle(body));
+  if (action === 'savePlan')      return corsResponse(savePlan(body));
+  if (action === 'deleteRequest') return corsResponse(deleteRequest(body));
+
+  return corsResponse({ error: 'unknown action: ' + action });
+}
+
+// تحويل الـ params — arrays مخزنة كـ JSON string
+function parseParams(p) {
+  const body = {};
+  for (const k in p) {
+    const v = p[k];
+    if (k === 'action') continue;
+    try {
+      const parsed = JSON.parse(v);
+      body[k] = parsed;
+    } catch(e) {
+      body[k] = v;
+    }
   }
-
-  return corsResponse({ error: 'unknown action' });
+  return body;
 }
 
 // ── POST handler ─────────────────────────────────────────
