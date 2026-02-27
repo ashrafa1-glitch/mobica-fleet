@@ -420,13 +420,17 @@ function renderApp(){
         <div class="ct">➕ طلب نقل جديد
           <span style="font-size:12px;color:#1565c0;font-weight:600">مجموعة ${U.team}</span>
         </div>
-        <div class="fl">
-          <label>🏢 اسم العميل / الموقع</label>
-          <input class="inp" id="e-client" type="text" placeholder="مثال: TMG — مدينتي | Emaar — القاهرة الجديدة">
-        </div>
         <div class="fr">
-          <div class="fl"><label>مكان التحرك</label><select id="e-from"><option value="">— اختر —</option>${locOpts}</select></div>
-          <div class="fl"><label>مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
+          <div class="fl"><label>📍 مكان التحرك</label><select id="e-from"><option value="">— اختر —</option>${locOpts}</select></div>
+          <div class="fl"><label>🏁 مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
+        </div>
+        <div class="fl">
+          <label>🔸 محطة (اختياري)</label>
+          <select id="e-stop"><option value="">— بدون محطة —</option>${locOpts}</select>
+        </div>
+        <div class="fl">
+          <label>🏢 اسم العميل</label>
+          <input class="inp" id="e-client" type="text" placeholder="مثال: TMG | Emaar | وزارة التعليم">
         </div>
         <!-- اختيار الأفراد بالاسم -->
         <div class="fl">
@@ -509,9 +513,10 @@ function bindMemberCbs(){
 // ══ ENGINEER ══
 async function submitReq(){
   const team = U.team; // تلقائي من الـ login
-  const client = (document.getElementById('e-client').value||'').trim();
   const from   = document.getElementById('e-from').value;
+  const stop   = document.getElementById('e-stop').value;
   const dest   = document.getElementById('e-dest').value;
+  const client = (document.getElementById('e-client').value||'').trim();
 
   // الأفراد المحددين بالاسم
   const selectedMembers = [...document.querySelectorAll('.mem-cb:checked')].map(cb=>cb.value);
@@ -526,7 +531,7 @@ async function submitReq(){
   btn.textContent='⏳...'; btn.disabled=true;
   try{
     const r=await api('addRequest',{
-      team, from_loc:from, dest,
+      team, from_loc:from, stop_loc:stop, dest,
       client,
       techs,
       members: selectedMembers,
@@ -641,10 +646,13 @@ function rqHTML(r,mgr=false){
        </div>` : '';
   const clientBadge = r.client
     ? `<div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:4px">🏢 ${r.client}</div>` : '';
+  const routeLine = r.stop_loc
+    ? `📍 ${r.from_loc||'—'} ← 🔸 ${r.stop_loc} ← 🏁 ${r.dest||'—'}`
+    : `📍 ${r.from_loc||'—'} ➜ 🏁 ${r.dest||'—'}`;
   return `<div class="rq ${status}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
     ${clientBadge}
-    <div class="rq-route">📍 ${r.from_loc||'—'} ➜ ${r.dest||'—'}</div>
+    <div class="rq-route">${routeLine}</div>
     <div class="rq-sub">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
     ${members}
     ${veh}
