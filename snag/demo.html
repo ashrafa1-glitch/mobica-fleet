@@ -244,6 +244,16 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       <label class="inp-lbl">ملاحظات إضافية</label>
       <textarea class="inp" id="ns-notes" placeholder="وصف مختصر للعيب..."></textarea>
     </div>
+    <div class="fld">
+      <label class="inp-lbl">📷 صور العيب</label>
+      <div id="photo-area" style="border:2px dashed #ddd;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#fafafa;transition:.2s" onclick="document.getElementById('ns-photos').click()">
+        <div style="font-size:28px;margin-bottom:6px">📷</div>
+        <div style="font-size:13px;color:#aaa;font-weight:600">اضغط لإضافة صور من الكاميرا أو المعرض</div>
+        <div style="font-size:11px;color:#ccc;margin-top:3px">يمكن إضافة أكثر من صورة</div>
+      </div>
+      <input type="file" id="ns-photos" accept="image/*" multiple capture="environment" style="display:none" onchange="previewPhotos(this)">
+      <div id="photos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+    </div>
     <div class="btn-row">
       <button class="btn b-orange" onclick="submitNewSnag()">✅ تسجيل العيب</button>
       <button class="btn b-out-gray" onclick="closeModal('newSnagModal')">إلغاء</button>
@@ -345,6 +355,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
     <div class="modal-title">📋 تفاصيل العيب</div>
     <div id="detail-body"></div>
     <button class="btn b-out-gray b-sm" style="margin-top:16px" onclick="closeModal('detailModal')">إغلاق</button>
+  </div>
+</div>
+
+<div class="ov" id="photoModal" style="display:none;align-items:center;justify-content:center" onclick="closeModal('photoModal')">
+  <div style="max-width:95vw;max-height:90vh;position:relative">
+    <img id="photo-full" style="max-width:95vw;max-height:85vh;border-radius:16px;object-fit:contain">
+    <div style="text-align:center;color:#fff;margin-top:10px;font-size:13px">اضغط في أي مكان للإغلاق</div>
   </div>
 </div>
 
@@ -555,6 +572,9 @@ function renderApp(){
       </div>
       <div class="bni" onclick="resetDemo()">
         <div class="bni-ic">🔄</div>إعادة
+      </div>
+      <div class="bni" onclick="doLogout()">
+        <div class="bni-ic">🚪</div>خروج
       </div>
     </div>`;
 
@@ -861,13 +881,49 @@ function renderGuide(){
 // ═══════════════════════════════════════════════
 // NEW SNAG
 // ═══════════════════════════════════════════════
+let _photos = []; // base64 photos
+
 function openNewSnag(){
   ['ns-client','ns-contract','ns-item','ns-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ns-type').value='';
   document.getElementById('ns-sev').value='';
   document.getElementById('ns-team').value = U.team||'A';
-  document.querySelectorAll('[onclick^="setSev"]').forEach(b=>b.style.fontWeight='');
+  document.querySelectorAll('[onclick^="setSev"]').forEach(b=>{ b.style.background='#fff'; b.style.fontWeight=''; });
+  document.getElementById('photos-preview').innerHTML='';
+  document.getElementById('ns-photos').value='';
+  _photos=[];
   document.getElementById('newSnagModal').style.display='flex';
+}
+
+function previewPhotos(input){
+  const files = Array.from(input.files);
+  if(!files.length) return;
+  const preview = document.getElementById('photos-preview');
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      _photos.push(e.target.result);
+      const img = document.createElement('div');
+      img.style.cssText='position:relative;width:80px;height:80px';
+      img.innerHTML=`
+        <img src="${e.target.result}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #e0e0e0">
+        <div onclick="removePhoto(${_photos.length-1},this.parentNode)" style="position:absolute;top:-6px;left:-6px;background:#c62828;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:700">×</div>`;
+      preview.appendChild(img);
+      // تحديث مؤشر المنطقة
+      document.getElementById('photo-area').style.borderColor='#1565c0';
+      document.getElementById('photo-area').style.background='#f0f6ff';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removePhoto(idx, el){
+  _photos.splice(idx,1);
+  el.remove();
+  if(!_photos.length){
+    document.getElementById('photo-area').style.borderColor='#ddd';
+    document.getElementById('photo-area').style.background='#fafafa';
+  }
 }
 
 function setSev(btn, val){
@@ -896,6 +952,7 @@ function submitNewSnag(){
     root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
     analyzed_by:'', approved_by:'', approval_note:'',
     quality_result:'', quality_cause:'', notes,
+    photos: [..._photos],
     history:[{ step:'new', by:U.name, at:now, note:'تم تسجيل العيب' }]
   });
   saveSnags();
@@ -1079,6 +1136,11 @@ function openDetail(id){
       <div class="info-row"><span class="info-lbl">المتسبب</span><span class="info-val">${s.quality_cause}</span></div>
       ${s.quality_result?`<div class="info-row"><span class="info-lbl">النتيجة</span><span class="info-val">${s.quality_result}</span></div>`:''}
     </div>`:''}
+    ${s.photos&&s.photos.length?`
+      <div class="sec-title" style="margin-bottom:8px">📷 صور العيب (${s.photos.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        ${s.photos.map((p,i)=>`<img src="${p}" onclick="openPhotoFull('${i}')" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid #e0e0e0;cursor:pointer">`).join('')}
+      </div>`:''}
     ${tlHtml?`<div class="sec-title" style="margin-bottom:8px">📜 سجل التقدم</div><ul class="timeline">${tlHtml}</ul>`:''}`;
 
   document.getElementById('detailModal').style.display='flex';
@@ -1088,6 +1150,21 @@ function openDetail(id){
 // UTILS
 // ═══════════════════════════════════════════════
 function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+function openPhotoFull(idx){
+  const s = SNAGS.find(x=>x.id===_curId);
+  if(!s||!s.photos) return;
+  document.getElementById('photo-full').src = s.photos[idx];
+  document.getElementById('photoModal').style.display='flex';
+}
+
+function doLogout(){
+  U = null;
+  document.getElementById('app').innerHTML = '';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('ln').value = '';
+  document.getElementById('lp').value = '';
+}
 
 function resetDemo(){
   localStorage.removeItem('snag_demo_v2');
