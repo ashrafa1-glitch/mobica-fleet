@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Mobica — Snag System</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f4f8;color:#1a1a2e;min-height:100vh;direction:rtl}
+.app{max-width:480px;margin:0 auto;padding:12px;min-height:100vh}
+
+/* ── Login ── */
+.login-box{background:#fff;border-radius:20px;padding:32px 24px;box-shadow:0 8px 32px rgba(0,0,0,.12);margin-top:40px}
+.login-logo{text-align:center;font-size:40px;margin-bottom:8px}
+.login-title{text-align:center;font-weight:800;font-size:18px;color:#1a237e;margin-bottom:4px}
+.login-sub{text-align:center;font-size:12px;color:#888;margin-bottom:24px}
+
+/* ── Inputs ── */
+.inp{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;direction:rtl;background:#fafafa;transition:.2s;outline:none}
+.inp:focus{border-color:#1565c0;background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.1)}
+select.inp{appearance:none}
+textarea.inp{resize:vertical;min-height:80px}
+.inp-lbl{font-size:12px;font-weight:700;color:#555;margin-bottom:5px;display:block}
+.fld{margin-bottom:14px}
+
+/* ── Buttons ── */
+.btn{border:none;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;width:100%}
+.btn:active{transform:scale(.97)}
+.b-blue{background:#1565c0;color:#fff}
+.b-green{background:#2e7d32;color:#fff}
+.b-red{background:#c62828;color:#fff}
+.b-orange{background:#e65100;color:#fff}
+.b-purple{background:#6a1b9a;color:#fff}
+.b-out{background:#fff;color:#1565c0;border:1.5px solid #1565c0}
+.b-xs{padding:7px 12px;font-size:12px;width:auto}
+.b-sm{padding:9px 14px;font-size:13px}
+.btn+.btn{margin-top:8px}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#1a237e,#1565c0);border-radius:16px;padding:14px 16px;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.hdr-ic{font-size:28px}
+.hdr-title{font-size:16px;font-weight:800}
+.hdr-sub{font-size:11px;opacity:.8}
+
+/* ── Tabs ── */
+.tabs{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,.07);overflow-x:auto;gap:2px}
+.tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:12px;font-weight:600;color:#aaa;cursor:pointer;white-space:nowrap;min-width:55px;transition:.2s}
+.tab.on{background:#1565c0;color:#fff}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.snr-num{font-weight:800;font-size:14px;color:#1565c0}
+.snr-date{font-size:11px;color:#999}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.b-new{background:#e3f2fd;color:#1565c0}
+.b-analyzed{background:#f3e5f5;color:#6a1b9a}
+.b-approved{background:#e8f5e9;color:#2e7d32}
+.b-quality{background:#fff3e0;color:#e65100}
+.b-code{background:#fce4ec;color:#c62828}
+.b-production{background:#e8eaf6;color:#3949ab}
+.b-ready{background:#f1f8e9;color:#558b2f}
+.b-closed{background:#f5f5f5;color:#757575}
+
+.sev-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.sev-urgent{background:#ffebee;color:#c62828}
+.sev-medium{background:#fff8e1;color:#f57f17}
+.sev-low{background:#e8f5e9;color:#2e7d32}
+
+/* ── Stat cards ── */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.stat{background:#fff;border-radius:12px;padding:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.stat-val{font-size:26px;font-weight:800;line-height:1}
+.stat-lbl{font-size:11px;color:#888;margin-top:3px}
+
+/* ── Timeline ── */
+.timeline{padding:0;list-style:none}
+.tl-item{display:flex;gap:10px;margin-bottom:10px}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
+.tl-dot.done{background:#e8f5e9}
+.tl-dot.active{background:#e3f2fd}
+.tl-dot.pending{background:#f5f5f5}
+.tl-body{flex:1}
+.tl-title{font-weight:700;font-size:13px}
+.tl-sub{font-size:11px;color:#888;margin-top:2px}
+
+/* ── Modal ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:999;padding:0}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-title{font-weight:800;font-size:16px;margin-bottom:16px;color:#1a237e}
+
+/* ── Toast ── */
+.toast-box{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s}
+.toast-box.show{opacity:1}
+
+/* ── Empty ── */
+.empty{text-align:center;padding:40px 20px;color:#bbb;font-size:14px}
+
+/* ── Bottom nav ── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:100}
+.bni{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#aaa;cursor:pointer;gap:2px;flex:1;transition:.2s}
+.bni.on{color:#1565c0}
+.bni-ic{font-size:22px}
+
+.pb{padding-bottom:80px}
+
+/* ── Progress bar ── */
+.prog{background:#f5f5f5;border-radius:6px;height:6px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:6px;transition:.4s}
+
+/* ── Divider ── */
+.div{height:1px;background:#f0f0f0;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="login-box" id="loginBox">
+    <div class="login-logo">🔧</div>
+    <div class="login-title">Mobica Snag System</div>
+    <div class="login-sub">نظام إدارة عيوب التركيب</div>
+    <div class="fld">
+      <label class="inp-lbl">الاسم</label>
+      <select class="inp" id="ln">
+        <option value="">— اختر —</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">كلمة المرور</label>
+      <input class="inp" type="password" id="lp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn b-blue" onclick="doLogin()">🔐 دخول</button>
+  </div>
+</div>
+
+<!-- ── Modals ── -->
+<div class="ov" id="snagModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">➕ تسجيل عيب جديد</div>
+    <div class="fld">
+      <label class="inp-lbl">اسم العميل *</label>
+      <input class="inp" id="s-client" placeholder="مثال: TMG — برج العرب">
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">رقم العقد *</label>
+      <input class="inp" id="s-contract" placeholder="مثال: 2026-045">
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">البند / القطعة *</label>
+      <input class="inp" id="s-item" placeholder="مثال: خزانة غرفة النوم — باب رئيسي">
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">نوع العيب *</label>
+      <select class="inp" id="s-type">
+        <option value="">— اختر —</option>
+        <option>كسر</option>
+        <option>خدش</option>
+        <option>مشكلة دهان</option>
+        <option>مقاس غلط</option>
+        <option>قطعة ناقصة</option>
+        <option>تلف أثناء النقل</option>
+        <option>خطأ في التجميع</option>
+        <option>اكسسوار ناقص</option>
+        <option>أخرى</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">درجة الخطورة *</label>
+      <select class="inp" id="s-severity">
+        <option value="">— اختر —</option>
+        <option value="urgent">🔴 عاجل — يوقف التركيب</option>
+        <option value="medium">🟡 متوسط — يحتاج قطعة جديدة</option>
+        <option value="low">🟢 بسيط — يُحل في الموقع</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">ملاحظات إضافية</label>
+      <textarea class="inp" id="s-notes" placeholder="أي تفاصيل إضافية..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-green b-sm" style="flex:1" onclick="submitSnag()">✅ تسجيل العيب</button>
+      <button class="btn b-out b-sm" style="flex:1" onclick="closeModal('snagModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="analyzeModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">🔍 تحليل العيب</div>
+    <div id="analyze-info" style="background:#f8f9ff;border-radius:10px;padding:10px;margin-bottom:14px;font-size:13px"></div>
+    <div class="fld">
+      <label class="inp-lbl">السبب الجذري *</label>
+      <select class="inp" id="a-cause">
+        <option value="">— اختر —</option>
+        <option value="manufacturing">خطأ تصنيع</option>
+        <option value="transport">تلف أثناء النقل</option>
+        <option value="installation">خطأ في التركيب</option>
+        <option value="design">خطأ في التصميم</option>
+        <option value="misuse">إساءة استخدام</option>
+        <option value="unknown">غير محدد — يحتاج تحقيق</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">المصنع المسؤول (إن وُجد)</label>
+      <select class="inp" id="a-factory">
+        <option value="">— غير محدد —</option>
+        <option>مصنع الخشب الطبيعي</option>
+        <option>مصنع الملامين</option>
+        <option>مصنع المعدني</option>
+        <option>مصنع الألوميتال</option>
+        <option>مصنع الانجاذبية</option>
+        <option>لا يتعلق بالمصنع</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">وصف تفصيلي للعيب *</label>
+      <textarea class="inp" id="a-desc" placeholder="اشرح العيب بالتفصيل — الحجم، الموقع، الشدة..."></textarea>
+    </div>
+    <div class="fld">
+      <label class="inp-lbl">الحل المقترح</label>
+      <select class="inp" id="a-solution">
+        <option value="">— اختر —</option>
+        <option value="fix_site">إصلاح في الموقع</option>
+        <option value="replace_part">استبدال قطعة</option>
+        <option value="replace_full">استبدال كامل</option>
+        <option value="maintenance">صيانة</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-purple b-sm" style="flex:1" onclick="submitAnalysis()">✅ إرسال للاعتماد</button>
+      <button class="btn b-out b-sm" style="flex:1" onclick="closeModal('analyzeModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="approveModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">✅ اعتماد التقرير</div>
+    <div id="approve-info" style="background:#f8f9ff;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8"></div>
+    <div class="fld">
+      <label class="inp-lbl">ملاحظة (اختياري)</label>
+      <textarea class="inp" id="ap-note" placeholder="أي تعليق على التقرير..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-green b-sm" style="flex:1" onclick="submitApprove(true)">✅ اعتماد</button>
+      <button class="btn b-red b-sm" style="flex:1" onclick="submitApprove(false)">❌ رفض</button>
+    </div>
+    <button class="btn b-out b-sm" style="margin-top:8px" onclick="closeModal('approveModal')">إلغاء</button>
+  </div>
+</div>
+
+<div class="ov" id="detailModal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">📋 تفاصيل العيب</div>
+    <div id="detail-content"></div>
+    <button class="btn b-out b-sm" style="margin-top:14px" onclick="closeModal('detailModal')">إغلاق</button>
+  </div>
+</div>
+
+<div class="toast-box" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const API_URL = 'PASTE_SNAG_APPS_SCRIPT_URL_HERE';
+
+const USERS = [
+  // إدارة التركيبات
+  { name:'أشرف قاسم',      role:'installation_mgr', password:'ashraf2026',  chatId:'7055250567' },
+  { name:'محمد فتحي',      role:'installation_mgr', password:'fathy2026',   chatId:'8562342656' },
+  { name:'خالد علي',       role:'installation_mgr', password:'khalid2026',  chatId:'' },
+  // مديري المجموعات
+  { name:'أحمد حسن',       role:'team_lead',        team:'A', password:'teamA2026', chatId:'8583850058' },
+  { name:'سامى فؤاد',      role:'team_lead',        team:'B', password:'teamB2026', chatId:'' },
+  { name:'حازم قاعود',     role:'team_lead',        team:'C', password:'teamC2026', chatId:'979158814' },
+  { name:'هشام جمال',      role:'team_lead',        team:'D', password:'teamD2026', chatId:'5555531128' },
+  // متابعة
+  { name:'محمد مختار',     role:'follow_up',        password:'mokhtar2026', chatId:'' },
+  // فنيين / مشرفين
+  { name:'مشرف موقع',      role:'field',            password:'field2026',   chatId:'' },
+];
+
+const STATUS_LABEL = {
+  new:              { label:'جديد',           badge:'b-new',        icon:'🆕' },
+  analyzed:         { label:'تم التحليل',     badge:'b-analyzed',   icon:'🔍' },
+  approved:         { label:'معتمد',          badge:'b-approved',   icon:'✅' },
+  rejected:         { label:'مرفوض',          badge:'b-code',       icon:'❌' },
+  quality_review:   { label:'في الجودة',      badge:'b-quality',    icon:'🔬' },
+  quality_approved: { label:'اعتمدت الجودة', badge:'b-approved',   icon:'✅' },
+  code_requested:   { label:'طلب الكود',      badge:'b-code',       icon:'📝' },
+  in_production:    { label:'في التصنيع',    badge:'b-production', icon:'🏭' },
+  ready:            { label:'جاهز للتوريد',  badge:'b-ready',      icon:'📦' },
+  closed:           { label:'مغلق',          badge:'b-closed',     icon:'🟢' },
+};
+
+const SEV_LABEL = {
+  urgent: { label:'🔴 عاجل',   badge:'sev-urgent' },
+  medium: { label:'🟡 متوسط',  badge:'sev-medium' },
+  low:    { label:'🟢 بسيط',   badge:'sev-low' },
+};
+
+const WORKFLOW_STEPS = [
+  { key:'new',              label:'تسجيل العيب',       icon:'🆕' },
+  { key:'analyzed',         label:'تحليل مدير المجموعة', icon:'🔍' },
+  { key:'approved',         label:'اعتماد إدارة التركيبات', icon:'✅' },
+  { key:'quality_review',   label:'مراجعة الجودة',     icon:'🔬' },
+  { key:'in_production',    label:'في التصنيع',        icon:'🏭' },
+  { key:'ready',            label:'جاهز للتوريد',      icon:'📦' },
+  { key:'closed',           label:'مغلق',              icon:'🟢' },
+];
+
+const STEP_ORDER = WORKFLOW_STEPS.map(s=>s.key);
+
+let U = null;
+let SNAGS = [];
+let _currentSnagId = null;
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.onload = () => {
+  const sel = document.getElementById('ln');
+  USERS.forEach(u => sel.innerHTML += `<option value="${u.name}">${u.name} — ${roleLabel(u.role)}</option>`);
+  const saved = sessionStorage.getItem('snag_user');
+  if(saved){ U = JSON.parse(saved); renderApp(); }
+};
+
+function roleLabel(r){
+  return r==='installation_mgr'?'إدارة التركيبات':
+         r==='team_lead'?'مدير مجموعة':
+         r==='follow_up'?'متابعة':
+         r==='field'?'فني/مشرف':'—';
+}
+
+// ══════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════
+function doLogin(){
+  const name = document.getElementById('ln').value;
+  const pass = document.getElementById('lp').value;
+  if(!name) return toast('اختر اسمك');
+  if(!pass) return toast('أدخل كلمة المرور');
+  const user = USERS.find(u=>u.name===name && u.password===pass);
+  if(!user) return toast('❌ كلمة المرور غلط');
+  U = user;
+  sessionStorage.setItem('snag_user', JSON.stringify(U));
+  renderApp();
+}
+
+// ══════════════════════════════════════════════
+// RENDER APP
+// ══════════════════════════════════════════════
+function renderApp(){
+  const isMgr = U.role==='installation_mgr';
+  const isLead = U.role==='team_lead';
+  const isFollow = U.role==='follow_up';
+
+  document.getElementById('app').innerHTML = `
+    <div class="hdr">
+      <div class="hdr-ic">🔧</div>
+      <div>
+        <div class="hdr-title">Mobica Snag System</div>
+        <div class="hdr-sub">${U.name} | ${roleLabel(U.role)}</div>
+      </div>
+    </div>
+    <div class="tabs" id="tabs">
+      <div class="tab on" onclick="switchTab('list',this)">📋 العيوب</div>
+      <div class="tab" onclick="switchTab('dash',this)">📊 داشبورد</div>
+      ${(isLead||U.role==='field')?`<div class="tab" onclick="switchTab('my',this)">📌 طلباتي</div>`:''}
+    </div>
+    <div id="tab-list" class="pb"></div>
+    <div id="tab-dash" class="pb" style="display:none"></div>
+    ${(isLead||U.role==='field')?`<div id="tab-my" class="pb" style="display:none"></div>`:''}
+    <div class="bnav">
+      <div class="bni on" id="bn-list" onclick="switchTab('list',document.querySelector('.tab'))">
+        <div class="bni-ic">📋</div>العيوب
+      </div>
+      <div class="bni" id="bn-dash" onclick="switchTab('dash',document.querySelectorAll('.tab')[1])">
+        <div class="bni-ic">📊</div>داشبورد
+      </div>
+      ${(isLead||U.role==='field')?`
+      <div class="bni" id="bn-my" onclick="switchTab('my',document.querySelectorAll('.tab')[2])">
+        <div class="bni-ic">📌</div>طلباتي
+      </div>`:''}
+      <div class="bni" onclick="doLogout()">
+        <div class="bni-ic">🚪</div>خروج
+      </div>
+    </div>`;
+
+  loadSnags();
+}
+
+function switchTab(name, btn){
+  ['list','dash','my'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el) el.style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const bn = document.getElementById('bn-'+name);
+  if(bn) bn.classList.add('on');
+  if(name==='list') renderList();
+  if(name==='dash') renderDash();
+  if(name==='my')   renderMy();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('snag_user');
+  location.reload();
+}
+
+// ══════════════════════════════════════════════
+// API
+// ══════════════════════════════════════════════
+const DEMO = API_URL.includes('PASTE');
+
+async function api(action, data){
+  if(DEMO){
+    return demoApi(action, data);
+  }
+  const url = `${API_URL}?payload=${encodeURIComponent(JSON.stringify({action,...data}))}`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+// Demo mode — localStorage
+function demoApi(action, data){
+  const key = 'snag_demo';
+  let snags = JSON.parse(localStorage.getItem(key)||'[]');
+
+  if(action==='addSnag'){
+    const id = 'SNR-'+new Date().getFullYear()+'-'+String(snags.length+1).padStart(4,'0');
+    const snag = {id, ...data, status:'new', created_at: new Date().toISOString(), history:[
+      {step:'new', by:data.created_by, at:new Date().toISOString(), note:'تم تسجيل العيب'}
+    ]};
+    snags.push(snag);
+    localStorage.setItem(key, JSON.stringify(snags));
+    return {ok:true, id};
+  }
+  if(action==='getSnags'){
+    return {ok:true, snags};
+  }
+  if(action==='updateSnag'){
+    const i = snags.findIndex(s=>s.id===data.id);
+    if(i>=0){
+      snags[i] = {...snags[i], ...data.fields};
+      if(data.history_entry) snags[i].history = [...(snags[i].history||[]), data.history_entry];
+      localStorage.setItem(key, JSON.stringify(snags));
+    }
+    return {ok:true};
+  }
+  return {ok:false};
+}
+
+// ══════════════════════════════════════════════
+// LOAD SNAGS
+// ══════════════════════════════════════════════
+async function loadSnags(){
+  try{
+    const r = await api('getSnags',{});
+    SNAGS = r.snags||[];
+  }catch(e){ SNAGS = []; }
+  renderList();
+}
+
+// ══════════════════════════════════════════════
+// RENDER LIST
+// ══════════════════════════════════════════════
+function renderList(){
+  const el = document.getElementById('tab-list');
+  if(!el) return;
+
+  const canAdd = ['field','team_lead'].includes(U.role);
+  const filtered = filterForUser(SNAGS);
+
+  let html = '';
+
+  // زر إضافة
+  if(canAdd){
+    html += `<button class="btn b-orange" style="margin-bottom:12px" onclick="openSnagModal()">➕ تسجيل عيب جديد</button>`;
+  }
+
+  // فلتر سريع
+  html += `<div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto">
+    <button class="btn b-xs b-out" onclick="filterList('')" id="f-all">الكل (${filtered.length})</button>
+    <button class="btn b-xs b-out" onclick="filterList('urgent')" id="f-urgent">🔴 عاجل</button>
+    <button class="btn b-xs b-out" onclick="filterList('open')" id="f-open">مفتوح</button>
+    <button class="btn b-xs b-out" onclick="filterList('closed')" id="f-closed">🟢 مغلق</button>
+  </div>`;
+
+  if(!filtered.length){
+    html += '<div class="empty">📭 لا توجد عيوب مسجلة</div>';
+  } else {
+    html += filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+                    .map(s=>snagCard(s)).join('');
+  }
+
+  el.innerHTML = html;
+}
+
+function filterForUser(snags){
+  if(U.role==='installation_mgr'||U.role==='follow_up') return snags;
+  if(U.role==='team_lead') return snags.filter(s=>s.team===U.team||s.created_by===U.name);
+  if(U.role==='field') return snags.filter(s=>s.created_by===U.name);
+  return snags;
+}
+
+function filterList(type){
+  const el = document.getElementById('tab-list');
+  const canAdd = ['field','team_lead'].includes(U.role);
+  let filtered = filterForUser(SNAGS);
+  if(type==='urgent') filtered = filtered.filter(s=>s.severity==='urgent');
+  if(type==='open')   filtered = filtered.filter(s=>s.status!=='closed');
+  if(type==='closed') filtered = filtered.filter(s=>s.status==='closed');
+
+  const cards = document.querySelector('#tab-list > div:nth-child(2)');
+  const existing = el.querySelectorAll('.card');
+  existing.forEach(c=>c.remove());
+
+  if(!filtered.length){
+    const emp = document.createElement('div');
+    emp.className='empty'; emp.textContent='لا توجد نتائج';
+    el.appendChild(emp);
+  } else {
+    filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+            .forEach(s=>{ const d=document.createElement('div'); d.innerHTML=snagCard(s); el.appendChild(d.firstChild); });
+  }
+}
+
+function snagCard(s){
+  const st = STATUS_LABEL[s.status]||{label:s.status,badge:'b-new',icon:'❓'};
+  const sv = SEV_LABEL[s.severity]||{label:'—',badge:'sev-low'};
+  const date = s.created_at?s.created_at.substring(0,10):'—';
+
+  // أزرار العمل حسب الدور والحالة
+  let actions = '';
+  if(U.role==='team_lead' && s.status==='new' && (s.team===U.team||s.created_by===U.name)){
+    actions = `<button class="btn b-purple b-xs" onclick="openAnalyze('${s.id}')">🔍 تحليل العيب</button>`;
+  }
+  if(U.role==='installation_mgr' && s.status==='analyzed'){
+    actions = `<button class="btn b-green b-xs" onclick="openApprove('${s.id}')">✅ اعتماد / رفض</button>`;
+  }
+  if(U.role==='follow_up' && s.status==='approved'){
+    actions = `<button class="btn b-orange b-xs" onclick="moveStatus('${s.id}','quality_review','إرسال للجودة')">🔬 إرسال للجودة</button>`;
+  }
+  if(U.role==='follow_up' && s.status==='quality_approved'){
+    actions = `<button class="btn b-xs" style="background:#3949ab;color:#fff" onclick="moveStatus('${s.id}','in_production','بدء التصنيع')">🏭 بدء التصنيع</button>`;
+  }
+  if(U.role==='follow_up' && s.status==='in_production'){
+    actions = `<button class="btn b-xs b-green" onclick="moveStatus('${s.id}','ready','جاهز للتوريد')">📦 جاهز للتوريد</button>`;
+  }
+  if((U.role==='follow_up'||U.role==='installation_mgr') && s.status==='ready'){
+    actions = `<button class="btn b-xs b-green" onclick="moveStatus('${s.id}','closed','تم التوريد والإغلاق')">🟢 إغلاق العيب</button>`;
+  }
+  if(U.role==='installation_mgr' && s.status==='quality_review'){
+    actions = `<button class="btn b-xs b-green" onclick="moveStatus('${s.id}','quality_approved','اعتماد الجودة')">✅ اعتماد الجودة</button>`;
+  }
+
+  // شريط التقدم
+  const stepIdx = STEP_ORDER.indexOf(s.status);
+  const progress = stepIdx>=0 ? Math.round((stepIdx/(STEP_ORDER.length-1))*100) : 0;
+  const progColor = s.status==='closed'?'#2e7d32':s.severity==='urgent'?'#c62828':'#1565c0';
+
+  return `<div class="card" style="${s.severity==='urgent'?'border-right:4px solid #c62828':''}">
+    <div class="card-hdr">
+      <div>
+        <div class="snr-num">${s.id}</div>
+        <div class="snr-date">${date}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="badge ${st.badge}">${st.icon} ${st.label}</span>
+        <span class="sev-badge ${sv.badge}">${sv.label}</span>
+      </div>
+    </div>
+    <div style="font-weight:700;font-size:13px;margin-bottom:3px">🏢 ${s.client||'—'}</div>
+    <div style="font-size:12px;color:#555;margin-bottom:3px">📄 ${s.contract||'—'} | ${s.item||'—'}</div>
+    <div style="font-size:12px;color:#888;margin-bottom:6px">🔧 ${s.defect_type||'—'} | 👷 ${s.created_by||'—'}</div>
+    <div class="prog"><div class="prog-fill" style="width:${progress}%;background:${progColor}"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#aaa;margin-top:3px margin-bottom:8px">
+      <span>تسجيل</span><span>تحليل</span><span>اعتماد</span><span>جودة</span><span>تصنيع</span><span>مغلق</span>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn b-out b-xs" onclick="openDetail('${s.id}')">📋 التفاصيل</button>
+      ${actions}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER DASHBOARD
+// ══════════════════════════════════════════════
+function renderDash(){
+  const el = document.getElementById('tab-dash');
+  if(!el) return;
+
+  const snags = filterForUser(SNAGS);
+  const total    = snags.length;
+  const open     = snags.filter(s=>s.status!=='closed').length;
+  const closed   = snags.filter(s=>s.status==='closed').length;
+  const urgent   = snags.filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
+
+  // توزيع الحالات
+  const byStatus = {};
+  snags.forEach(s=>{ byStatus[s.status]=(byStatus[s.status]||0)+1; });
+
+  // متوسط وقت الإغلاق
+  const closedSnags = snags.filter(s=>s.status==='closed'&&s.created_at&&s.closed_at);
+  const avgDays = closedSnags.length
+    ? Math.round(closedSnags.reduce((s,r)=>{
+        const diff=(new Date(r.closed_at)-new Date(r.created_at))/(1000*60*60*24);
+        return s+diff;
+      },0)/closedSnags.length)
+    : '—';
+
+  // أكثر عيب
+  const byType = {};
+  snags.forEach(s=>{ if(s.defect_type) byType[s.defect_type]=(byType[s.defect_type]||0)+1; });
+  const topType = Object.entries(byType).sort((a,b)=>b[1]-a[1])[0];
+
+  const statCard=(ic,lbl,val,color)=>`
+    <div class="stat">
+      <div style="font-size:22px">${ic}</div>
+      <div class="stat-val" style="color:${color}">${val}</div>
+      <div class="stat-lbl">${lbl}</div>
+    </div>`;
+
+  const stepsHtml = WORKFLOW_STEPS.map(step=>{
+    const count = byStatus[step.key]||0;
+    const pct = total?Math.round(count/total*100):0;
+    return `<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span>${step.icon} ${step.label}</span>
+        <span style="font-weight:700">${count}</span>
+      </div>
+      <div class="prog"><div class="prog-fill" style="width:${pct}%;background:#1565c0"></div></div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="stats">
+      ${statCard('📋','إجمالي العيوب',total,'#1565c0')}
+      ${statCard('🔴','عاجل مفتوح',urgent,'#c62828')}
+      ${statCard('⚙️','قيد المعالجة',open,'#e65100')}
+      ${statCard('✅','مغلق',closed,'#2e7d32')}
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-weight:700;margin-bottom:12px">📊 توزيع المراحل</div>
+      ${stepsHtml}
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:10px">📈 إحصائيات</div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0">
+        <span style="font-size:13px;color:#555">⏱️ متوسط الإغلاق</span>
+        <span style="font-weight:700">${avgDays} ${avgDays!=='—'?'يوم':''}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0">
+        <span style="font-size:13px;color:#555">🔁 أكثر عيب</span>
+        <span style="font-weight:700">${topType?topType[0]+' ('+topType[1]+')':'—'}</span>
+      </div>
+    </div>
+    <button class="btn b-out b-sm" style="margin-top:8px" onclick="loadSnags();renderDash()">🔄 تحديث</button>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER MY (للفني / مدير المجموعة)
+// ══════════════════════════════════════════════
+function renderMy(){
+  const el = document.getElementById('tab-my');
+  if(!el) return;
+  const mine = SNAGS.filter(s=>s.created_by===U.name||s.team===U.team);
+  if(!mine.length){
+    el.innerHTML='<div class="empty">لا توجد عيوب مسجلة منك</div>';
+    return;
+  }
+  el.innerHTML = mine.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+                     .map(s=>snagCard(s)).join('');
+}
+
+// ══════════════════════════════════════════════
+// SNAG MODAL — تسجيل عيب
+// ══════════════════════════════════════════════
+function openSnagModal(){
+  ['s-client','s-contract','s-item','s-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('s-type').value='';
+  document.getElementById('s-severity').value='';
+  document.getElementById('snagModal').style.display='flex';
+}
+
+async function submitSnag(){
+  const client   = document.getElementById('s-client').value.trim();
+  const contract = document.getElementById('s-contract').value.trim();
+  const item     = document.getElementById('s-item').value.trim();
+  const type     = document.getElementById('s-type').value;
+  const severity = document.getElementById('s-severity').value;
+  const notes    = document.getElementById('s-notes').value.trim();
+
+  if(!client||!contract||!item||!type||!severity)
+    return toast('⚠️ أكمل البيانات المطلوبة');
+
+  try{
+    const r = await api('addSnag',{
+      client, contract, item,
+      defect_type: type,
+      severity, notes,
+      team: U.team||'—',
+      created_by: U.name,
+    });
+    if(r.ok){
+      toast(`✅ تم تسجيل العيب — ${r.id}`);
+      closeModal('snagModal');
+      await loadSnags();
+    } else toast('❌ '+(r.error||'خطأ'));
+  }catch(e){ toast('❌ تعذّر الاتصال'); }
+}
+
+// ══════════════════════════════════════════════
+// ANALYZE MODAL — تحليل العيب
+// ══════════════════════════════════════════════
+function openAnalyze(id){
+  _currentSnagId = id;
+  const s = SNAGS.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('analyze-info').innerHTML =
+    `<b>${s.id}</b> | ${s.client}<br>
+     🔧 ${s.defect_type} | ${SEV_LABEL[s.severity]?.label||'—'}<br>
+     📄 ${s.item}<br>
+     ${s.notes?`📝 ${s.notes}`:'' }`;
+  ['a-cause','a-factory','a-solution'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('a-desc').value='';
+  document.getElementById('analyzeModal').style.display='flex';
+}
+
+async function submitAnalysis(){
+  const cause    = document.getElementById('a-cause').value;
+  const factory  = document.getElementById('a-factory').value;
+  const desc     = document.getElementById('a-desc').value.trim();
+  const solution = document.getElementById('a-solution').value;
+  if(!cause||!desc) return toast('⚠️ حدد السبب والوصف');
+
+  try{
+    const r = await api('updateSnag',{
+      id: _currentSnagId,
+      fields:{ status:'analyzed', root_cause:cause, factory, analysis_desc:desc, proposed_solution:solution, analyzed_by:U.name },
+      history_entry:{ step:'analyzed', by:U.name, at:new Date().toISOString(), note:`السبب: ${cause} | ${desc}` }
+    });
+    if(r.ok){
+      toast('✅ تم إرسال التحليل للاعتماد');
+      closeModal('analyzeModal');
+      await loadSnags();
+    } else toast('❌ '+(r.error||'خطأ'));
+  }catch(e){ toast('❌ تعذّر الاتصال'); }
+}
+
+// ══════════════════════════════════════════════
+// APPROVE MODAL — اعتماد
+// ══════════════════════════════════════════════
+function openApprove(id){
+  _currentSnagId = id;
+  const s = SNAGS.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('approve-info').innerHTML =
+    `<b>${s.id}</b> — ${s.client}<br>
+     🔧 ${s.defect_type} | ${SEV_LABEL[s.severity]?.label||'—'}<br>
+     📄 ${s.item}<br>
+     <div class="div"></div>
+     🔍 <b>التحليل:</b> ${s.analysis_desc||'—'}<br>
+     🎯 <b>السبب:</b> ${s.root_cause||'—'}<br>
+     🏭 <b>المصنع:</b> ${s.factory||'—'}<br>
+     💡 <b>الحل المقترح:</b> ${s.proposed_solution||'—'}<br>
+     👷 <b>حلّله:</b> ${s.analyzed_by||'—'}`;
+  document.getElementById('ap-note').value='';
+  document.getElementById('approveModal').style.display='flex';
+}
+
+async function submitApprove(approved){
+  const note = document.getElementById('ap-note').value.trim();
+  const newStatus = approved ? 'approved' : 'rejected';
+  try{
+    const r = await api('updateSnag',{
+      id: _currentSnagId,
+      fields:{ status:newStatus, approved_by:U.name, approval_note:note },
+      history_entry:{ step:newStatus, by:U.name, at:new Date().toISOString(), note: approved?('اعتماد '+note):('رفض: '+note) }
+    });
+    if(r.ok){
+      toast(approved?'✅ تم الاعتماد — إيميل للجودة والبيع':'❌ تم الرفض');
+      closeModal('approveModal');
+      await loadSnags();
+    } else toast('❌ '+(r.error||'خطأ'));
+  }catch(e){ toast('❌ تعذّر الاتصال'); }
+}
+
+// ══════════════════════════════════════════════
+// MOVE STATUS — تحريك عام
+// ══════════════════════════════════════════════
+async function moveStatus(id, newStatus, note){
+  try{
+    const r = await api('updateSnag',{
+      id,
+      fields:{ status:newStatus, ...(newStatus==='closed'?{closed_at:new Date().toISOString()}:{}) },
+      history_entry:{ step:newStatus, by:U.name, at:new Date().toISOString(), note }
+    });
+    if(r.ok){
+      toast(`✅ ${note}`);
+      await loadSnags();
+    } else toast('❌ '+(r.error||'خطأ'));
+  }catch(e){ toast('❌ تعذّر الاتصال'); }
+}
+
+// ══════════════════════════════════════════════
+// DETAIL MODAL
+// ══════════════════════════════════════════════
+function openDetail(id){
+  const s = SNAGS.find(x=>x.id===id);
+  if(!s) return;
+  const st = STATUS_LABEL[s.status]||{label:s.status,badge:'b-new',icon:'❓'};
+  const sv = SEV_LABEL[s.severity]||{label:'—',badge:'sev-low'};
+
+  const histHtml = (s.history||[]).map(h=>`
+    <div class="tl-item">
+      <div class="tl-dot done">${STATUS_LABEL[h.step]?.icon||'•'}</div>
+      <div class="tl-body">
+        <div class="tl-title">${STATUS_LABEL[h.step]?.label||h.step}</div>
+        <div class="tl-sub">${h.by||'—'} | ${h.at?h.at.substring(0,16).replace('T',' '):'—'}</div>
+        ${h.note?`<div style="font-size:11px;color:#333;margin-top:2px">${h.note}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('detail-content').innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <span class="badge ${st.badge}">${st.icon} ${st.label}</span>
+      <span class="sev-badge ${sv.badge}">${sv.label}</span>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:13px;line-height:2">
+        🔑 <b>${s.id}</b><br>
+        🏢 <b>العميل:</b> ${s.client||'—'}<br>
+        📄 <b>العقد:</b> ${s.contract||'—'}<br>
+        🪑 <b>البند:</b> ${s.item||'—'}<br>
+        🔧 <b>نوع العيب:</b> ${s.defect_type||'—'}<br>
+        👷 <b>سجّله:</b> ${s.created_by||'—'}<br>
+        📅 <b>التاريخ:</b> ${s.created_at?s.created_at.substring(0,10):'—'}
+        ${s.analysis_desc?`<br>🔍 <b>التحليل:</b> ${s.analysis_desc}`:''}
+        ${s.root_cause?`<br>🎯 <b>السبب:</b> ${s.root_cause}`:''}
+        ${s.factory?`<br>🏭 <b>المصنع:</b> ${s.factory}`:''}
+        ${s.proposed_solution?`<br>💡 <b>الحل:</b> ${s.proposed_solution}`:''}
+        ${s.notes?`<br>📝 <b>ملاحظات:</b> ${s.notes}`:''}
+      </div>
+    </div>
+    ${histHtml?`<div style="font-weight:700;margin-bottom:8px">📜 سجل التقدم</div><ul class="timeline">${histHtml}</ul>`:''}`;
+  document.getElementById('detailModal').style.display='flex';
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+let _toastTimer;
+function toast(msg, ms=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.classList.remove('show'),ms);
+}
+</script>
+</body>
+</html>
