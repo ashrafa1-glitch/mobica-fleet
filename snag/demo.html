@@ -151,52 +151,53 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
 </style>
 </head>
 <body>
-<div id="loginWrap">
-  <div class="app">
-  <div class="login-wrap">
-    <div class="login-box">
-      <div class="login-logo">🔧</div>
-      <div class="login-brand">Mobica Snag System</div>
-      <div class="login-sub">نظام إدارة عيوب التركيب — نسخة تجريبية</div>
-      <div class="demo-bar">🎯 نسخة العرض — اختر أي دور لتجربة النظام<br><b>كلمة المرور: demo</b></div>
-      <div class="fld">
-        <label class="inp-lbl">الدور / المستخدم</label>
-        <select class="inp" id="ln">
-          <option value="">— اختر —</option>
-          <optgroup label="👷 الموقع">
-            <option value="field">مشرف موقع (فني)</option>
-          </optgroup>
-          <optgroup label="🧑‍💼 إدارة المجموعة">
-            <option value="team_lead_a">أحمد حسن — مدير مجموعة A</option>
-            <option value="team_lead_b">سامي فؤاد — مدير مجموعة B</option>
-            <option value="team_lead_c">حازم قاعود — مدير مجموعة C</option>
-            <option value="team_lead_d">هشام جمال — مدير مجموعة D</option>
-          </optgroup>
-          <optgroup label="🏢 إدارة التركيبات">
-            <option value="ashraf">أشرف قاسم</option>
-            <option value="fathy">محمد فتحي</option>
-            <option value="khalid">خالد علي</option>
-          </optgroup>
-          <optgroup label="🔍 جودة وبيع">
-            <option value="quality">مسؤول الجودة</option>
-            <option value="sales">إدارة البيع</option>
-            <option value="technical">المكتب الفني</option>
-          </optgroup>
-          <optgroup label="📋 متابعة">
-            <option value="mokhtar">محمد مختار</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="fld">
-        <label class="inp-lbl">كلمة المرور</label>
-        <input class="inp" type="password" id="lp" placeholder="demo" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <button class="btn b-blue" onclick="doLogin()">🔐 دخول للنظام</button>
+
+<!-- LOGIN -->
+<div id="loginWrap" style="min-height:100vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:24px;padding:36px 28px;box-shadow:0 12px 40px rgba(0,0,0,.14);width:100%;max-width:420px">
+    <div style="text-align:center;font-size:40px;margin-bottom:6px">🔧</div>
+    <div style="text-align:center;font-size:22px;font-weight:900;color:#1a237e;margin-bottom:2px">Mobica Snag System</div>
+    <div style="text-align:center;font-size:12px;color:#999;margin-bottom:24px">نظام إدارة عيوب التركيب — نسخة تجريبية</div>
+    <div style="background:#fffde7;border:1px solid #ffe082;border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:12px;color:#795548;text-align:center">
+      🎯 نسخة العرض — اختر أي دور لتجربة النظام<br><b style="color:#e65100">كلمة المرور: demo</b>
     </div>
-  </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block">الدور / المستخدم</label>
+      <select class="inp" id="ln">
+        <option value="">— اختر —</option>
+        <optgroup label="👷 الموقع">
+          <option value="field">مشرف موقع (فني)</option>
+        </optgroup>
+        <optgroup label="🧑‍💼 إدارة المجموعة">
+          <option value="team_lead_a">أحمد حسن — مدير مجموعة A</option>
+          <option value="team_lead_b">سامي فؤاد — مدير مجموعة B</option>
+          <option value="team_lead_c">حازم قاعود — مدير مجموعة C</option>
+          <option value="team_lead_d">هشام جمال — مدير مجموعة D</option>
+        </optgroup>
+        <optgroup label="🏢 إدارة التركيبات">
+          <option value="ashraf">أشرف قاسم</option>
+          <option value="fathy">محمد فتحي</option>
+          <option value="khalid">خالد علي</option>
+        </optgroup>
+        <optgroup label="🔍 جودة وبيع">
+          <option value="quality">مسؤول الجودة</option>
+          <option value="sales">إدارة البيع</option>
+          <option value="technical">المكتب الفني</option>
+        </optgroup>
+        <optgroup label="📋 متابعة">
+          <option value="mokhtar">محمد مختار</option>
+        </optgroup>
+      </select>
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block">كلمة المرور</label>
+      <input class="inp" type="password" id="lp" placeholder="demo" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn b-blue" onclick="doLogin()">🔐 دخول للنظام</button>
   </div>
 </div>
 
+<!-- APP -->
 <div class="app" id="app" style="display:none"></div>
 
 <!-- MODALS -->
