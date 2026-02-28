@@ -138,27 +138,28 @@ function getRequests(date) {
   const data = sh.getDataRange().getValues();
   if(data.length <= 1) return { ok: true, requests: [], date };
   const headers = data[0];
+
+  // normalize الخلية للمقارنة — بيدعم: "D:2026-02-28" | Date object | "2026-02-28"
+  function normDate(v) {
+    if(!v) return '';
+    if(v instanceof Date) return 'D:' + Utilities.formatDate(v, 'Africa/Cairo', 'yyyy-MM-dd');
+    const s = String(v).trim();
+    // لو عنده تاريخ عادي بدون prefix
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return 'D:' + s;
+    return s;
+  }
+
   const rows = data.slice(1)
-    .filter(r => {
-      if(!date) return true;
-      // Google Sheets بيحوّل التاريخ لـ Date object — لازم نحوّله لـ string
-      const cellDate = r[1] instanceof Date
-        ? Utilities.formatDate(r[1], 'Africa/Cairo', 'yyyy-MM-dd')
-        : String(r[1]).substring(0, 10);
-      return cellDate === date;
-    })
+    .filter(r => !date || normDate(r[1]) === normDate(date))
     .map(r => {
       const obj = {};
       headers.forEach((h, i) => {
-        // تحويل التواريخ لـ string
         obj[h] = r[i] instanceof Date
-          ? Utilities.formatDate(r[i], 'Africa/Cairo', 'yyyy-MM-dd')
+          ? 'D:' + Utilities.formatDate(r[i], 'Africa/Cairo', 'yyyy-MM-dd')
           : r[i];
       });
-      // members مخزّنة كـ string مفصولة بـ ، — حوّلها لـ array
-      if(obj.members && typeof obj.members === 'string' && obj.members){
+      if(obj.members && typeof obj.members === 'string' && obj.members)
         obj.members = obj.members.split('،').map(s=>s.trim()).filter(Boolean);
-      }
       return obj;
     });
   return { ok: true, requests: rows, date };
