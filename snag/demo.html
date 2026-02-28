@@ -518,6 +518,52 @@ const SEV = {
 
 const STEPS_LABELS = ['تسجيل','تحليل','اعتماد','جودة','تأكيد','بيع','تصنيع','توريد','إغلاق'];
 
+// SLA لكل مرحلة بالساعات
+const STEP_SLA_HOURS = {
+  new:              { lbl:'تسجيل → تحليل',      hours:4,   owner:'مدير المجموعة'   },
+  analyzed:         { lbl:'تحليل → اعتماد',      hours:4,   owner:'إدارة التركيبات' },
+  approved:         { lbl:'اعتماد → الجودة',     hours:8,   owner:'محمد مختار'       },
+  quality_review:   { lbl:'مراجعة الجودة',       hours:24,  owner:'إدارة الجودة'    },
+  quality_approved: { lbl:'جودة → اعتماد البيع', hours:8,   owner:'إدارة البيع'     },
+  sales_approved:   { lbl:'بيع → بدء التصنيع',   hours:4,   owner:'محمد مختار'       },
+  in_production:    { lbl:'التصنيع',              hours:null, owner:'المصنع'          }, // يُحسب من الـ severity SLA
+  ready:            { lbl:'توريد → إغلاق',        hours:48,  owner:'إدارة التسليمات' },
+};
+
+function fmtDuration(ms) {
+  if (ms < 0) ms = 0;
+  const mins  = Math.floor(ms / 60000);
+  const hours = Math.floor(mins / 60);
+  const days  = Math.floor(hours / 24);
+  if (days > 0)  return `${days} يوم ${hours%24 ? hours%24+'س' : ''}`.trim();
+  if (hours > 0) return `${hours} ساعة ${mins%60 ? mins%60+'د' : ''}`.trim();
+  return `${mins} دقيقة`;
+}
+
+function stepDuration(hist, idx) {
+  if (idx >= hist.length-1) {
+    // المرحلة الحالية — من آخر خطوة للآن
+    const elapsed = Date.now() - new Date(hist[idx].at).getTime();
+    return { ms: elapsed, current: true };
+  }
+  const ms = new Date(hist[idx+1].at).getTime() - new Date(hist[idx].at).getTime();
+  return { ms, current: false };
+}
+
+function stepStatus(step, ms, isCurrent) {
+  const sla = STEP_SLA_HOURS[step];
+  if (!sla || !sla.hours) return null;
+  const slaMs = sla.hours * 3600000;
+  if (isCurrent) {
+    if (ms > slaMs) return 'exceeded';
+    if (ms > slaMs * 0.75) return 'warning';
+    return 'ok';
+  }
+  if (ms > slaMs) return 'exceeded';
+  if (ms > slaMs * 0.85) return 'warning';
+  return 'ok';
+}
+
 // إشعار المصنع — يظهر في الـ timeline
 function notifyFactory(s, reason) {
   const factories = {
@@ -903,7 +949,7 @@ function renderDash() {
         <span style="color:#555">${t}</span><span style="font-weight:700">${v} حالة</span>
       </div>`).join('')}
   </div>
-  <div class="card">
+  <div class="card" style="margin-bottom:10px">
     <div class="sec-title">⏱️ مؤشرات الأداء</div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px">
       <span style="color:#888">متوسط وقت الإغلاق</span>
@@ -913,7 +959,9 @@ function renderDash() {
       <span style="color:#888">نسبة الإغلاق</span>
       <span style="font-weight:700;color:#2e7d32">${total?Math.round(closed/total*100):0}%</span>
     </div>
-  </div>`;
+  </div>
+  ${buildDelayLeaderboard()}`;
+
 }
 
 // ═══════════════════════════════════════════
@@ -1215,15 +1263,43 @@ function openDetail(id) {
          ${s.photos.map(p=>`<div class="photo-thumb"><img src="${p}" onclick="viewPhoto('${p}')"></div>`).join('')}
        </div>` : '';
 
-  const tl = (s.history||[]).map((h,i)=>{
-    const cfg = STATUS[h.step]||{ic:'•',lbl:h.step};
-    const cls = i===s.history.length-1 ? 'tl-active' : 'tl-done';
+  const hist = s.history||[];
+  const tl = hist.map((h,i)=>{
+    const cfg      = STATUS[h.step]||{ic:'📌',lbl:h.step};
+    const isLast   = i===hist.length-1;
+    const dotCls   = isLast ? 'tl-active' : 'tl-dot-done';
+    const {ms, current} = stepDuration(hist, i);
+    const stSla    = stepStatus(h.step, ms, current);
+    const durStr   = h.step==='factory_notified' ? null : fmtDuration(ms);
+    const slaInfo  = STEP_SLA_HOURS[h.step];
+
+    // ألوان حسب الحالة
+    const durColor = stSla==='exceeded'?'#c62828': stSla==='warning'?'#e65100':'#2e7d32';
+    const durBg    = stSla==='exceeded'?'#ffebee': stSla==='warning'?'#fff8e1':'#e8f5e9';
+    const durLabel = stSla==='exceeded'?'⚠️ تجاوز SLA': stSla==='warning'?'🟡 يقترب من الـ SLA':'✅';
+    const dotBg    = isLast?'#e3f2fd': stSla==='exceeded'?'#ffebee': stSla==='warning'?'#fff8e1':'#e8f5e9';
+    const dotBorder= isLast?'#1565c0': stSla==='exceeded'?'#c62828': stSla==='warning'?'#e65100':'#4caf50';
+
+    const durBadge = durStr && !isLast ? `
+      <div style="display:inline-flex;align-items:center;gap:5px;background:${durBg};border-radius:8px;padding:3px 9px;margin-top:5px;font-size:11px;font-weight:700;color:${durColor}">
+        ⏱️ ${durStr}
+        ${stSla?`<span style="opacity:.8">— ${durLabel}</span>`:''}
+        ${slaInfo?.hours?`<span style="opacity:.6;font-weight:400">(SLA: ${slaInfo.hours}س)</span>`:''}
+      </div>` : '';
+
+    const currentBadge = isLast && durStr && h.step!=='closed' ? `
+      <div style="display:inline-flex;align-items:center;gap:5px;background:${durBg};border-radius:8px;padding:3px 9px;margin-top:5px;font-size:11px;font-weight:700;color:${durColor}">
+        ⏳ منذ ${durStr} ${stSla==='exceeded'?'— ⚠️ تجاوز SLA':stSla==='warning'?'— 🟡 قارب الـ SLA':''}
+        ${slaInfo?.hours?`<span style="opacity:.6;font-weight:400">(SLA: ${slaInfo.hours}س / ${slaInfo.owner})</span>`:''}
+      </div>` : '';
+
     return `<li class="tl-item">
-      <div class="tl-dot ${cls}">${cfg.ic}</div>
+      <div class="tl-dot" style="background:${dotBg};border:2px solid ${dotBorder};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1">${cfg.ic}</div>
       <div class="tl-body">
-        <div class="tl-title">${STATUS[h.step]?.lbl||h.step}</div>
-        <div class="tl-meta">${h.by||'—'} | ${h.at?h.at.replace('T',' ').slice(0,16):'—'}</div>
+        <div class="tl-title">${cfg.lbl||h.step}</div>
+        <div class="tl-meta">👤 ${h.by||'—'} | 🕐 ${h.at?h.at.replace('T',' ').slice(0,16):'—'}</div>
         ${h.note?`<div class="tl-note">${h.note}</div>`:''}
+        ${durBadge}${currentBadge}
       </div>
     </li>`;
   }).join('');
@@ -1264,9 +1340,114 @@ function openDetail(id) {
       ${irow('النتيجة', s.quality_result)}
     </div>`:''}
     ${photos}
-    ${tl?`<div class="sec-title">📜 سجل التقدم</div><ul class="tl">${tl}</ul>`:''}`;
+    ${buildTimeSummary(s)}
+    ${tl?`<div class="sec-title">📜 سجل التقدم مع الأوقات</div><ul class="tl">${tl}</ul>`:''}`;
 
   openModal('m-detail');
+}
+
+// ═══════════════════════════════════════════
+// DELAY LEADERBOARD (داشبورد)
+// ═══════════════════════════════════════════
+function buildDelayLeaderboard() {
+  // لكل مرحلة: جمع الوقت المستغرق عبر كل العيوب
+  const stepTotals = {}; // step → {totalMs, count, exceededCount}
+
+  SNAGS.forEach(s => {
+    const hist = (s.history||[]).filter(h=>h.step!=='factory_notified');
+    hist.forEach((h,i) => {
+      if (i >= hist.length-1) return;
+      const ms  = new Date(hist[i+1].at)-new Date(h.at);
+      const sla = STEP_SLA_HOURS[h.step];
+      if (!stepTotals[h.step]) stepTotals[h.step]={totalMs:0,count:0,exceededCount:0,owner:sla?.owner||'—',lbl:STATUS[h.step]?.lbl||h.step,slaHours:sla?.hours};
+      stepTotals[h.step].totalMs += ms;
+      stepTotals[h.step].count++;
+      if (sla?.hours && ms > sla.hours*3600000) stepTotals[h.step].exceededCount++;
+    });
+  });
+
+  const rows = Object.values(stepTotals)
+    .filter(r=>r.count>0)
+    .sort((a,b)=>(b.exceededCount/b.count)-(a.exceededCount/a.count));
+
+  if (!rows.length) return '';
+
+  return `<div class="card">
+    <div class="sec-title">🚨 تحليل التأخير بالمرحلة</div>
+    ${rows.map(r=>{
+      const avgH = (r.totalMs/r.count/3600000).toFixed(1);
+      const pct  = Math.round(r.exceededCount/r.count*100);
+      const color= pct>50?'#c62828':pct>20?'#e65100':'#2e7d32';
+      const bg   = pct>50?'#ffebee':pct>20?'#fff8e1':'#e8f5e9';
+      return `<div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <div>
+            <div style="font-size:13px;font-weight:700">${r.lbl}</div>
+            <div style="font-size:10px;color:#aaa">المسؤول: ${r.owner}</div>
+          </div>
+          <div style="text-align:left">
+            <div style="background:${bg};color:${color};border-radius:8px;padding:2px 9px;font-size:12px;font-weight:800">
+              ${pct>0?'⚠️ ':'✅ '}${pct}% تجاوز SLA
+            </div>
+            <div style="font-size:10px;color:#aaa;text-align:center;margin-top:2px">متوسط ${avgH} ساعة</div>
+          </div>
+        </div>
+        <div style="background:#f0f0f0;border-radius:6px;height:6px;overflow:hidden">
+          <div style="width:${Math.min(pct,100)}%;height:100%;background:${color};border-radius:6px"></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// TIME SUMMARY
+// ═══════════════════════════════════════════
+function buildTimeSummary(s) {
+  const hist = (s.history||[]).filter(h=>h.step!=='factory_notified');
+  if (hist.length < 2) return '';
+
+  const totalMs = s.status==='closed' && s.closed_at
+    ? new Date(s.closed_at)-new Date(s.created_at)
+    : Date.now()-new Date(s.created_at);
+
+  const rows = hist.map((h,i)=>{
+    if (i===hist.length-1) return null; // آخر خطوة = الحالية
+    const nextH = hist[i+1];
+    const ms    = new Date(nextH.at)-new Date(h.at);
+    const sla   = STEP_SLA_HOURS[h.step];
+    const exceeded = sla?.hours && ms > sla.hours*3600000;
+    const warning  = sla?.hours && ms > sla.hours*3600000*0.85;
+    return {
+      from: STATUS[h.step]?.lbl||h.step,
+      to:   STATUS[nextH.step]?.lbl||nextH.step,
+      owner: sla?.owner||'—',
+      dur:  fmtDuration(ms),
+      exceeded, warning,
+    };
+  }).filter(Boolean);
+
+  const hasExceeded = rows.some(r=>r.exceeded);
+
+  return `<div class="card" style="margin-bottom:12px;${hasExceeded?'border-right:4px solid #c62828':''}">
+    <div class="sec-title" style="margin-bottom:8px">⏱️ ملخص أوقات المراحل</div>
+    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px;color:#888">
+      <span>إجمالي الوقت المنقضي</span>
+      <span style="font-weight:800;color:#1565c0">${fmtDuration(totalMs)}</span>
+    </div>
+    ${rows.map(r=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f5">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#333">${r.from}</div>
+        <div style="font-size:10px;color:#aaa">المسؤول: ${r.owner}</div>
+      </div>
+      <div style="background:${r.exceeded?'#ffebee':r.warning?'#fff8e1':'#e8f5e9'};
+                  color:${r.exceeded?'#c62828':r.warning?'#e65100':'#2e7d32'};
+                  border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;text-align:center">
+        ${r.exceeded?'⚠️ ':r.warning?'🟡 ':'✅ '}${r.dur}
+      </div>
+    </div>`).join('')}
+  </div>`;
 }
 
 // ═══════════════════════════════════════════
