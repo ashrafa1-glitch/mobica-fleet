@@ -11,7 +11,7 @@
 // ═══════════════════════════════════════════════════════════
 
 const TELEGRAM_BOT_TOKEN = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
-const EMAD_CHAT_ID       = '8416528954';
+const EMAD_CHAT_ID       = '8296695318';
 const ASHRAF_CHAT_ID     = '7055250567';  // مدير التخطيط
 const SHEET_REQUESTS     = 'Requests';
 const SHEET_CONFIG       = 'Config';
