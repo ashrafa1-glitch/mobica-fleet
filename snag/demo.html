@@ -3,34 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Mobica — Snag System</title>
+<title>Mobica — Snag System v2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#eef2f7;color:#1a1a2e;direction:rtl;min-height:100vh}
 
-/* ─── LOGIN ─── */
+/* LOGIN */
 #screen-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#1a237e,#1565c0)}
-.login-card{background:#fff;border-radius:24px;padding:32px 24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.login-ic{text-align:center;font-size:48px;margin-bottom:8px}
-.login-title{text-align:center;font-size:20px;font-weight:900;color:#1a237e;margin-bottom:4px}
-.login-sub{text-align:center;font-size:12px;color:#999;margin-bottom:20px}
+.lcard{background:#fff;border-radius:24px;padding:32px 24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.lic{text-align:center;font-size:48px;margin-bottom:8px}
+.ltitle{text-align:center;font-size:20px;font-weight:900;color:#1a237e;margin-bottom:4px}
+.lsub{text-align:center;font-size:12px;color:#999;margin-bottom:18px}
 .demo-note{background:#fffde7;border:1px solid #ffe082;border-radius:10px;padding:10px;margin-bottom:18px;font-size:12px;color:#795548;text-align:center;line-height:1.6}
 
-/* ─── APP ─── */
-#screen-app{display:none;max-width:500px;margin:0 auto;padding:12px;min-height:100vh;padding-bottom:80px}
+/* APP */
+#screen-app{display:none;max-width:500px;margin:0 auto;padding:12px;min-height:100vh;padding-bottom:85px}
 
-/* ─── INPUTS ─── */
+/* INPUTS */
 .inp{width:100%;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;direction:rtl;background:#f8f9fc;outline:none;color:#1a1a2e;transition:.2s}
 .inp:focus{border-color:#1565c0;background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.1)}
 select.inp{appearance:none;-webkit-appearance:none}
-textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
+textarea.inp{resize:vertical;min-height:75px;line-height:1.6}
 .lbl{font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block}
 .fld{margin-bottom:14px}
 .fld2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 
-/* ─── BUTTONS ─── */
+/* BUTTONS */
 .btn{border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;width:100%}
-.btn:active{transform:scale(.97);opacity:.9}
+.btn:active{transform:scale(.97)}
 .bl{background:#1565c0;color:#fff}
 .bg{background:#2e7d32;color:#fff}
 .br{background:#c62828;color:#fff}
@@ -44,158 +44,158 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
 .btn-row{display:flex;gap:8px}
 .btn-row .btn{flex:1}
 
-/* ─── HEADER ─── */
+/* TRACK BADGES */
+.track-fast{background:#e8f5e9;color:#1b5e20;border-radius:10px;padding:3px 10px;font-size:11px;font-weight:800}
+.track-full{background:#fce4ec;color:#880e4f;border-radius:10px;padding:3px 10px;font-size:11px;font-weight:800}
+
+/* HEADER */
 .hdr{background:linear-gradient(135deg,#1a237e,#1565c0);border-radius:16px;padding:14px 16px;color:#fff;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .hdr-info{display:flex;align-items:center;gap:10px}
 .hdr-ic{font-size:28px}
 .hdr-title{font-size:15px;font-weight:800}
 .hdr-sub{font-size:11px;opacity:.75;margin-top:2px}
-.hdr-logout{background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:7px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
-.hdr-logout:active{background:rgba(255,255,255,.35)}
+.hdr-out{background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:7px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 
-/* ─── ROLE BAR (DEMO) ─── */
+/* ROLE BAR */
 .role-bar{background:#1a237e;border-radius:12px;padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.role-bar-lbl{color:rgba(255,255,255,.6);font-size:11px;font-weight:700;white-space:nowrap}
-.rc{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.rb-lbl{color:rgba(255,255,255,.6);font-size:11px;font-weight:700;white-space:nowrap}
+.rc{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
 .rc.on{background:#fff;color:#1a237e}
-.rc:active{opacity:.8}
 
-/* ─── TABS ─── */
-.tabs{display:flex;background:#fff;border-radius:14px;padding:4px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);gap:3px;overflow-x:auto}
-.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;color:#bbb;cursor:pointer;white-space:nowrap;min-width:58px}
+/* TABS */
+.tabs{display:flex;background:#fff;border-radius:14px;padding:4px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);gap:3px}
+.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;color:#bbb;cursor:pointer;white-space:nowrap}
 .tab.on{background:#1565c0;color:#fff}
 
-/* ─── BOTTOM NAV ─── */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:#fff;border-top:1px solid #eee;display:flex;padding:8px 0 14px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.07)}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:#fff;border-top:1px solid #eee;display:flex;padding:8px 0 14px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
 .bni{flex:1;display:flex;flex-direction:column;align-items:center;font-size:10px;color:#ccc;cursor:pointer;gap:2px;font-weight:700}
 .bni.on{color:#1565c0}
 .bni-ic{font-size:22px}
-.bni-badge{background:#c62828;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;min-width:18px;text-align:center;margin-top:1px;display:none}
+.bni-badge{background:#c62828;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;min-width:18px;text-align:center;display:none}
 .bni.has-badge .bni-badge{display:block}
 
-/* ─── CARDS ─── */
+/* CARDS */
 .card{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .snr-id{font-size:15px;font-weight:800;color:#1565c0}
 .snr-date{font-size:11px;color:#bbb;margin-top:2px}
-.card-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 
-/* ─── BADGES ─── */
+/* BADGES */
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .s-new{background:#e3f2fd;color:#1565c0}
-.s-analyzed{background:#f3e5f5;color:#6a1b9a}
 .s-approved{background:#e8f5e9;color:#2e7d32}
 .s-rejected{background:#ffebee;color:#c62828}
 .s-quality{background:#fff8e1;color:#e65100}
-.s-qa-ok{background:#e8f5e9;color:#1b5e20}
 .s-production{background:#e8eaf6;color:#3949ab}
-.s-ready{background:#f1f8e9;color:#558b2f}
 .s-closed{background:#f5f5f5;color:#757575}
 .sev-u{background:#ffebee;color:#c62828}
 .sev-m{background:#fff8e1;color:#e65100}
 .sev-l{background:#e8f5e9;color:#2e7d32}
 
-/* ─── PROGRESS ─── */
-.prog{background:#f0f0f0;border-radius:8px;height:7px;overflow:hidden;margin:8px 0 4px}
-.prog-fill{height:100%;border-radius:8px;transition:.4s}
-.prog-steps{display:flex;justify-content:space-between;font-size:9px;color:#ccc}
+/* PROGRESS STEPS */
+.steps-wrap{margin:10px 0 6px}
+.steps-row{display:flex;align-items:center;gap:0}
+.step-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;border:2px solid transparent;transition:.3s}
+.step-done{background:#1565c0;color:#fff;border-color:#1565c0}
+.step-active{background:#fff;color:#1565c0;border-color:#1565c0;box-shadow:0 0 0 3px rgba(21,101,192,.15)}
+.step-pending{background:#f0f0f0;color:#bbb;border-color:#e0e0e0}
+.step-line{flex:1;height:2px;background:#e0e0e0}
+.step-line.done{background:#1565c0}
+.step-labels{display:flex;justify-content:space-between;margin-top:4px}
+.step-lbl{font-size:9px;color:#aaa;text-align:center;flex:1}
+.step-lbl.done{color:#1565c0;font-weight:700}
+.step-lbl.active{color:#1565c0;font-weight:800}
 
-/* ─── ACTIONS NEEDED ─── */
+/* ACTION BANNER */
 .action-banner{background:#fff3e0;border-radius:12px;padding:10px 14px;margin-bottom:12px;border-right:4px solid #e65100}
-.action-banner-title{font-weight:700;font-size:13px;color:#e65100}
-.action-banner-ids{font-size:11px;color:#888;margin-top:2px}
 
-/* ─── FILTERS ─── */
+/* FILTERS */
 .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.filter-btn{background:#fff;border:1.5px solid #e0e0e0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#555;display:flex;align-items:center;gap:4px}
-.filter-btn.on{background:#1565c0;border-color:#1565c0;color:#fff}
-.filter-count{background:#f0f0f0;border-radius:10px;padding:1px 7px;font-size:10px}
-.filter-btn.on .filter-count{background:rgba(255,255,255,.25);color:#fff}
+.fbtn{background:#fff;border:1.5px solid #e0e0e0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#555;display:flex;align-items:center;gap:5px}
+.fbtn.on{background:#1565c0;border-color:#1565c0;color:#fff}
+.fc{background:#f0f0f0;border-radius:10px;padding:1px 7px;font-size:10px}
+.fbtn.on .fc{background:rgba(255,255,255,.25);color:#fff}
 
-/* ─── STATS ─── */
+/* STATS */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .stat{background:#fff;border-radius:14px;padding:13px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .stat-ic{font-size:20px}
 .stat-val{font-size:26px;font-weight:900;margin-top:4px}
 .stat-lbl{font-size:11px;color:#999;margin-top:3px}
 
-/* ─── TIMELINE ─── */
+/* TIMELINE */
 .tl{list-style:none;padding:0}
 .tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative}
 .tl-item:not(:last-child)::after{content:'';position:absolute;right:13px;top:28px;bottom:0;width:2px;background:#f0f0f0}
-.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1}
-.tl-done{background:#e8f5e9;border:2px solid #4caf50}
-.tl-active{background:#e3f2fd;border:2px solid #1565c0}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1;border:2px solid}
 .tl-body{flex:1;padding-top:3px}
 .tl-title{font-weight:700;font-size:13px}
 .tl-meta{font-size:11px;color:#aaa;margin-top:1px}
 .tl-note{font-size:12px;color:#555;margin-top:4px;background:#f8f9fc;border-radius:8px;padding:7px 10px;line-height:1.5}
+.tl-time{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:2px 9px;margin-top:5px;font-size:11px;font-weight:700}
 
-/* ─── DETAIL ROWS ─── */
+/* DETAIL */
 .sec-title{font-weight:800;font-size:13px;color:#1a237e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e3f2fd}
 .irow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
 .irow:last-child{border:none}
 .ilbl{color:#888}
-.ival{font-weight:700;color:#1a1a2e;text-align:left;max-width:60%}
+.ival{font-weight:700;max-width:60%;text-align:left}
 
-/* ─── PHOTOS ─── */
-.photo-drop{border:2px dashed #d0d0d0;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fafafa;transition:.2s}
-.photo-drop:hover{border-color:#1565c0;background:#f0f6ff}
-.photo-drop-ic{font-size:30px;margin-bottom:6px}
-.photo-drop-lbl{font-size:13px;color:#aaa;font-weight:600}
-.photo-drop-sub{font-size:11px;color:#ccc;margin-top:3px}
+/* PHOTOS */
+.photo-drop{border:2px dashed #d0d0d0;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#fafafa}
 .photo-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .photo-thumb{position:relative;width:80px;height:80px}
 .photo-thumb img{width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #e0e0e0;cursor:pointer}
-.photo-del{position:absolute;top:-6px;left:-6px;background:#c62828;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:800;line-height:1}
+.photo-del{position:absolute;top:-6px;left:-6px;background:#c62828;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:800}
 
-/* ─── MODALS ─── */
+/* MODALS */
 .ov{position:fixed;inset:0;background:rgba(0,0,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:999;backdrop-filter:blur(2px)}
 .ov.open{display:flex}
 .modal{background:#fff;border-radius:22px 22px 0 0;padding:22px 18px 32px;width:100%;max-width:500px;max-height:91vh;overflow-y:auto}
 .modal-title{font-weight:800;font-size:16px;color:#1a237e;margin-bottom:16px}
 .modal-info{background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8;border-right:3px solid #1565c0}
-.modal-divider{height:1px;background:#f0f0f0;margin:10px 0}
+.mdiv{height:1px;background:#f0f0f0;margin:10px 0}
 
-/* ─── PHOTO VIEWER ─── */
-#photo-viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px}
-#photo-viewer.open{display:flex}
-#photo-viewer img{max-width:95vw;max-height:80vh;border-radius:12px;object-fit:contain}
-#photo-viewer-close{color:#fff;font-size:13px;opacity:.7;cursor:pointer;padding:8px}
+/* SEV PICKER */
+.sev-pick{display:flex;gap:8px}
+.sev-btn{flex:1;border:2px solid;border-radius:10px;padding:9px 6px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;text-align:center;transition:.15s;font-family:inherit}
+.sev-btn.on{color:#fff!important}
+.sev-u-btn{border-color:#c62828;color:#c62828}
+.sev-u-btn.on{background:#c62828}
+.sev-m-btn{border-color:#e65100;color:#e65100}
+.sev-m-btn.on{background:#e65100}
+.sev-l-btn{border-color:#2e7d32;color:#2e7d32}
+.sev-l-btn.on{background:#2e7d32}
 
-/* ─── EMPTY ─── */
-.empty{text-align:center;padding:50px 20px;color:#ccc}
-.empty-ic{font-size:50px;margin-bottom:10px}
+/* PARALLEL BADGE */
+.parallel-note{background:#e8eaf6;border-radius:10px;padding:8px 12px;font-size:12px;color:#3949ab;font-weight:700;margin-bottom:10px;text-align:center}
 
-/* ─── SLA WARNING ─── */
-.sla-warn{font-size:10px;color:#c62828;font-weight:700;margin-right:6px}
+/* PHOTO VIEWER */
+#pviewer{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:10px}
+#pviewer.open{display:flex}
+#pviewer img{max-width:95vw;max-height:80vh;border-radius:12px;object-fit:contain}
+#pviewer-close{color:#fff;font-size:13px;opacity:.7;cursor:pointer;padding:8px}
 
-/* ─── GUIDE ─── */
-.guide-step{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.guide-ic{font-size:28px;flex-shrink:0}
-.guide-title{font-weight:800;font-size:13px;color:#1a237e;margin-bottom:4px}
-.guide-body{font-size:12px;color:#555;line-height:1.7}
-.guide-sla{display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:700;margin-top:4px}
-
-/* ─── TOAST ─── */
+/* TOAST */
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3)}
 #toast.show{opacity:1}
+
+.empty{text-align:center;padding:50px 20px;color:#ccc}
+.empty-ic{font-size:50px;margin-bottom:10px}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════ LOGIN ══════════════════ -->
+<!-- ════════ LOGIN ════════ -->
 <div id="screen-login">
-  <div class="login-card">
-    <div class="login-ic">🔧</div>
-    <div class="login-title">Mobica Snag System</div>
-    <div class="login-sub">نظام إدارة تقارير العيوب</div>
-    <div class="demo-note">
-      🎯 <b>نسخة تجريبية للعرض</b><br>
-      اختر أي دور وادخل كلمة المرور: <b style="color:#e65100">demo</b>
-    </div>
+  <div class="lcard">
+    <div class="lic">🔧</div>
+    <div class="ltitle">Mobica Snag System</div>
+    <div class="lsub">نظام إدارة تقارير العيوب v2</div>
+    <div class="demo-note">🎯 <b>نسخة تجريبية</b> — اختر دورك<br>كلمة المرور: <b style="color:#e65100">demo</b></div>
     <div class="fld">
-      <label class="lbl">اختر دورك</label>
+      <label class="lbl">الدور</label>
       <select class="inp" id="login-role">
         <option value="">— اختر —</option>
         <optgroup label="👷 الموقع">
@@ -211,14 +211,12 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
           <option value="ashraf">أشرف قاسم</option>
           <option value="fathy">محمد فتحي</option>
           <option value="khalid">خالد علي</option>
+          <option value="mokhtar">محمد مختار</option>
         </optgroup>
-        <optgroup label="🔍 الجودة والمكتب الفني">
+        <optgroup label="🔍 الجودة والبيع">
           <option value="quality">مسؤول الجودة</option>
-          <option value="technical">المكتب الفني</option>
-        </optgroup>
-        <optgroup label="📋 البيع والتنسيق">
           <option value="sales">إدارة البيع</option>
-          <option value="mokhtar">محمد مختار — إدارة التركيبات</option>
+          <option value="technical">المكتب الفني</option>
         </optgroup>
       </select>
     </div>
@@ -227,15 +225,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       <input class="inp" type="password" id="login-pass" placeholder="demo"
         onkeydown="if(event.key==='Enter')login()">
     </div>
-    <button class="btn bl" onclick="login()">🔐 دخول للنظام</button>
+    <button class="btn bl" onclick="login()">🔐 دخول</button>
   </div>
 </div>
 
-<!-- ══════════════════ APP ══════════════════ -->
+<!-- ════════ APP ════════ -->
 <div id="screen-app">
-
-  <!-- Header -->
-  <div class="hdr" id="hdr">
+  <div class="hdr">
     <div class="hdr-info">
       <div class="hdr-ic">🔧</div>
       <div>
@@ -243,61 +239,58 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
         <div class="hdr-sub" id="hdr-role">—</div>
       </div>
     </div>
-    <button class="hdr-logout" onclick="logout()">🚪 خروج</button>
+    <button class="hdr-out" onclick="logout()">🚪 خروج</button>
   </div>
 
-  <!-- Role switcher (demo) -->
+  <!-- Demo role switcher -->
   <div class="role-bar">
-    <span class="role-bar-lbl">تجربة كـ:</span>
-    <button class="rc" data-r="field"   onclick="switchRole(this)">فني</button>
-    <button class="rc" data-r="lead_a"  onclick="switchRole(this)">مجموعة A</button>
-    <button class="rc" data-r="lead_b"  onclick="switchRole(this)">B</button>
-    <button class="rc" data-r="lead_c"  onclick="switchRole(this)">C</button>
-    <button class="rc" data-r="lead_d"  onclick="switchRole(this)">D</button>
-    <button class="rc" data-r="ashraf"  onclick="switchRole(this)">أشرف</button>
-    <button class="rc" data-r="fathy"   onclick="switchRole(this)">فتحي</button>
-    <button class="rc" data-r="khalid"  onclick="switchRole(this)">خالد</button>
-    <button class="rc" data-r="quality" onclick="switchRole(this)">جودة</button>
-    <button class="rc" data-r="sales"   onclick="switchRole(this)">بيع</button>
-    <button class="rc" data-r="mokhtar" onclick="switchRole(this)">مختار</button>
+    <span class="rb-lbl">تجربة:</span>
+    <button class="rc" data-r="field"   onclick="sw(this)">فني</button>
+    <button class="rc" data-r="lead_a"  onclick="sw(this)">A</button>
+    <button class="rc" data-r="lead_b"  onclick="sw(this)">B</button>
+    <button class="rc" data-r="lead_c"  onclick="sw(this)">C</button>
+    <button class="rc" data-r="lead_d"  onclick="sw(this)">D</button>
+    <button class="rc" data-r="ashraf"  onclick="sw(this)">أشرف</button>
+    <button class="rc" data-r="fathy"   onclick="sw(this)">فتحي</button>
+    <button class="rc" data-r="khalid"  onclick="sw(this)">خالد</button>
+    <button class="rc" data-r="mokhtar" onclick="sw(this)">مختار</button>
+    <button class="rc" data-r="quality" onclick="sw(this)">جودة</button>
+    <button class="rc" data-r="sales"   onclick="sw(this)">بيع</button>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
-    <div class="tab on"  id="tab-btn-list"  onclick="showTab('list',this)">📋 العيوب</div>
-    <div class="tab"     id="tab-btn-dash"  onclick="showTab('dash',this)">📊 داشبورد</div>
-    <div class="tab"     id="tab-btn-guide" onclick="showTab('guide',this)">📖 الدليل</div>
+    <div class="tab on"  id="tb-list"  onclick="showTab('list',this)">📋 العيوب</div>
+    <div class="tab"     id="tb-dash"  onclick="showTab('dash',this)">📊 داشبورد</div>
+    <div class="tab"     id="tb-guide" onclick="showTab('guide',this)">📖 الدليل</div>
   </div>
 
-  <!-- Tab content -->
   <div id="tab-list"></div>
   <div id="tab-dash"  style="display:none"></div>
   <div id="tab-guide" style="display:none"></div>
 
-  <!-- Bottom nav -->
   <div class="bnav">
-    <div class="bni on" id="bn-list" onclick="showTab('list',document.getElementById('tab-btn-list'))">
-      <div class="bni-ic">📋</div>العيوب
-      <div class="bni-badge" id="bn-badge">0</div>
+    <div class="bni on" id="bn-list" onclick="showTab('list',document.getElementById('tb-list'))">
+      <div class="bni-ic">📋</div>العيوب<div class="bni-badge" id="bn-b">0</div>
     </div>
-    <div class="bni" id="bn-dash" onclick="showTab('dash',document.getElementById('tab-btn-dash'))">
+    <div class="bni" id="bn-dash" onclick="showTab('dash',document.getElementById('tb-dash'))">
       <div class="bni-ic">📊</div>داشبورد
     </div>
-    <div class="bni" id="bn-guide" onclick="showTab('guide',document.getElementById('tab-btn-guide'))">
+    <div class="bni" id="bn-guide" onclick="showTab('guide',document.getElementById('tb-guide'))">
       <div class="bni-ic">📖</div>الدليل
     </div>
-    <div class="bni" onclick="logout()">
-      <div class="bni-ic">🚪</div>خروج
-    </div>
+    <div class="bni" onclick="logout()"><div class="bni-ic">🚪</div>خروج</div>
   </div>
 </div>
 
-<!-- ══════════════════ MODALS ══════════════════ -->
-
-<!-- تسجيل عيب -->
+<!-- ════════ MODAL: تسجيل + تحليل ════════ -->
 <div class="ov" id="m-new">
   <div class="modal">
-    <div class="modal-title">➕ تسجيل عيب جديد</div>
+    <div class="modal-title">➕ تسجيل العيب وتحليله</div>
+
+    <!-- قسم 1: بيانات أساسية -->
+    <div style="background:#e3f2fd;border-radius:10px;padding:8px 12px;margin-bottom:14px;font-size:12px;font-weight:700;color:#1565c0">
+      📋 القسم الأول — البيانات الأساسية
+    </div>
     <div class="fld">
       <label class="lbl">اسم العميل *</label>
       <input class="inp" id="n-client" placeholder="مثال: TMG — كمبوند بلوم">
@@ -310,8 +303,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       <div>
         <label class="lbl">المجموعة</label>
         <select class="inp" id="n-team">
-          <option value="A">A</option><option value="B">B</option>
-          <option value="C">C</option><option value="D">D</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option>
         </select>
       </div>
     </div>
@@ -331,57 +323,32 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
     </div>
     <div class="fld">
       <label class="lbl">درجة الخطورة *</label>
-      <div style="display:flex;gap:8px">
-        <button class="btn bxs" id="sev-u" onclick="pickSev('urgent')"
-          style="flex:1;border:2px solid #c62828;color:#c62828;background:#fff">🔴 عاجل</button>
-        <button class="btn bxs" id="sev-m" onclick="pickSev('medium')"
-          style="flex:1;border:2px solid #e65100;color:#e65100;background:#fff">🟡 متوسط</button>
-        <button class="btn bxs" id="sev-l" onclick="pickSev('low')"
-          style="flex:1;border:2px solid #2e7d32;color:#2e7d32;background:#fff">🟢 بسيط</button>
+      <div class="sev-pick">
+        <button class="sev-btn sev-u-btn" onclick="pickSev('urgent',this)">🔴 عاجل</button>
+        <button class="sev-btn sev-m-btn" onclick="pickSev('medium',this)">🟡 متوسط</button>
+        <button class="sev-btn sev-l-btn" onclick="pickSev('low',this)">🟢 بسيط</button>
       </div>
     </div>
-    <div class="fld">
-      <label class="lbl">ملاحظات</label>
-      <textarea class="inp" id="n-notes" placeholder="أي تفاصيل إضافية..."></textarea>
-    </div>
-    <div class="fld">
-      <label class="lbl">📷 صور العيب</label>
-      <div class="photo-drop" onclick="document.getElementById('n-photos').click()">
-        <div class="photo-drop-ic">📷</div>
-        <div class="photo-drop-lbl">اضغط لالتقاط صورة أو اختيار من المعرض</div>
-        <div class="photo-drop-sub">يمكن إضافة أكثر من صورة</div>
-      </div>
-      <input type="file" id="n-photos" accept="image/*" multiple capture="environment"
-        style="display:none" onchange="addPhotos(this)">
-      <div class="photo-grid" id="n-photo-grid"></div>
-    </div>
-    <div class="btn-row" style="margin-top:4px">
-      <button class="btn bo" onclick="submitNew()">✅ تسجيل العيب</button>
-      <button class="btn bgr bsm" onclick="closeModal('m-new')">إلغاء</button>
-    </div>
-  </div>
-</div>
 
-<!-- تحليل العيب -->
-<div class="ov" id="m-analyze">
-  <div class="modal">
-    <div class="modal-title">🔍 تحليل العيب</div>
-    <div class="modal-info" id="ma-info"></div>
+    <!-- قسم 2: التحليل -->
+    <div style="background:#f3e5f5;border-radius:10px;padding:8px 12px;margin:16px 0 14px;font-size:12px;font-weight:700;color:#6a1b9a">
+      🔍 القسم الثاني — التحليل (مدير المجموعة)
+    </div>
     <div class="fld">
       <label class="lbl">السبب الجذري *</label>
-      <select class="inp" id="ma-cause">
+      <select class="inp" id="n-cause">
         <option value="">— اختر —</option>
         <option value="manufacturing">خطأ في التصنيع</option>
         <option value="transport">تلف أثناء النقل</option>
         <option value="installation">خطأ في التركيب</option>
         <option value="design">خطأ في التصميم</option>
         <option value="misuse">إساءة استخدام</option>
-        <option value="unknown">غير محدد — يحتاج تحقيق</option>
+        <option value="unknown">غير محدد</option>
       </select>
     </div>
     <div class="fld">
       <label class="lbl">المصنع المسؤول</label>
-      <select class="inp" id="ma-factory">
+      <select class="inp" id="n-factory">
         <option value="">— غير محدد —</option>
         <option>مصنع الخشب الطبيعي</option>
         <option>مصنع الملامين</option>
@@ -391,73 +358,102 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       </select>
     </div>
     <div class="fld">
-      <label class="lbl">وصف تفصيلي للعيب *</label>
-      <textarea class="inp" id="ma-desc" placeholder="اشرح العيب بالتفصيل — الحجم، الموقع، الشدة..."></textarea>
+      <label class="lbl">وصف تفصيلي *</label>
+      <textarea class="inp" id="n-desc" placeholder="اشرح العيب بالتفصيل..."></textarea>
     </div>
     <div class="fld">
-      <label class="lbl">الحل المقترح</label>
-      <select class="inp" id="ma-sol">
-        <option value="">— اختر —</option>
-        <option value="fix_site">إصلاح في الموقع (24 ساعة)</option>
-        <option value="replace_part">استبدال قطعة (7 أيام)</option>
-        <option value="replace_full">استبدال كامل للمنتج</option>
-        <option value="maintenance">صيانة وطلاء</option>
-      </select>
+      <label class="lbl">الحل المطلوب *</label>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="display:flex;align-items:center;gap:10px;background:#e8f5e9;border-radius:10px;padding:10px;cursor:pointer;border:2px solid transparent" id="sol-fast-lbl">
+          <input type="radio" name="n-sol" value="fast" onchange="pickSol('fast')" style="accent-color:#2e7d32;width:18px;height:18px">
+          <div>
+            <div style="font-weight:800;color:#2e7d32;font-size:13px">🟢 إصلاح في الموقع</div>
+            <div style="font-size:11px;color:#555">المسار السريع — ينتهي خلال 24 ساعة</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;background:#fce4ec;border-radius:10px;padding:10px;cursor:pointer;border:2px solid transparent" id="sol-full-lbl">
+          <input type="radio" name="n-sol" value="full" onchange="pickSol('full')" style="accent-color:#c62828;width:18px;height:18px">
+          <div>
+            <div style="font-weight:800;color:#880e4f;font-size:13px">🔴 يحتاج قطعة / تصنيع</div>
+            <div style="font-size:11px;color:#555">المسار الكامل — جودة + بيع + مصنع</div>
+          </div>
+        </label>
+      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn bp" onclick="submitAnalysis()">📤 إرسال للاعتماد</button>
-      <button class="btn bgr bsm" onclick="closeModal('m-analyze')">إلغاء</button>
+    <div class="fld">
+      <label class="lbl">📷 صور العيب</label>
+      <div class="photo-drop" onclick="document.getElementById('n-photos').click()">
+        <div style="font-size:28px;margin-bottom:4px">📷</div>
+        <div style="font-size:13px;color:#aaa;font-weight:600">اضغط لإضافة صور</div>
+        <div style="font-size:11px;color:#ccc">كاميرا أو معرض — أكثر من صورة</div>
+      </div>
+      <input type="file" id="n-photos" accept="image/*" multiple capture="environment"
+        style="display:none" onchange="addPhotos(this)">
+      <div class="photo-grid" id="n-pgrid"></div>
+    </div>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn bo" onclick="submitNew()">✅ تسجيل وإرسال للاعتماد</button>
+      <button class="btn bgr bsm" onclick="closeModal('m-new')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<!-- اعتماد -->
+<!-- ════════ MODAL: اعتماد ════════ -->
 <div class="ov" id="m-approve">
   <div class="modal">
-    <div class="modal-title">✅ اعتماد تقرير العيب</div>
+    <div class="modal-title" id="map-title">✅ اعتماد العيب</div>
     <div class="modal-info" id="map-info"></div>
     <div class="fld">
       <label class="lbl">ملاحظة (اختياري)</label>
-      <textarea class="inp" id="map-note" placeholder="أي توجيه أو تعليق..."></textarea>
+      <textarea class="inp" id="map-note" placeholder="توجيه أو تعليق..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn bg" onclick="submitApprove(true)">✅ اعتماد وإرسال للجودة</button>
+      <button class="btn bg" onclick="submitApprove(true)">✅ اعتماد</button>
       <button class="btn br bsm" onclick="submitApprove(false)">❌ رفض</button>
     </div>
     <button class="btn bgr bsm" style="margin-top:8px" onclick="closeModal('m-approve')">إلغاء</button>
   </div>
 </div>
 
-<!-- مراجعة الجودة -->
-<div class="ov" id="m-quality">
+<!-- ════════ MODAL: جودة + بيع (بالتوازي) ════════ -->
+<div class="ov" id="m-qsales">
   <div class="modal">
-    <div class="modal-title">🔬 مراجعة الجودة</div>
-    <div class="modal-info" id="mq-info"></div>
-    <div class="fld">
+    <div class="modal-title" id="mqs-title">🔬 مراجعة الجودة / البيع</div>
+    <div class="parallel-note">⚡ الجودة والبيع يعملان بالتوازي في نفس الوقت</div>
+    <div class="modal-info" id="mqs-info"></div>
+    <div class="fld" id="mqs-quality-fields">
       <label class="lbl">المتسبب الرسمي *</label>
-      <select class="inp" id="mq-cause">
+      <select class="inp" id="mqs-cause">
         <option value="">— اختر —</option>
         <option>خطأ في التصنيع — مصنع الملامين</option>
         <option>خطأ في التصنيع — مصنع المعدني</option>
         <option>خطأ في التصنيع — مصنع الخشب</option>
-        <option>تلف أثناء النقل — إدارة التسليمات</option>
+        <option>تلف أثناء النقل</option>
         <option>خطأ في التركيب — فريق التركيبات</option>
         <option>خطأ في التصميم — المكتب الفني</option>
         <option>إساءة استخدام من العميل</option>
       </select>
+      <div style="margin-top:10px">
+        <label class="lbl">نتيجة التحقيق</label>
+        <textarea class="inp" id="mqs-result" placeholder="ملاحظات الجودة..."></textarea>
+      </div>
     </div>
-    <div class="fld">
-      <label class="lbl">نتيجة التحقيق</label>
-      <textarea class="inp" id="mq-result" placeholder="ملاحظات الجودة بعد المراجعة..."></textarea>
+    <div class="fld" id="mqs-sales-fields" style="display:none">
+      <label class="lbl">رقم السيلز أوردر</label>
+      <input class="inp" id="mqs-so" placeholder="SO-2026-XXXX">
+      <div style="margin-top:10px">
+        <label class="lbl">ملاحظات البيع</label>
+        <textarea class="inp" id="mqs-sales-note" placeholder="أي تعليق من البيع..."></textarea>
+      </div>
     </div>
     <div class="btn-row">
-      <button class="btn bt" onclick="submitQuality()">✅ اعتماد الجودة</button>
-      <button class="btn bgr bsm" onclick="closeModal('m-quality')">إلغاء</button>
+      <button class="btn bt" id="mqs-btn" onclick="submitQSales()">✅ اعتماد</button>
+      <button class="btn bgr bsm" onclick="closeModal('m-qsales')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<!-- تفاصيل -->
+<!-- ════════ MODAL: تفاصيل ════════ -->
 <div class="ov" id="m-detail">
   <div class="modal">
     <div class="modal-title">📋 تفاصيل العيب</div>
@@ -466,416 +462,368 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
   </div>
 </div>
 
-<!-- عارض الصور -->
-<div id="photo-viewer" onclick="document.getElementById('photo-viewer').classList.remove('open')">
-  <img id="pv-img" src="">
-  <div id="photo-viewer-close">اضغط في أي مكان للإغلاق ✕</div>
+<!-- Photo viewer -->
+<div id="pviewer" onclick="this.classList.remove('open')">
+  <img id="pv-img" src=""><div id="pviewer-close">اضغط للإغلاق ✕</div>
 </div>
-
-<!-- Toast -->
 <div id="toast"></div>
 
-<!-- ══════════════════ SCRIPT ══════════════════ -->
 <script>
-// ═══════════════════════════════════════════
-// ROLES CONFIG
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
 const ROLES = {
-  field:   { name:'مشرف موقع',    lbl:'فني / مشرف',          team:'A', cat:'field' },
-  lead_a:  { name:'أحمد حسن',     lbl:'مدير مجموعة A',       team:'A', cat:'lead'  },
-  lead_b:  { name:'سامي فؤاد',    lbl:'مدير مجموعة B',       team:'B', cat:'lead'  },
-  lead_c:  { name:'حازم قاعود',   lbl:'مدير مجموعة C',       team:'C', cat:'lead'  },
-  lead_d:  { name:'هشام جمال',    lbl:'مدير مجموعة D',       team:'D', cat:'lead'  },
-  ashraf:  { name:'أشرف قاسم',    lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
-  fathy:   { name:'محمد فتحي',    lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
-  khalid:  { name:'خالد علي',     lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
-  quality: { name:'مسؤول الجودة', lbl:'إدارة الجودة',        team:null, cat:'quality'},
-  sales:   { name:'إدارة البيع',  lbl:'البيع',               team:null, cat:'sales' },
-  technical:{name:'المكتب الفني', lbl:'المكتب الفني',         team:null, cat:'tech'  },
-  mokhtar: { name:'محمد مختار',   lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
+  field:   {name:'مشرف موقع',    lbl:'فني / مشرف',          team:'A', cat:'field'},
+  lead_a:  {name:'أحمد حسن',     lbl:'مدير مجموعة A',       team:'A', cat:'lead'},
+  lead_b:  {name:'سامي فؤاد',    lbl:'مدير مجموعة B',       team:'B', cat:'lead'},
+  lead_c:  {name:'حازم قاعود',   lbl:'مدير مجموعة C',       team:'C', cat:'lead'},
+  lead_d:  {name:'هشام جمال',    lbl:'مدير مجموعة D',       team:'D', cat:'lead'},
+  ashraf:  {name:'أشرف قاسم',    lbl:'إدارة التركيبات',     team:null,cat:'mgr'},
+  fathy:   {name:'محمد فتحي',    lbl:'إدارة التركيبات',     team:null,cat:'mgr'},
+  khalid:  {name:'خالد علي',     lbl:'إدارة التركيبات',     team:null,cat:'mgr'},
+  mokhtar: {name:'محمد مختار',   lbl:'إدارة التركيبات',     team:null,cat:'mgr'},
+  quality: {name:'مسؤول الجودة', lbl:'إدارة الجودة',        team:null,cat:'quality'},
+  sales:   {name:'إدارة البيع',  lbl:'البيع',               team:null,cat:'sales'},
+  technical:{name:'المكتب الفني',lbl:'المكتب الفني',         team:null,cat:'tech'},
 };
 
-const STATUS = {
-  new:              { lbl:'جديد',           cls:'s-new',        ic:'🆕', step:0 },
-  analyzed:         { lbl:'تم التحليل',     cls:'s-analyzed',   ic:'🔍', step:1 },
-  approved:         { lbl:'معتمد',          cls:'s-approved',   ic:'✅', step:2 },
-  rejected:         { lbl:'مرفوض',          cls:'s-rejected',   ic:'❌', step:1 },
-  quality_review:   { lbl:'مراجعة الجودة', cls:'s-quality',    ic:'🔬', step:3 },
-  quality_approved: { lbl:'اعتمدت الجودة', cls:'s-qa-ok',      ic:'✅', step:4 },
-  sales_approved:   { lbl:'اعتمد البيع',   cls:'s-approved',   ic:'💼', step:5 },
-  in_production:    { lbl:'في التصنيع',     cls:'s-production', ic:'🏭', step:6 },
-  ready:            { lbl:'جاهز للتوريد',   cls:'s-ready',      ic:'📦', step:7 },
-  closed:           { lbl:'مغلق ✓',         cls:'s-closed',     ic:'🟢', step:8 },
-  factory_notified: { lbl:'إشعار المصنع',  cls:'s-production', ic:'📣', step:null },
-  sales_approved:   { lbl:'اعتمد البيع',   cls:'s-approved',   ic:'💼', step:5 },
+// ─── المسار السريع: 3 خطوات ───
+const FAST_STEPS = [
+  {key:'registered', lbl:'تسجيل', ic:'🆕'},
+  {key:'approved',   lbl:'اعتماد', ic:'✅'},
+  {key:'closed',     lbl:'إغلاق',  ic:'🟢'},
+];
+
+// ─── المسار الكامل: 5 خطوات ───
+const FULL_STEPS = [
+  {key:'registered',   lbl:'تسجيل',   ic:'🆕'},
+  {key:'approved',     lbl:'اعتماد',   ic:'✅'},
+  {key:'qs_review',    lbl:'جودة+بيع', ic:'🔬'},
+  {key:'in_production',lbl:'تصنيع',    ic:'🏭'},
+  {key:'closed',       lbl:'إغلاق',    ic:'🟢'},
+];
+
+const STATUS_IC = {
+  registered:   '🆕', approved:'✅', rejected:'❌',
+  qs_review:'🔬', quality_done:'✅', sales_done:'💼',
+  qs_complete:'✅', in_production:'🏭', closed:'🟢',
+  factory_notified:'📣',
+};
+
+const STATUS_LBL = {
+  registered:'مسجّل وقيد الاعتماد', approved:'معتمد', rejected:'مرفوض',
+  qs_review:'جودة + بيع (بالتوازي)', quality_done:'الجودة اعتمدت — ينتظر البيع',
+  sales_done:'البيع اعتمد — تنتظر الجودة', qs_complete:'الجودة والبيع اعتمدا',
+  in_production:'في التصنيع', closed:'مغلق ✓', factory_notified:'إشعار المصنع',
+};
+
+const STATUS_CLS = {
+  registered:'s-new', approved:'s-approved', rejected:'s-rejected',
+  qs_review:'s-quality', quality_done:'s-quality', sales_done:'s-quality',
+  qs_complete:'s-approved', in_production:'s-production', closed:'s-closed',
 };
 
 const SEV = {
-  urgent: { lbl:'🔴 عاجل',   cls:'sev-u', sla:3,  color:'#c62828' },
-  medium: { lbl:'🟡 متوسط',  cls:'sev-m', sla:7,  color:'#e65100' },
-  low:    { lbl:'🟢 بسيط',   cls:'sev-l', sla:14, color:'#2e7d32' },
+  urgent:{lbl:'🔴 عاجل',  cls:'sev-u', sla:3,  color:'#c62828'},
+  medium:{lbl:'🟡 متوسط', cls:'sev-m', sla:7,  color:'#e65100'},
+  low:   {lbl:'🟢 بسيط',  cls:'sev-l', sla:14, color:'#2e7d32'},
 };
 
-const STEPS_LABELS = ['تسجيل','تحليل','اعتماد','جودة','تأكيد','بيع','تصنيع','توريد','إغلاق'];
-
-// SLA لكل مرحلة بالساعات
-const STEP_SLA_HOURS = {
-  new:              { lbl:'تسجيل → تحليل',      hours:4,   owner:'مدير المجموعة'   },
-  analyzed:         { lbl:'تحليل → اعتماد',      hours:4,   owner:'إدارة التركيبات' },
-  approved:         { lbl:'اعتماد → الجودة',     hours:8,   owner:'محمد مختار'       },
-  quality_review:   { lbl:'مراجعة الجودة',       hours:24,  owner:'إدارة الجودة'    },
-  quality_approved: { lbl:'جودة → اعتماد البيع', hours:8,   owner:'إدارة البيع'     },
-  sales_approved:   { lbl:'بيع → بدء التصنيع',   hours:4,   owner:'محمد مختار'       },
-  in_production:    { lbl:'التصنيع',              hours:null, owner:'المصنع'          }, // يُحسب من الـ severity SLA
-  ready:            { lbl:'توريد → إغلاق',        hours:48,  owner:'إدارة التسليمات' },
+// SLA لكل مرحلة (ساعات)
+const STEP_SLA = {
+  registered:   {h:4,  owner:'مدير المجموعة / مدير التركيبات'},
+  approved:     {h:8,  owner:'محمد مختار'},
+  qs_review:    {h:24, owner:'الجودة + البيع معاً'},
+  qs_complete:  {h:4,  owner:'محمد مختار'},
+  in_production:{h:null,owner:'المصنع'},
 };
 
-function fmtDuration(ms) {
-  if (ms < 0) ms = 0;
-  const mins  = Math.floor(ms / 60000);
-  const hours = Math.floor(mins / 60);
-  const days  = Math.floor(hours / 24);
-  if (days > 0)  return `${days} يوم ${hours%24 ? hours%24+'س' : ''}`.trim();
-  if (hours > 0) return `${hours} ساعة ${mins%60 ? mins%60+'د' : ''}`.trim();
-  return `${mins} دقيقة`;
-}
+const SK = 'snag_v4';
 
-function stepDuration(hist, idx) {
-  if (idx >= hist.length-1) {
-    // المرحلة الحالية — من آخر خطوة للآن
-    const elapsed = Date.now() - new Date(hist[idx].at).getTime();
-    return { ms: elapsed, current: true };
-  }
-  const ms = new Date(hist[idx+1].at).getTime() - new Date(hist[idx].at).getTime();
-  return { ms, current: false };
-}
-
-function stepStatus(step, ms, isCurrent) {
-  const sla = STEP_SLA_HOURS[step];
-  if (!sla || !sla.hours) return null;
-  const slaMs = sla.hours * 3600000;
-  if (isCurrent) {
-    if (ms > slaMs) return 'exceeded';
-    if (ms > slaMs * 0.75) return 'warning';
-    return 'ok';
-  }
-  if (ms > slaMs) return 'exceeded';
-  if (ms > slaMs * 0.85) return 'warning';
-  return 'ok';
-}
-
-// إشعار المصنع — يظهر في الـ timeline
-function notifyFactory(s, reason) {
-  const factories = {
-    'مصنع الملامين':'🏭 مصنع الملامين',
-    'مصنع المعدني':'🏭 مصنع المعدني',
-    'مصنع الخشب الطبيعي':'🏭 مصنع الخشب',
-    'مصنع الألوميتال':'🏭 مصنع الألوميتال',
-  };
-  const factory = s.factory ? (factories[s.factory]||s.factory) : '🏭 المصنع المختص';
-  const now = new Date().toISOString();
-  s.history.push({
-    step:'factory_notified',
-    by:'النظام',
-    at: now,
-    note:`📣 إشعار ${factory} — ${reason}\nالعيب: ${s.defect_type} | العقد: ${s.contract} | العميل: ${s.client}`,
-  });
-  toast(`📣 تم إخطار ${factory} — ${reason}`, 4000);
-}
-
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-let U = null;
-let SNAGS = [];
-let _curId = null;
-let _newPhotos = [];
-let _curFilter = '';
-
-const STORAGE_KEY = 'snag_v3';
-
-const DEMO_DATA = [
-  { id:'SNR-2026-0001', date:'2026-02-25', client:'TMG — كمبوند بلوم', contract:'2026-041',
-    item:'خزانة غرفة النوم — باب رئيسي', defect_type:'كسر', severity:'urgent',
-    status:'in_production', team:'A', created_by:'مشرف موقع', created_at:'2026-02-25T08:30:00', closed_at:'',
-    root_cause:'تلف أثناء النقل', factory:'مصنع الملامين',
-    analysis_desc:'كسر كامل في الباب الرئيسي للخزانة نتيجة ضغط أثناء النقل',
-    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
-    approved_by:'أشرف قاسم', approval_note:'يُستعجل التصنيع',
-    quality_cause:'تلف أثناء النقل — إدارة التسليمات', quality_result:'تأكد الفريق من أن السبب خلال النقل',
-    notes:'العميل طلب الحل في أسرع وقت', photos:[],
-    history:[
-      {step:'new',            by:'مشرف موقع',   at:'2026-02-25T08:30', note:'تسجيل العيب في الموقع | رقم العقد: 2026-041'},
-      {step:'factory_notified',by:'النظام',       at:'2026-02-25T08:31', note:'📣 إشعار مصنع الملامين — إشعار مبدئي، العيب قيد المراجعة، استعد للتصنيع'},
-      {step:'analyzed',  by:'أحمد حسن',   at:'2026-02-25T10:15', note:'كسر كامل — سبب: تلف نقل'},
-      {step:'approved',  by:'أشرف قاسم',  at:'2026-02-25T11:00', note:'اعتمدت — يستعجل التصنيع'},
-      {step:'quality_review', by:'محمد مختار', at:'2026-02-25T12:00', note:'إرسال للجودة'},
-      {step:'quality_approved',  by:'مسؤول الجودة', at:'2026-02-26T09:00', note:'تأكيد: تلف نقل'},
-      {step:'sales_approved',    by:'إدارة البيع',   at:'2026-02-26T09:45', note:'اعتماد البيع | رقم العقد: 2026-041 | العميل: TMG'},
-      {step:'factory_notified',  by:'النظام',        at:'2026-02-26T09:46', note:'📣 إشعار مصنع الملامين — اعتماد البيع، ابدأ التصنيع فوراً | العقد: 2026-041'},
-      {step:'in_production',     by:'محمد مختار',    at:'2026-02-26T10:30', note:'بدأ التصنيع — مصنع الملامين | SLA: 3 أيام'},
-    ]},
-  { id:'SNR-2026-0002', date:'2026-02-26', client:'Emaar — الحي الثامن', contract:'2026-035',
-    item:'مكتب المدير — سطح زجاجي', defect_type:'مقاس غلط', severity:'medium',
-    status:'analyzed', team:'B', created_by:'مشرف موقع', created_at:'2026-02-26T09:00:00', closed_at:'',
-    root_cause:'خطأ في التصنيع', factory:'مصنع الملامين',
-    analysis_desc:'سطح الزجاج أصغر بـ 5 سم من الجانب الأيسر',
-    proposed_solution:'replace_part', analyzed_by:'سامي فؤاد',
-    approved_by:'', approval_note:'', quality_cause:'', quality_result:'',
-    notes:'يوقف تركيب المكتب', photos:[],
-    history:[
-      {step:'new',      by:'مشرف موقع', at:'2026-02-26T09:00', note:'تسجيل العيب'},
-      {step:'analyzed', by:'سامي فؤاد', at:'2026-02-26T11:30', note:'مقاس غلط — يحتاج زجاج جديد'},
-    ]},
-  { id:'SNR-2026-0003', date:'2026-02-26', client:'TMG — برج العرب', contract:'2026-052',
-    item:'ستائر قاطعة — وحدة 3', defect_type:'خدش', severity:'low',
-    status:'closed', team:'C', created_by:'مشرف موقع', created_at:'2026-02-26T13:00:00', closed_at:'2026-02-27T16:00:00',
-    root_cause:'خطأ في التركيب', factory:'لا يتعلق بالمصنع',
-    analysis_desc:'خدش خفيف في الإطار الألوميتال أثناء التجميع',
-    proposed_solution:'fix_site', analyzed_by:'حازم قاعود',
-    approved_by:'محمد فتحي', approval_note:'إصلاح سريع',
-    quality_cause:'خطأ في التركيب — فريق التركيبات', quality_result:'إصلاح بالطلاء — تم التحقق',
-    notes:'', photos:[],
-    history:[
-      {step:'new',             by:'مشرف موقع',   at:'2026-02-26T13:00', note:'تسجيل العيب'},
-      {step:'analyzed',        by:'حازم قاعود',  at:'2026-02-26T14:00', note:'خدش بسيط — إصلاح موقعي'},
-      {step:'approved',        by:'محمد فتحي',   at:'2026-02-26T14:30', note:'موافق — إصلاح سريع'},
-      {step:'quality_review',  by:'محمد مختار',  at:'2026-02-26T15:00', note:'إرسال للجودة'},
-      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T16:00', note:'تم الإصلاح وتم التحقق'},
-      {step:'closed',          by:'محمد مختار',  at:'2026-02-27T16:00', note:'إغلاق العيب — حُل في الموقع'},
-    ]},
-  { id:'SNR-2026-0004', date:'2026-02-27', client:'Emaar — داون تاون', contract:'2026-061',
-    item:'غرفة اجتماعات — باب زجاجي', defect_type:'مشكلة دهان', severity:'medium',
-    status:'new', team:'D', created_by:'مشرف موقع', created_at:'2026-02-27T10:00:00', closed_at:'',
-    root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
-    analyzed_by:'', approved_by:'', approval_note:'', quality_cause:'', quality_result:'',
-    notes:'الدهان غير متجانس في الزاوية العلوية', photos:[],
-    history:[
-      {step:'new', by:'مشرف موقع', at:'2026-02-27T10:00', note:'تسجيل العيب'},
-    ]},
-  { id:'SNR-2026-0005', date:'2026-02-27', client:'TMG — كمبوند بلوم', contract:'2026-041',
-    item:'مكتبة المدخل — رف علوي', defect_type:'قطعة ناقصة', severity:'medium',
-    status:'approved', team:'A', created_by:'مشرف موقع', created_at:'2026-02-27T11:30:00', closed_at:'',
-    root_cause:'خطأ في التصنيع', factory:'مصنع الملامين',
-    analysis_desc:'الرف العلوي غير موجود في الشحنة — نقص في التعبئة',
-    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
-    approved_by:'خالد علي', approval_note:'اعتمدت — يراجع مع المخازن',
-    quality_cause:'', quality_result:'',
-    notes:'', photos:[],
-    history:[
-      {step:'new',      by:'مشرف موقع', at:'2026-02-27T11:30', note:'تسجيل العيب'},
-      {step:'analyzed', by:'أحمد حسن',  at:'2026-02-27T13:00', note:'رف مفقود من الشحنة'},
-      {step:'approved', by:'خالد علي',  at:'2026-02-27T14:00', note:'اعتمدت — يراجع مع المخازن'},
-    ]},
+// ══════════════════════════════════════════
+// DEMO DATA
+// ══════════════════════════════════════════
+const DEMO = [
+  // مسار سريع - مغلق
+  {id:'SNR-2026-0001', track:'fast', date:'2026-02-25', client:'TMG — كمبوند بلوم',
+   contract:'2026-041', item:'ستائر قاطعة — خدش بسيط', defect_type:'خدش', severity:'low',
+   status:'closed', team:'C', created_by:'حازم قاعود', created_at:'2026-02-25T08:00:00', closed_at:'2026-02-25T18:00:00',
+   root_cause:'installation', factory:'لا يتعلق بالمصنع', desc:'خدش خفيف في الإطار أثناء التجميع',
+   solution:'fast', approved_by:'أشرف قاسم', photos:[],
+   history:[
+     {step:'registered',ic:'🆕',by:'حازم قاعود',at:'2026-02-25T08:00',note:'مسار سريع — إصلاح موقعي'},
+     {step:'factory_notified',ic:'📣',by:'النظام',at:'2026-02-25T08:01',note:'📣 إشعار مصنع الألوميتال — عيب قيد المراجعة'},
+     {step:'approved',ic:'✅',by:'أشرف قاسم',at:'2026-02-25T09:30',note:'موافق — إصلاح سريع'},
+     {step:'closed',ic:'🟢',by:'حازم قاعود',at:'2026-02-25T18:00',note:'تم الإصلاح بالطلاء في الموقع ✅'},
+   ]},
+  // مسار كامل - في التصنيع
+  {id:'SNR-2026-0002', track:'full', date:'2026-02-25', client:'TMG — كمبوند بلوم',
+   contract:'2026-041', item:'خزانة غرفة النوم — باب رئيسي', defect_type:'كسر', severity:'urgent',
+   status:'in_production', team:'A', created_by:'أحمد حسن', created_at:'2026-02-25T09:00:00', closed_at:'',
+   root_cause:'transport', factory:'مصنع الملامين', desc:'كسر كامل في الباب الرئيسي نتيجة ضغط أثناء النقل',
+   solution:'full', approved_by:'أشرف قاسم',
+   quality_cause:'تلف أثناء النقل', quality_result:'تأكد الفريق من أن السبب خلال النقل',
+   quality_done:true, sales_done:true, sales_so:'SO-2026-0041', photos:[],
+   history:[
+     {step:'registered',ic:'🆕',by:'أحمد حسن',at:'2026-02-25T09:00',note:'مسار كامل | العقد: 2026-041'},
+     {step:'factory_notified',ic:'📣',by:'النظام',at:'2026-02-25T09:01',note:'📣 إشعار مصنع الملامين — عيب قيد المراجعة، استعد'},
+     {step:'approved',ic:'✅',by:'أشرف قاسم',at:'2026-02-25T11:00',note:'معتمد — يُستعجل'},
+     {step:'qs_review',ic:'🔬',by:'محمد مختار',at:'2026-02-25T12:00',note:'إرسال للجودة والبيع بالتوازي'},
+     {step:'quality_done',ic:'✅',by:'مسؤول الجودة',at:'2026-02-26T09:00',note:'المتسبب: تلف أثناء النقل'},
+     {step:'sales_done',ic:'💼',by:'إدارة البيع',at:'2026-02-26T10:00',note:'اعتمدت | SO-2026-0041'},
+     {step:'factory_notified',ic:'📣',by:'النظام',at:'2026-02-26T10:01',note:'📣 إشعار مصنع الملامين — اعتمد البيع، ابدأ التصنيع فوراً | العقد: 2026-041'},
+     {step:'in_production',ic:'🏭',by:'محمد مختار',at:'2026-02-26T10:30',note:'بدأ التصنيع — مصنع الملامين | SLA 3 أيام'},
+   ]},
+  // مسار كامل - ينتظر اعتماد
+  {id:'SNR-2026-0003', track:'full', date:'2026-02-26', client:'Emaar — الحي الثامن',
+   contract:'2026-035', item:'مكتب المدير — سطح زجاجي', defect_type:'مقاس غلط', severity:'medium',
+   status:'registered', team:'B', created_by:'سامي فؤاد', created_at:'2026-02-26T09:00:00', closed_at:'',
+   root_cause:'manufacturing', factory:'مصنع الملامين', desc:'سطح الزجاج أصغر بـ 5 سم من الجانب الأيسر — يحتاج زجاج جديد',
+   solution:'full', approved_by:'', photos:[],
+   history:[
+     {step:'registered',ic:'🆕',by:'سامي فؤاد',at:'2026-02-26T09:00',note:'مسار كامل | العقد: 2026-035'},
+     {step:'factory_notified',ic:'📣',by:'النظام',at:'2026-02-26T09:01',note:'📣 إشعار مصنع الملامين — عيب قيد المراجعة، استعد للتصنيع'},
+   ]},
+  // مسار كامل - جودة وبيع بالتوازي
+  {id:'SNR-2026-0004', track:'full', date:'2026-02-27', client:'Emaar — داون تاون',
+   contract:'2026-061', item:'غرفة اجتماعات — باب زجاجي', defect_type:'مشكلة دهان', severity:'medium',
+   status:'qs_review', team:'D', created_by:'هشام جمال', created_at:'2026-02-27T10:00:00', closed_at:'',
+   root_cause:'manufacturing', factory:'مصنع المعدني', desc:'الدهان غير متجانس — يحتاج إعادة طلاء كاملة',
+   solution:'full', approved_by:'خالد علي',
+   quality_done:false, sales_done:false, photos:[],
+   history:[
+     {step:'registered',ic:'🆕',by:'هشام جمال',at:'2026-02-27T10:00',note:'مسار كامل | العقد: 2026-061'},
+     {step:'factory_notified',ic:'📣',by:'النظام',at:'2026-02-27T10:01',note:'📣 إشعار مصنع المعدني — عيب قيد المراجعة'},
+     {step:'approved',ic:'✅',by:'خالد علي',at:'2026-02-27T12:00',note:'معتمد'},
+     {step:'qs_review',ic:'🔬',by:'محمد مختار',at:'2026-02-27T13:00',note:'الجودة والبيع يراجعان بالتوازي'},
+   ]},
+  // مسار سريع - ينتظر اعتماد
+  {id:'SNR-2026-0005', track:'fast', date:'2026-02-27', client:'TMG — برج العرب',
+   contract:'2026-052', item:'ستائر قاطعة — اكسسوار ناقص', defect_type:'اكسسوار ناقص', severity:'low',
+   status:'registered', team:'C', created_by:'حازم قاعود', created_at:'2026-02-27T14:00:00', closed_at:'',
+   root_cause:'manufacturing', factory:'لا يتعلق بالمصنع', desc:'مفتاح السيطرة غير موجود في الشحنة — موجود في المخازن',
+   solution:'fast', approved_by:'', photos:[],
+   history:[
+     {step:'registered',ic:'🆕',by:'حازم قاعود',at:'2026-02-27T14:00',note:'مسار سريع — يُحضر من المخازن'},
+   ]},
 ];
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-window.onload = () => {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  SNAGS = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEMO_DATA));
-};
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let U=null, SNAGS=[], _curId=null, _newPhotos=[], _selSev='', _selSol='', _qsMode='';
 
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(SNAGS)); }
+window.onload=()=>{ SNAGS=JSON.parse(localStorage.getItem(SK)||'null')||JSON.parse(JSON.stringify(DEMO)); };
+function save(){ localStorage.setItem(SK,JSON.stringify(SNAGS)); }
+function find(id){ return SNAGS.find(s=>s.id===id); }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // AUTH
-// ═══════════════════════════════════════════
-function login() {
-  const role = document.getElementById('login-role').value;
-  const pass = document.getElementById('login-pass').value;
-  if (!role) return toast('⚠️ اختر دورك أولاً');
-  if (pass !== 'demo') return toast('❌ كلمة المرور: demo');
-  setUser(role);
-  document.getElementById('screen-login').style.display = 'none';
-  document.getElementById('screen-app').style.display   = 'block';
-  renderAll();
-}
-
-function logout() {
-  U = null;
-  document.getElementById('screen-app').style.display   = 'none';
-  document.getElementById('screen-login').style.display = 'flex';
-  document.getElementById('login-role').value = '';
-  document.getElementById('login-pass').value = '';
-}
-
-function setUser(roleKey) {
-  U = { key: roleKey, ...ROLES[roleKey] };
-  // header
-  document.getElementById('hdr-name').textContent = U.name;
-  document.getElementById('hdr-role').textContent = U.lbl;
-  // role bar highlight
-  document.querySelectorAll('.rc').forEach(b => {
-    b.classList.toggle('on', b.dataset.r === roleKey);
-  });
-}
-
-function switchRole(btn) {
-  setUser(btn.dataset.r);
-  _curFilter = '';
-  renderAll();
-  toast('🔄 ' + U.name + ' — ' + U.lbl);
-}
-
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
-function showTab(name, btn) {
-  ['list','dash','guide'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t===name ? '' : 'none';
-    document.getElementById('tab-btn-'+t).classList.toggle('on', t===name);
-    document.getElementById('bn-'+t)?.classList.toggle('on', t===name);
-  });
-  if (name==='list')  renderList();
-  if (name==='dash')  renderDash();
-  if (name==='guide') renderGuide();
-}
-
-function renderAll() {
+// ══════════════════════════════════════════
+function login(){
+  const r=document.getElementById('login-role').value;
+  const p=document.getElementById('login-pass').value;
+  if(!r) return toast('⚠️ اختر دورك');
+  if(p!=='demo') return toast('❌ كلمة المرور: demo');
+  setUser(r);
+  document.getElementById('screen-login').style.display='none';
+  document.getElementById('screen-app').style.display='block';
   renderList();
-  // reset to list tab
-  showTab('list', document.getElementById('tab-btn-list'));
 }
 
-// ═══════════════════════════════════════════
-// VISIBILITY & ACTIONS
-// ═══════════════════════════════════════════
-function mySnags() {
-  if (!U) return [];
-  const c = U.cat;
-  if (c==='field') return SNAGS.filter(s => s.created_by===U.name || s.team===U.team);
-  if (c==='lead')  return SNAGS.filter(s => s.team===U.team);
-  return SNAGS; // mgr, quality, follow, sales, tech
+function logout(){
+  U=null;
+  document.getElementById('screen-app').style.display='none';
+  document.getElementById('screen-login').style.display='flex';
+  document.getElementById('login-role').value='';
+  document.getElementById('login-pass').value='';
 }
 
-function needsMyAction(s) {
-  const c = U.cat, k = U.key;
-  if (c==='lead'    && s.status==='new'           && s.team===U.team) return true;
-  if (c==='mgr'     && s.status==='analyzed')                         return true;
-  if (c==='quality' && s.status==='quality_review')                                          return true;
-  if (c==='sales'   && s.status==='quality_approved')                                         return true;
-  if (c==='mgr'     && ['approved','sales_approved','in_production','ready'].includes(s.status)) return true;
+function setUser(r){
+  U={key:r,...ROLES[r]};
+  document.getElementById('hdr-name').textContent=U.name;
+  document.getElementById('hdr-role').textContent=U.lbl;
+  document.querySelectorAll('.rc').forEach(b=>b.classList.toggle('on',b.dataset.r===r));
+}
+
+function sw(btn){ setUser(btn.dataset.r); toast('🔄 '+U.name); renderList(); }
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function showTab(name,btn){
+  ['list','dash','guide'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'':'none';
+    document.getElementById('tb-'+t).classList.toggle('on',t===name);
+    const bn=document.getElementById('bn-'+t);
+    if(bn) bn.classList.toggle('on',t===name);
+  });
+  if(name==='list')  renderList();
+  if(name==='dash')  renderDash();
+  if(name==='guide') renderGuide();
+}
+
+// ══════════════════════════════════════════
+// VISIBILITY & ACTION
+// ══════════════════════════════════════════
+function mySnags(){
+  if(!U) return [];
+  const c=U.cat;
+  if(c==='field') return SNAGS.filter(s=>s.team===U.team||s.created_by===U.name);
+  if(c==='lead')  return SNAGS.filter(s=>s.team===U.team);
+  return SNAGS;
+}
+
+function needsAction(s){
+  const c=U.cat;
+  if(c==='lead'    && s.status==='registered' && s.team===U.team) return true;
+  if(c==='mgr'     && s.status==='registered') return true;
+  if(c==='quality' && s.status==='qs_review' && !s.quality_done) return true;
+  if(c==='sales'   && s.status==='qs_review' && !s.sales_done)   return true;
+  if(c==='mgr'     && s.status==='qs_complete') return true;
+  if(c==='mgr'     && s.status==='in_production') return true;
   return false;
 }
 
-function actionBtn(s) {
-  const c = U.cat;
-  if (c==='lead'    && s.status==='new'            && s.team===U.team)
-    return `<button class="btn bp bxs" onclick="openAnalyze('${s.id}')">🔍 تحليل</button>`;
-  if (c==='mgr'     && s.status==='analyzed')
-    return `<button class="btn bg bxs" onclick="openApprove('${s.id}')">✅ اعتماد</button>`;
-  if (c==='quality' && s.status==='quality_review')
-    return `<button class="btn bt bxs" onclick="openQuality('${s.id}')">🔬 مراجعة</button>`;
-  if (c==='sales' && s.status==='quality_approved')
-    return `<button class="btn bxs" style="background:#1b5e20;color:#fff" onclick="submitSalesApprove('${s.id}')">💼 اعتماد البيع</button>`;
-  if (c==='mgr') {
-    if (s.status==='approved')
-      return `<button class="btn bxs" style="background:#e65100;color:#fff" onclick="move('${s.id}','quality_review','إرسال للجودة')">🔬 للجودة</button>`;
-    if (s.status==='sales_approved')
-      return `<button class="btn bxs" style="background:#3949ab;color:#fff" onclick="startProduction('${s.id}')">🏭 بدء التصنيع</button>`;
-    if (s.status==='in_production')
-      return `<button class="btn bg bxs" onclick="move('${s.id}','ready','جاهز للتوريد')">📦 جاهز</button>`;
-    if (s.status==='ready')
-      return `<button class="btn bg bxs" onclick="closeSnag('${s.id}')">🟢 إغلاق</button>`;
+function actionBtn(s){
+  const c=U.cat;
+  // مسار سريع
+  if(s.track==='fast'){
+    if(c==='mgr' && s.status==='registered')
+      return `<button class="btn bg bxs" onclick="openApprove('${s.id}')">✅ اعتماد وإغلاق</button>`;
+    if((c==='lead'||c==='field') && s.status==='approved')
+      return `<button class="btn bg bxs" onclick="closeFast('${s.id}')">🟢 تم الإصلاح — إغلاق</button>`;
+  }
+  // مسار كامل
+  if(s.track==='full'){
+    if(c==='mgr' && s.status==='registered')
+      return `<button class="btn bg bxs" onclick="openApprove('${s.id}')">✅ اعتماد وإرسال</button>`;
+    if(c==='quality' && s.status==='qs_review' && !s.quality_done)
+      return `<button class="btn bt bxs" onclick="openQS('${s.id}','quality')">🔬 اعتماد الجودة</button>`;
+    if(c==='sales' && s.status==='qs_review' && !s.sales_done)
+      return `<button class="btn bxs" style="background:#1b5e20;color:#fff" onclick="openQS('${s.id}','sales')">💼 اعتماد البيع</button>`;
+    if(c==='mgr' && s.status==='qs_complete')
+      return `<button class="btn bxs" style="background:#3949ab;color:#fff" onclick="startProd('${s.id}')">🏭 بدء التصنيع</button>`;
+    if(c==='mgr' && s.status==='in_production')
+      return `<button class="btn bg bxs" onclick="deliverClose('${s.id}')">📦 توريد وإغلاق</button>`;
   }
   return '';
 }
 
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // RENDER LIST
-// ═══════════════════════════════════════════
-function renderList() {
-  const el = document.getElementById('tab-list');
-  if (!el || !U) return;
-
-  const all    = mySnags();
-  const canAdd = ['field','lead'].includes(U.cat);
-  const urgent = all.filter(s => needsMyAction(s));
-
+// ══════════════════════════════════════════
+function renderList(){
+  const el=document.getElementById('tab-list');
+  if(!el||!U) return;
+  const all=mySnags();
+  const urgent=all.filter(needsAction);
   // badge
-  const bn = document.getElementById('bn-badge');
-  if (urgent.length) { bn.textContent=urgent.length; document.getElementById('bn-list').classList.add('has-badge'); }
-  else               { bn.textContent='';             document.getElementById('bn-list').classList.remove('has-badge'); }
+  const bb=document.getElementById('bn-b');
+  bb.textContent=urgent.length||'';
+  document.getElementById('bn-list').classList.toggle('has-badge',urgent.length>0);
 
-  let html = '';
+  let html='';
+  if(['field','lead'].includes(U.cat))
+    html+=`<button class="btn bo" style="margin-bottom:12px" onclick="openNew()">➕ تسجيل عيب جديد</button>`;
 
-  if (canAdd) html += `<button class="btn bo" style="margin-bottom:12px" onclick="openNew()">➕ تسجيل عيب جديد</button>`;
-
-  if (urgent.length)
-    html += `<div class="action-banner">
-      <div class="action-banner-title">⚡ تحتاج إجراءً منك (${urgent.length})</div>
-      <div class="action-banner-ids">${urgent.map(s=>s.id).join(' • ')}</div>
+  if(urgent.length)
+    html+=`<div class="action-banner">
+      <div style="font-weight:700;font-size:13px;color:#e65100">⚡ تحتاج إجراءً منك (${urgent.length})</div>
+      <div style="font-size:11px;color:#888;margin-top:2px">${urgent.map(s=>s.id).join(' • ')}</div>
     </div>`;
 
   // filters
-  const f = (lbl, val, list) =>
-    `<button class="filter-btn ${_curFilter===val?'on':''}" onclick="setFilter('${val}')">
-      ${lbl} <span class="filter-count">${list.length}</span>
-    </button>`;
-
-  html += `<div class="filters">
-    ${f('الكل','',all)}
-    ${f('🔴 عاجل','urgent', all.filter(s=>s.severity==='urgent'&&s.status!=='closed'))}
-    ${f('مفتوح','open',  all.filter(s=>s.status!=='closed'))}
-    ${f('مغلق','closed', all.filter(s=>s.status==='closed'))}
-  </div>`;
-
-  // filtered
-  let list = [...all];
-  if (_curFilter==='urgent') list = list.filter(s=>s.severity==='urgent'&&s.status!=='closed');
-  if (_curFilter==='open')   list = list.filter(s=>s.status!=='closed');
-  if (_curFilter==='closed') list = list.filter(s=>s.status==='closed');
-
-  // sort: urgent first, then by date desc
-  list.sort((a,b) => {
-    if (a.status!=='closed' && b.status==='closed') return -1;
-    if (a.status==='closed' && b.status!=='closed') return 1;
-    const sv = {urgent:0,medium:1,low:2};
-    if (sv[a.severity] !== sv[b.severity]) return sv[a.severity]-sv[b.severity];
-    return new Date(b.created_at)-new Date(a.created_at);
-  });
-
-  html += list.length ? list.map(snagCard).join('') : `<div class="empty"><div class="empty-ic">📭</div>لا توجد عيوب</div>`;
-  el.innerHTML = html;
+  const tracks={fast:all.filter(s=>s.track==='fast'),full:all.filter(s=>s.track==='full')};
+  html+=`<div class="filters">
+    ${fb('الكل','',all.length)}
+    ${fb('🟢 سريع','fast',tracks.fast.length)}
+    ${fb('🔴 كامل','full',tracks.full.length)}
+    ${fb('مفتوح','open',all.filter(s=>s.status!=='closed').length)}
+    ${fb('مغلق','closed',all.filter(s=>s.status==='closed').length)}
+  </div><div id="cards-wrap">${renderCards(all)}</div>`;
+  el.innerHTML=html;
 }
 
-function setFilter(val) { _curFilter=val; renderList(); }
+let _cf='';
+function fb(lbl,val,cnt){
+  return `<button class="fbtn ${_cf===val?'on':''}" onclick="setF('${val}')">
+    ${lbl} <span class="fc">${cnt}</span></button>`;
+}
+function setF(v){
+  _cf=v; let list=mySnags();
+  if(v==='fast')   list=list.filter(s=>s.track==='fast');
+  if(v==='full')   list=list.filter(s=>s.track==='full');
+  if(v==='open')   list=list.filter(s=>s.status!=='closed');
+  if(v==='closed') list=list.filter(s=>s.status==='closed');
+  document.getElementById('cards-wrap').innerHTML=renderCards(list);
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.textContent.trim().startsWith(v||'x')));
+}
 
-function snagCard(s) {
-  const st  = STATUS[s.status] || {lbl:s.status,cls:'s-new',ic:'❓',step:0};
-  const sv  = SEV[s.severity]  || {lbl:'—',cls:'sev-l',sla:7,color:'#1565c0'};
-  const pct = Math.round((st.step/7)*100);
-  const progColor = s.status==='closed' ? '#2e7d32' : sv.color;
-  const leftBorder = s.severity==='urgent'&&s.status!=='closed' ? 'border-right:4px solid #c62828;' : '';
+function renderCards(list){
+  if(!list.length) return `<div class="empty"><div class="empty-ic">📭</div>لا توجد عيوب</div>`;
+  return list.sort((a,b)=>{
+    if(a.status!=='closed'&&b.status==='closed') return -1;
+    if(a.status==='closed'&&b.status!=='closed') return 1;
+    const sv={urgent:0,medium:1,low:2};
+    return (sv[a.severity]||1)-(sv[b.severity]||1);
+  }).map(snagCard).join('');
+}
 
-  const days = Math.floor((Date.now()-new Date(s.created_at))/(864e5));
-  const slaWarn = days>sv.sla && s.status!=='closed'
-    ? `<span class="sla-warn">⚠️ تجاوز SLA (${days} يوم)</span>` : '';
+function snagCard(s){
+  const sv=SEV[s.severity]||{lbl:'—',cls:'sev-l',color:'#1565c0'};
+  const stLbl=STATUS_LBL[s.status]||s.status;
+  const stCls=STATUS_CLS[s.status]||'s-new';
+  const stIc=STATUS_IC[s.status]||'❓';
+  const isUrgent=s.severity==='urgent'&&s.status!=='closed';
+  const track=s.track==='fast'?
+    `<span class="track-fast">🟢 مسار سريع</span>`:
+    `<span class="track-full">🔴 مسار كامل</span>`;
+  const act=actionBtn(s);
 
-  const act = actionBtn(s);
-  const photoCount = s.photos&&s.photos.length ? `<span style="font-size:11px;color:#1565c0">📷 ${s.photos.length} صورة</span>` : '';
+  // steps progress
+  const steps=s.track==='fast'?FAST_STEPS:FULL_STEPS;
+  const curIdx=steps.findIndex(st=>st.key===s.status);
+  const stepsHtml=steps.map((st,i)=>{
+    const isDone=curIdx>i||(s.status==='closed'&&i===steps.length-1);
+    const isAct=i===curIdx&&s.status!=='closed';
+    const cls=isDone?'step-done':isAct?'step-active':'step-pending';
+    const lineCls=isDone&&i<steps.length-1?'done':'';
+    return `<div class="step-dot ${cls}">${isDone?'✓':isAct?st.ic:i+1}</div>${i<steps.length-1?`<div class="step-line ${lineCls}"></div>`:''}`;
+  }).join('');
+  const lblsHtml=steps.map((st,i)=>{
+    const isDone=curIdx>i;
+    const isAct=i===curIdx&&s.status!=='closed';
+    return `<span class="step-lbl ${isDone?'done':isAct?'active':''}">${st.lbl}</span>`;
+  }).join('');
 
-  return `<div class="card" style="${leftBorder}">
+  // SLA warning
+  const days=Math.floor((Date.now()-new Date(s.created_at))/864e5);
+  const slaWarn=days>=(sv.sla||99)&&s.status!=='closed'?
+    `<span style="font-size:10px;color:#c62828;font-weight:700"> ⚠️ ${days}يوم</span>`:'';
+
+  return `<div class="card" style="${isUrgent?'border-right:4px solid #c62828':''}">
     <div class="card-top">
       <div>
         <div class="snr-id">${s.id}</div>
-        <div class="snr-date">📅 ${s.date} ${slaWarn}</div>
+        <div class="snr-date">📅 ${s.date}${slaWarn}</div>
       </div>
-      <div class="card-badges">
-        <span class="badge ${st.cls}">${st.ic} ${st.lbl}</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="badge ${stCls}">${stIc} ${stLbl}</span>
         <span class="badge ${sv.cls}">${sv.lbl}</span>
+        ${track}
       </div>
     </div>
     <div style="font-weight:700;font-size:13px;margin-bottom:3px">🏢 ${s.client}</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
       <span style="background:#e8eaf6;color:#3949ab;border-radius:8px;padding:2px 9px;font-size:12px;font-weight:800">📄 ${s.contract}</span>
-      <span style="font-size:12px;color:#555">${s.item}</span>
+      <span style="font-size:12px;color:#555;flex:1">${s.item}</span>
     </div>
-    <div style="font-size:12px;color:#aaa;margin-bottom:6px">🔧 ${s.defect_type} | مجموعة ${s.team} | ${s.created_by} ${photoCount}</div>
-    <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
-    <div class="prog-steps">${STEPS_LABELS.map(l=>`<span>${l}</span>`).join('')}</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:8px">🔧 ${s.defect_type} | مجموعة ${s.team} | ${s.created_by}</div>
+    <div class="steps-wrap">
+      <div class="steps-row">${stepsHtml}</div>
+      <div class="step-labels">${lblsHtml}</div>
+    </div>
     <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap">
       <button class="btn bw bxs" onclick="openDetail('${s.id}')">📋 التفاصيل</button>
       ${act}
@@ -883,614 +831,484 @@ function snagCard(s) {
   </div>`;
 }
 
-// ═══════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════
-function renderDash() {
-  const el = document.getElementById('tab-dash');
-  if (!el || !U) return;
-
-  const all     = SNAGS;
-  const total   = all.length;
-  const open    = all.filter(s=>s.status!=='closed').length;
-  const closed  = all.filter(s=>s.status==='closed').length;
-  const urgent  = all.filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
-
-  const byStatus = {};
-  all.forEach(s=>{ byStatus[s.status]=(byStatus[s.status]||0)+1; });
-
-  const byTeam = {A:0,B:0,C:0,D:0};
-  all.forEach(s=>{ if(byTeam[s.team]!==undefined) byTeam[s.team]++; });
-
-  const byType = {};
-  all.forEach(s=>{ if(s.defect_type) byType[s.defect_type]=(byType[s.defect_type]||0)+1; });
-
-  const closedList = all.filter(s=>s.status==='closed'&&s.closed_at);
-  const avgDays = closedList.length
-    ? (closedList.reduce((a,s)=>a+(new Date(s.closed_at)-new Date(s.created_at))/864e5,0)/closedList.length).toFixed(1)
-    : '—';
-
-  const sc=(ic,lbl,val,color)=>`<div class="stat">
-    <div class="stat-ic">${ic}</div>
-    <div class="stat-val" style="color:${color}">${val}</div>
-    <div class="stat-lbl">${lbl}</div>
-  </div>`;
-
-  const teamColor={A:'#1565c0',B:'#2e7d32',C:'#6a1b9a',D:'#e65100'};
-  const barRow=(lbl,val,max,color)=>`<div style="margin-bottom:9px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
-      <span>${lbl}</span><span style="font-weight:700">${val}</span>
-    </div>
-    <div class="prog"><div class="prog-fill" style="width:${max?Math.round(val/max*100):0}%;background:${color}"></div></div>
-  </div>`;
-
-  el.innerHTML = `
-  <div class="stats">
-    ${sc('📋','إجمالي',total,'#1565c0')}
-    ${sc('🔴','عاجل مفتوح',urgent,'#c62828')}
-    ${sc('⚙️','قيد المعالجة',open,'#e65100')}
-    ${sc('✅','مغلق',closed,'#2e7d32')}
-  </div>
-  <div class="card" style="margin-bottom:10px">
-    <div class="sec-title">🔄 توزيع المراحل</div>
-    ${Object.entries(STATUS).map(([k,v])=>{
-      const c=byStatus[k]||0;
-      return c?barRow(`${v.ic} ${v.lbl}`,c,total,'#1565c0'):'';
-    }).join('')}
-  </div>
-  <div class="card" style="margin-bottom:10px">
-    <div class="sec-title">👥 توزيع المجموعات</div>
-    ${Object.entries(byTeam).map(([t,v])=>barRow(`مجموعة ${t}`,v,total,teamColor[t])).join('')}
-  </div>
-  <div class="card" style="margin-bottom:10px">
-    <div class="sec-title">🔧 أكثر أنواع العيوب</div>
-    ${Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`
-      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px">
-        <span style="color:#555">${t}</span><span style="font-weight:700">${v} حالة</span>
-      </div>`).join('')}
-  </div>
-  <div class="card" style="margin-bottom:10px">
-    <div class="sec-title">⏱️ مؤشرات الأداء</div>
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px">
-      <span style="color:#888">متوسط وقت الإغلاق</span>
-      <span style="font-weight:700">${avgDays}${avgDays!=='—'?' يوم':''}</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
-      <span style="color:#888">نسبة الإغلاق</span>
-      <span style="font-weight:700;color:#2e7d32">${total?Math.round(closed/total*100):0}%</span>
-    </div>
-  </div>
-  ${buildDelayLeaderboard()}`;
-
-}
-
-// ═══════════════════════════════════════════
-// GUIDE
-// ═══════════════════════════════════════════
-function renderGuide() {
-  const el = document.getElementById('tab-guide');
-  if (!el) return;
-  const steps = [
-    {ic:'🆕',title:'تسجيل العيب',role:'الفني / المشرف',
-     body:'عند اكتشاف أي عيب، اضغط "تسجيل عيب جديد"، أدخل بيانات العميل والقطعة وحدد الخطورة والتق صور للعيب. يُولَّد رقم SNR تلقائياً.', sla:''},
-    {ic:'🔍',title:'تحليل العيب',role:'مدير المجموعة',
-     body:'مدير المجموعة يستلم إشعار فوري ويفتح العيب ويحدد السبب الجذري ويكتب وصفاً تفصيلياً ويقترح الحل المناسب.', sla:''},
-    {ic:'✅',title:'الاعتماد',role:'أشرف / محمد فتحي / خالد علي',
-     body:'إدارة التركيبات تراجع التقرير وتعتمده أو ترفضه مع سبب. أول واحد يعتمد = التقرير يتحرك تلقائياً.', sla:''},
-    {ic:'🔬',title:'مراجعة الجودة',role:'إدارة الجودة',
-     body:'الجودة تتحقق وتحدد المتسبب الرسمي وتعتمد التقرير. محمد مختار يتابع ويرسل تلقائياً.', sla:''},
-    {ic:'🏭',title:'التصنيع',role:'محمد مختار + المصنع',
-     body:'يبدأ التصنيع في المصنع المختص. محمد مختار يتابع يومياً حتى الانتهاء.',
-     sla:'عاجل: 3 أيام | متوسط: 7 أيام | بسيط: 14 يوم'},
-    {ic:'📦',title:'التوريد والإغلاق',role:'إدارة التسليمات + مدير المجموعة',
-     body:'بعد التصنيع، يُنسَّق التوريد للموقع. مدير المجموعة يؤكد التركيب ويُغلق العيب رسمياً.', sla:''},
-  ];
-  el.innerHTML = steps.map(s=>`
-    <div class="guide-step">
-      <div class="guide-ic">${s.ic}</div>
-      <div>
-        <div class="guide-title">${s.title}</div>
-        <div style="font-size:11px;color:#1565c0;font-weight:700;margin-bottom:4px">المسؤول: ${s.role}</div>
-        <div class="guide-body">${s.body}</div>
-        ${s.sla?`<div class="guide-sla">⏱️ SLA: ${s.sla}</div>`:''}
-      </div>
-    </div>`).join('') +
-    `<div class="card" style="margin-top:4px">
-      <div class="sec-title">💡 ملاحظات</div>
-      <div style="font-size:13px;color:#555;line-height:2">
-        📱 كل خطوة تُرسل إشعار تيليجرام فوري<br>
-        ⚠️ تنبيه تلقائي عند تجاوز الـ SLA<br>
-        📊 تقرير أسبوعي تلقائي كل خميس<br>
-        📷 الصور مطلوبة للتوثيق وتُحفظ مع العيب<br>
-        🔄 كلمة المرور: <b>demo</b> — اضغط خروج للتبديل بين الأدوار
-      </div>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════
-// NEW SNAG
-// ═══════════════════════════════════════════
-let _selSev = '';
-
-function openNew() {
-  _newPhotos = [];
-  _selSev = '';
-  ['n-client','n-contract','n-item','n-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('n-type').value = '';
-  document.getElementById('n-team').value = U.team||'A';
-  document.getElementById('n-photo-grid').innerHTML='';
+// ══════════════════════════════════════════
+// NEW SNAG (تسجيل + تحليل)
+// ══════════════════════════════════════════
+function openNew(){
+  _newPhotos=[]; _selSev=''; _selSol='';
+  ['n-client','n-contract','n-item','n-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('n-type').value='';
+  document.getElementById('n-cause').value='';
+  document.getElementById('n-factory').value='';
+  document.getElementById('n-team').value=U.team||'A';
+  document.getElementById('n-pgrid').innerHTML='';
   document.getElementById('n-photos').value='';
-  ['sev-u','sev-m','sev-l'].forEach(id=>{
-    const b=document.getElementById(id);
-    b.style.opacity='1'; b.style.transform='';
-  });
+  document.querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('input[name="n-sol"]').forEach(r=>r.checked=false);
   openModal('m-new');
 }
 
-function pickSev(val) {
-  _selSev = val;
-  const styles = {urgent:'#ffebee',medium:'#fff8e1',low:'#e8f5e9'};
-  const map = {urgent:'sev-u',medium:'sev-m',low:'sev-l'};
-  ['sev-u','sev-m','sev-l'].forEach(id=>{
-    const b=document.getElementById(id);
-    const isSelected = map[val]===id;
-    b.style.background   = isSelected ? styles[val]  : '#fff';
-    b.style.fontWeight   = isSelected ? '800' : '';
-    b.style.transform    = isSelected ? 'scale(1.05)' : '';
-  });
+function pickSev(val,btn){
+  _selSev=val;
+  document.querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
 }
 
-function addPhotos(input) {
-  Array.from(input.files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
+function pickSol(val){
+  _selSol=val;
+  document.getElementById('sol-fast-lbl').style.borderColor=val==='fast'?'#2e7d32':'transparent';
+  document.getElementById('sol-full-lbl').style.borderColor=val==='full'?'#c62828':'transparent';
+}
+
+function addPhotos(input){
+  Array.from(input.files).forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
       _newPhotos.push(e.target.result);
-      const idx = _newPhotos.length - 1;
-      const wrap = document.createElement('div');
-      wrap.className = 'photo-thumb';
-      wrap.id = 'pthumb-'+idx;
-      wrap.innerHTML = `
-        <img src="${e.target.result}" onclick="viewPhoto('${e.target.result}')">
-        <div class="photo-del" onclick="removeNewPhoto(${idx})">×</div>`;
-      document.getElementById('n-photo-grid').appendChild(wrap);
+      const idx=_newPhotos.length-1;
+      const w=document.createElement('div');
+      w.className='photo-thumb'; w.id='pt-'+idx;
+      w.innerHTML=`<img src="${e.target.result}" onclick="viewPhoto('${e.target.result}')">
+        <div class="photo-del" onclick="rmPhoto(${idx})">×</div>`;
+      document.getElementById('n-pgrid').appendChild(w);
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(file);
   });
 }
+function rmPhoto(i){ _newPhotos[i]=null; document.getElementById('pt-'+i)?.remove(); }
 
-function removeNewPhoto(idx) {
-  _newPhotos[idx] = null;
-  const el = document.getElementById('pthumb-'+idx);
-  if (el) el.remove();
-}
+function submitNew(){
+  const client   =document.getElementById('n-client').value.trim();
+  const contract =document.getElementById('n-contract').value.trim();
+  const item     =document.getElementById('n-item').value.trim();
+  const type     =document.getElementById('n-type').value;
+  const team     =document.getElementById('n-team').value;
+  const cause    =document.getElementById('n-cause').value;
+  const factory  =document.getElementById('n-factory').value;
+  const desc     =document.getElementById('n-desc').value.trim();
+  if(!client)   return toast('⚠️ أدخل اسم العميل');
+  if(!contract) return toast('⚠️ أدخل رقم العقد');
+  if(!item)     return toast('⚠️ أدخل البند المعيب');
+  if(!type)     return toast('⚠️ اختر نوع العيب');
+  if(!_selSev)  return toast('⚠️ اختر درجة الخطورة');
+  if(!cause)    return toast('⚠️ حدد السبب الجذري');
+  if(!desc)     return toast('⚠️ اكتب الوصف التفصيلي');
+  if(!_selSol)  return toast('⚠️ اختر الحل المطلوب');
 
-function submitNew() {
-  const client   = document.getElementById('n-client').value.trim();
-  const contract = document.getElementById('n-contract').value.trim();
-  const item     = document.getElementById('n-item').value.trim();
-  const type     = document.getElementById('n-type').value;
-  const team     = document.getElementById('n-team').value;
-  const notes    = document.getElementById('n-notes').value.trim();
+  const now=new Date().toISOString();
+  const id='SNR-'+new Date().getFullYear()+'-'+String(SNAGS.length+1).padStart(4,'0');
+  const photos=_newPhotos.filter(Boolean);
 
-  if (!client)   return toast('⚠️ أدخل اسم العميل');
-  if (!contract) return toast('⚠️ أدخل رقم العقد');
-  if (!item)     return toast('⚠️ أدخل البند المعيب');
-  if (!type)     return toast('⚠️ اختر نوع العيب');
-  if (!_selSev)  return toast('⚠️ اختر درجة الخطورة');
-
-  const now = new Date().toISOString();
-  const id  = 'SNR-'+new Date().getFullYear()+'-'+String(SNAGS.length+1).padStart(4,'0');
-  const photos = _newPhotos.filter(Boolean);
-
-  const newSnag = {
-    id, date:now.substring(0,10), client, contract, item,
-    defect_type:type, severity:_selSev, status:'new',
+  const snag={
+    id, track:_selSol, date:now.slice(0,10), client, contract, item,
+    defect_type:type, severity:_selSev, status:'registered',
     team, created_by:U.name, created_at:now, closed_at:'',
-    root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
-    analyzed_by:'', approved_by:'', approval_note:'',
-    quality_cause:'', quality_result:'', sales_approved_by:'', notes, photos,
-    history:[{step:'new', by:U.name, at:now, note:`تم تسجيل العيب | رقم العقد: ${contract}`}],
+    root_cause:cause, factory, desc, solution:_selSol,
+    approved_by:'', quality_done:false, sales_done:false,
+    quality_cause:'', quality_result:'', sales_so:'', photos,
+    history:[
+      {step:'registered',ic:'🆕',by:U.name,at:now,
+       note:`${_selSol==='fast'?'🟢 مسار سريع':'🔴 مسار كامل'} | العقد: ${contract} | السبب: ${cause}`},
+    ],
   };
-  SNAGS.push(newSnag);
-  // إشعار المصنع الأول — عند التسجيل للاستعداد
-  notifyFactory(newSnag, 'إشعار مبدئي — العيب قيد المراجعة، استعد للتصنيع');
+
+  // إشعار المصنع الأول عند التسجيل
+  if(factory && factory!=='لا يتعلق بالمصنع'){
+    snag.history.push({step:'factory_notified',ic:'📣',by:'النظام',at:now,
+      note:`📣 إشعار ${factory} — عيب قيد المراجعة | العقد: ${contract} | استعد للتصنيع`});
+  }
+
+  SNAGS.push(snag);
   save();
-  toast(`✅ تم تسجيل ${id}${photos.length?' مع '+photos.length+' صورة':''} — إشعار أُرسل للمشرف والمصنع`);
+  toast(`✅ تم تسجيل ${id}${photos.length?' مع '+photos.length+' صورة':''} — إشعار للمراجعة`);
   closeModal('m-new');
   renderList();
 }
 
-// ═══════════════════════════════════════════
-// ANALYZE
-// ═══════════════════════════════════════════
-function openAnalyze(id) {
-  _curId = id;
-  const s = find(id); if (!s) return;
-  document.getElementById('ma-info').innerHTML =
-    `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.contract} | ${s.item}<br>
-     🔧 ${s.defect_type} | ${SEV[s.severity]?.lbl||'—'}
-     ${s.notes?`<br>📝 ${s.notes}`:''}`;
-  ['ma-cause','ma-factory','ma-sol'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('ma-desc').value='';
-  openModal('m-analyze');
-}
-
-function submitAnalysis() {
-  const cause   = document.getElementById('ma-cause').value;
-  const factory = document.getElementById('ma-factory').value;
-  const desc    = document.getElementById('ma-desc').value.trim();
-  const sol     = document.getElementById('ma-sol').value;
-  if (!cause) return toast('⚠️ حدد السبب الجذري');
-  if (!desc)  return toast('⚠️ اكتب الوصف التفصيلي');
-  const s = find(_curId); if (!s) return;
-  const now = new Date().toISOString();
-  Object.assign(s, {status:'analyzed', root_cause:cause, factory, analysis_desc:desc, proposed_solution:sol, analyzed_by:U.name});
-  s.history.push({step:'analyzed', by:U.name, at:now, note:`السبب: ${cause} | ${desc}`});
-  save();
-  toast('✅ تم التحليل — إشعار أُرسل لإدارة التركيبات');
-  closeModal('m-analyze');
-  renderList();
-}
-
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // APPROVE
-// ═══════════════════════════════════════════
-function openApprove(id) {
-  _curId = id;
-  const s = find(id); if (!s) return;
-  document.getElementById('map-info').innerHTML =
-    `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.contract} | ${s.item}<br>
-     ${SEV[s.severity]?.lbl||'—'} | 🔧 ${s.defect_type}
-     <div class="modal-divider"></div>
-     🔍 <b>التحليل:</b> ${s.analysis_desc||'—'}<br>
-     🎯 <b>السبب:</b> ${s.root_cause||'—'}<br>
-     🏭 <b>المصنع:</b> ${s.factory||'—'}<br>
-     💡 <b>الحل:</b> ${s.proposed_solution||'—'}<br>
-     👷 <b>حلّله:</b> ${s.analyzed_by||'—'}`;
+// ══════════════════════════════════════════
+function openApprove(id){
+  _curId=id;
+  const s=find(id); if(!s) return;
+  const sv=SEV[s.severity]||{lbl:'—'};
+  const track=s.track==='fast'?'🟢 مسار سريع (اعتماد → إغلاق مباشر)':'🔴 مسار كامل (اعتماد → جودة+بيع → تصنيع)';
+  document.getElementById('map-title').textContent= s.track==='fast'?'✅ اعتماد — مسار سريع':'✅ اعتماد — مسار كامل';
+  document.getElementById('map-info').innerHTML=
+    `<b>${s.id}</b> | 🏢 ${s.client}<br>
+     <span style="background:#e8eaf6;color:#3949ab;border-radius:6px;padding:1px 8px;font-size:12px">📄 ${s.contract}</span>
+     | ${s.item}<br>
+     🔧 ${s.defect_type} | ${sv.lbl}<br>
+     🔍 السبب: ${s.root_cause||'—'} | ${s.desc||'—'}<br>
+     <div style="margin-top:6px;font-weight:700;color:#1565c0">${track}</div>`;
   document.getElementById('map-note').value='';
   openModal('m-approve');
 }
 
-function submitApprove(approved) {
-  const note = document.getElementById('map-note').value.trim();
-  const s = find(_curId); if (!s) return;
-  const now = new Date().toISOString();
-  const st  = approved ? 'approved' : 'rejected';
-  Object.assign(s, {status:st, approved_by:U.name, approval_note:note});
-  s.history.push({step:st, by:U.name, at:now, note: approved?('اعتماد'+(note?' — '+note:'')):'رفض — '+note});
+function submitApprove(ok){
+  const note=document.getElementById('map-note').value.trim();
+  const s=find(_curId); if(!s) return;
+  const now=new Date().toISOString();
+  if(!ok){
+    s.status='rejected';
+    s.history.push({step:'rejected',ic:'❌',by:U.name,at:now,note:'مرفوض — '+note});
+    save(); toast('❌ مرفوض'); closeModal('m-approve'); renderList(); return;
+  }
+  s.approved_by=U.name;
+  if(s.track==='fast'){
+    // مسار سريع: اعتماد فقط — ينتظر الفريق يغلق
+    s.status='approved';
+    s.history.push({step:'approved',ic:'✅',by:U.name,at:now,note:'معتمد — مسار سريع | '+note});
+  } else {
+    // مسار كامل: اعتماد + إرسال للجودة والبيع بالتوازي
+    s.status='qs_review';
+    s.history.push({step:'approved',ic:'✅',by:U.name,at:now,note:'معتمد — '+note});
+    s.history.push({step:'qs_review',ic:'🔬',by:'النظام',at:now,
+      note:'📣 الجودة والبيع يعملان بالتوازي في نفس الوقت'});
+  }
   save();
-  toast(approved ? '✅ معتمد — إيميل للجودة والبيع' : '❌ مرفوض — إشعار أُرسل');
-  closeModal('m-approve');
-  renderList();
+  toast(s.track==='fast'?'✅ معتمد — ينتظر الفريق يغلق':'✅ معتمد — إشعار للجودة والبيع معاً');
+  closeModal('m-approve'); renderList();
 }
 
-// ═══════════════════════════════════════════
-// QUALITY
-// ═══════════════════════════════════════════
-function openQuality(id) {
-  _curId = id;
-  const s = find(id); if (!s) return;
-  document.getElementById('mq-info').innerHTML =
-    `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.item}<br>
-     🎯 السبب المقترح: ${s.root_cause||'—'}<br>
-     🏭 المصنع: ${s.factory||'—'}<br>
-     💡 الحل المقترح: ${s.proposed_solution||'—'}`;
-  document.getElementById('mq-cause').value='';
-  document.getElementById('mq-result').value='';
-  openModal('m-quality');
+// ══════════════════════════════════════════
+// FAST CLOSE
+// ══════════════════════════════════════════
+function closeFast(id){
+  const s=find(id); if(!s) return;
+  const now=new Date().toISOString();
+  s.status='closed'; s.closed_at=now;
+  s.history.push({step:'closed',ic:'🟢',by:U.name,at:now,note:'تم الإصلاح في الموقع — إغلاق ✅'});
+  save(); toast('🟢 تم الإغلاق — مسار سريع'); renderList();
 }
 
-function submitQuality() {
-  const cause  = document.getElementById('mq-cause').value;
-  const result = document.getElementById('mq-result').value.trim();
-  if (!cause) return toast('⚠️ حدد المتسبب الرسمي');
-  const s = find(_curId); if (!s) return;
-  const now = new Date().toISOString();
-  Object.assign(s, {status:'quality_approved', quality_cause:cause, quality_result:result});
-  s.history.push({step:'quality_approved', by:U.name, at:now, note:`المتسبب: ${cause}`});
-  save();
-  toast('✅ اعتماد الجودة — إشعار لمحمد مختار');
-  closeModal('m-quality');
-  renderList();
+// ══════════════════════════════════════════
+// QUALITY + SALES (بالتوازي)
+// ══════════════════════════════════════════
+function openQS(id, mode){
+  _curId=id; _qsMode=mode;
+  const s=find(id); if(!s) return;
+  const sv=SEV[s.severity]||{lbl:'—'};
+  document.getElementById('mqs-title').textContent=
+    mode==='quality'?'🔬 اعتماد الجودة':'💼 اعتماد البيع';
+  document.getElementById('mqs-info').innerHTML=
+    `<b>${s.id}</b> | 🏢 ${s.client}<br>
+     <span style="background:#e8eaf6;color:#3949ab;border-radius:6px;padding:1px 8px;font-size:12px">📄 ${s.contract}</span><br>
+     🔧 ${s.defect_type} | ${sv.lbl}<br>🔍 السبب: ${s.root_cause||'—'}<br>
+     <div style="margin-top:4px;color:${s.quality_done?'#2e7d32':'#e65100'};font-size:12px;font-weight:700">
+       الجودة: ${s.quality_done?'✅ اعتمدت':'⏳ في الانتظار'} &nbsp;|&nbsp;
+       البيع: ${s.sales_done?'✅ اعتمد':'⏳ في الانتظار'}
+     </div>`;
+  document.getElementById('mqs-quality-fields').style.display=mode==='quality'?'':'none';
+  document.getElementById('mqs-sales-fields').style.display=mode==='sales'?'':'none';
+  document.getElementById('mqs-btn').textContent=mode==='quality'?'✅ اعتماد الجودة':'💼 اعتماد البيع';
+  ['mqs-cause','mqs-result','mqs-so','mqs-sales-note'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  openModal('m-qsales');
 }
 
-// ═══════════════════════════════════════════
-// SALES APPROVE
-// ═══════════════════════════════════════════
-function submitSalesApprove(id) {
-  const s = find(id); if (!s) return;
-  const now = new Date().toISOString();
-  Object.assign(s, { status:'sales_approved', sales_approved_by:U.name });
-  s.history.push({step:'sales_approved', by:U.name, at:now,
-    note:`اعتماد البيع | رقم العقد: ${s.contract} | العميل: ${s.client}`});
-  // إشعار المصنع الثاني — بعد اعتماد البيع
-  notifyFactory(s, `اعتماد البيع — ابدأ التصنيع فوراً | العقد: ${s.contract}`);
-  save();
-  toast('💼 اعتمد البيع — إشعار المصنع الثاني أُرسل لبدء التصنيع');
-  renderList();
+function submitQSales(){
+  const s=find(_curId); if(!s) return;
+  const now=new Date().toISOString();
+  if(_qsMode==='quality'){
+    const cause=document.getElementById('mqs-cause').value;
+    const result=document.getElementById('mqs-result').value.trim();
+    if(!cause) return toast('⚠️ حدد المتسبب');
+    s.quality_done=true; s.quality_cause=cause; s.quality_result=result;
+    s.history.push({step:'quality_done',ic:'✅',by:U.name,at:now,note:`الجودة اعتمدت | المتسبب: ${cause}`});
+    toast('✅ الجودة اعتمدت — ينتظر البيع');
+  } else {
+    const so=document.getElementById('mqs-so').value.trim();
+    const note=document.getElementById('mqs-sales-note').value.trim();
+    s.sales_done=true; s.sales_so=so;
+    s.history.push({step:'sales_done',ic:'💼',by:U.name,at:now,note:`البيع اعتمد | SO: ${so||'—'}`});
+    toast('💼 البيع اعتمد — ينتظر الجودة');
+  }
+  // هل الاثنان اعتمدا؟
+  if(s.quality_done && s.sales_done){
+    s.status='qs_complete';
+    s.history.push({step:'qs_complete',ic:'✅',by:'النظام',at:now,note:'الجودة والبيع اعتمدا ✅ — إشعار لمحمد مختار لبدء التصنيع'});
+    // إشعار المصنع الثاني
+    if(s.factory && s.factory!=='لا يتعلق بالمصنع')
+      s.history.push({step:'factory_notified',ic:'📣',by:'النظام',at:now,
+        note:`📣 إشعار ${s.factory} — اعتمد البيع والجودة، ابدأ التصنيع فوراً | العقد: ${s.contract}`});
+    toast('🎉 الجودة والبيع اعتمدا — إشعار المصنع أُرسل');
+  }
+  save(); closeModal('m-qsales'); renderList();
 }
 
-// ═══════════════════════════════════════════
-// START PRODUCTION
-// ═══════════════════════════════════════════
-function startProduction(id) {
-  const s = find(id); if (!s) return;
-  const now = new Date().toISOString();
-  s.status = 'in_production';
-  s.history.push({step:'in_production', by:U.name, at:now,
-    note:`بدأ التصنيع | المصنع: ${s.factory||'المصنع المختص'} | SLA: ${SEV[s.severity]?.sla||7} أيام`});
-  save();
-  toast(`🏭 بدأ التصنيع — SLA ${SEV[s.severity]?.sla||7} أيام`);
-  renderList();
+// ══════════════════════════════════════════
+// PRODUCTION
+// ══════════════════════════════════════════
+function startProd(id){
+  const s=find(id); if(!s) return;
+  const now=new Date().toISOString();
+  s.status='in_production';
+  s.history.push({step:'in_production',ic:'🏭',by:U.name,at:now,
+    note:`بدأ التصنيع — ${s.factory||'المصنع المختص'} | SLA: ${SEV[s.severity]?.sla||7} أيام`});
+  save(); toast('🏭 بدأ التصنيع'); renderList();
 }
 
-// ═══════════════════════════════════════════
-// MOVE / CLOSE
-// ═══════════════════════════════════════════
-function move(id, newStatus, note) {
-  const s = find(id); if (!s) return;
-  s.status = newStatus;
-  s.history.push({step:newStatus, by:U.name, at:new Date().toISOString(), note});
-  save();
-  toast(`✅ ${note} — إشعار أُرسل`);
-  renderList();
+function deliverClose(id){
+  const s=find(id); if(!s) return;
+  const now=new Date().toISOString();
+  s.status='closed'; s.closed_at=now;
+  s.history.push({step:'closed',ic:'🟢',by:U.name,at:now,note:'تم التوريد والتركيب — إغلاق العيب ✅'});
+  save(); toast('🟢 تم التوريد والإغلاق'); renderList();
 }
 
-function closeSnag(id) {
-  const s = find(id); if (!s) return;
-  const now = new Date().toISOString();
-  Object.assign(s, {status:'closed', closed_at:now});
-  s.history.push({step:'closed', by:U.name, at:now, note:'تم التوريد والتركيب — إغلاق العيب'});
-  save();
-  toast('🟢 تم الإغلاق بنجاح');
-  renderList();
-}
-
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════════
 // DETAIL
-// ═══════════════════════════════════════════
-function openDetail(id) {
-  _curId = id;
-  const s = find(id); if (!s) return;
-  const st = STATUS[s.status] || {lbl:s.status,cls:'s-new',ic:'❓'};
-  const sv = SEV[s.severity]  || {lbl:'—',cls:'sev-l'};
+// ══════════════════════════════════════════
+function openDetail(id){
+  _curId=id;
+  const s=find(id); if(!s) return;
+  const sv=SEV[s.severity]||{lbl:'—',cls:'sev-l'};
+  const stLbl=STATUS_LBL[s.status]||s.status;
+  const stCls=STATUS_CLS[s.status]||'s-new';
+  const track=s.track==='fast'?
+    '<span class="track-fast">🟢 مسار سريع</span>':'<span class="track-full">🔴 مسار كامل</span>';
 
-  const irow = (lbl,val) => val ? `<div class="irow"><span class="ilbl">${lbl}</span><span class="ival">${val}</span></div>` : '';
+  const ir=(l,v)=>v?`<div class="irow"><span class="ilbl">${l}</span><span class="ival">${v}</span></div>`:'';
 
-  const photos = s.photos&&s.photos.length
-    ? `<div class="sec-title" style="margin-top:14px">📷 صور العيب (${s.photos.length})</div>
-       <div class="photo-grid" style="margin-bottom:14px">
-         ${s.photos.map(p=>`<div class="photo-thumb"><img src="${p}" onclick="viewPhoto('${p}')"></div>`).join('')}
-       </div>` : '';
+  // timeline مع الأوقات
+  const hist=s.history||[];
+  const tl=hist.map((h,i)=>{
+    const isLast=i===hist.length-1;
+    const dotBg=h.step==='factory_notified'?'#fff8e1':isLast?'#e3f2fd':'#e8f5e9';
+    const dotBorder=h.step==='factory_notified'?'#e65100':isLast?'#1565c0':'#4caf50';
 
-  const hist = s.history||[];
-  const tl = hist.map((h,i)=>{
-    const cfg      = STATUS[h.step]||{ic:'📌',lbl:h.step};
-    const isLast   = i===hist.length-1;
-    const dotCls   = isLast ? 'tl-active' : 'tl-dot-done';
-    const {ms, current} = stepDuration(hist, i);
-    const stSla    = stepStatus(h.step, ms, current);
-    const durStr   = h.step==='factory_notified' ? null : fmtDuration(ms);
-    const slaInfo  = STEP_SLA_HOURS[h.step];
-
-    // ألوان حسب الحالة
-    const durColor = stSla==='exceeded'?'#c62828': stSla==='warning'?'#e65100':'#2e7d32';
-    const durBg    = stSla==='exceeded'?'#ffebee': stSla==='warning'?'#fff8e1':'#e8f5e9';
-    const durLabel = stSla==='exceeded'?'⚠️ تجاوز SLA': stSla==='warning'?'🟡 يقترب من الـ SLA':'✅';
-    const dotBg    = isLast?'#e3f2fd': stSla==='exceeded'?'#ffebee': stSla==='warning'?'#fff8e1':'#e8f5e9';
-    const dotBorder= isLast?'#1565c0': stSla==='exceeded'?'#c62828': stSla==='warning'?'#e65100':'#4caf50';
-
-    const durBadge = durStr && !isLast ? `
-      <div style="display:inline-flex;align-items:center;gap:5px;background:${durBg};border-radius:8px;padding:3px 9px;margin-top:5px;font-size:11px;font-weight:700;color:${durColor}">
-        ⏱️ ${durStr}
-        ${stSla?`<span style="opacity:.8">— ${durLabel}</span>`:''}
-        ${slaInfo?.hours?`<span style="opacity:.6;font-weight:400">(SLA: ${slaInfo.hours}س)</span>`:''}
-      </div>` : '';
-
-    const currentBadge = isLast && durStr && h.step!=='closed' ? `
-      <div style="display:inline-flex;align-items:center;gap:5px;background:${durBg};border-radius:8px;padding:3px 9px;margin-top:5px;font-size:11px;font-weight:700;color:${durColor}">
-        ⏳ منذ ${durStr} ${stSla==='exceeded'?'— ⚠️ تجاوز SLA':stSla==='warning'?'— 🟡 قارب الـ SLA':''}
-        ${slaInfo?.hours?`<span style="opacity:.6;font-weight:400">(SLA: ${slaInfo.hours}س / ${slaInfo.owner})</span>`:''}
-      </div>` : '';
+    // حساب الوقت
+    let timeTag='';
+    if(i<hist.length-1 && h.step!=='factory_notified'){
+      const ms=new Date(hist[i+1].at)-new Date(h.at);
+      const sla=STEP_SLA[h.step];
+      const hrs=(ms/3600000).toFixed(1);
+      const exceeded=sla?.h && ms>sla.h*3600000;
+      const warn=sla?.h && ms>sla.h*3600000*0.8;
+      const bg=exceeded?'#ffebee':warn?'#fff8e1':'#e8f5e9';
+      const col=exceeded?'#c62828':warn?'#e65100':'#2e7d32';
+      timeTag=`<div class="tl-time" style="background:${bg};color:${col}">
+        ⏱️ ${fmtDur(ms)} ${exceeded?'⚠️ تجاوز SLA':''} ${sla?.h?`(SLA: ${sla.h}س / ${sla.owner})`:''}
+      </div>`;
+    } else if(isLast && h.step!=='closed' && h.step!=='factory_notified'){
+      const ms=Date.now()-new Date(h.at);
+      const sla=STEP_SLA[h.step];
+      const exceeded=sla?.h && ms>sla.h*3600000;
+      const warn=sla?.h && ms>sla.h*3600000*0.8;
+      const bg=exceeded?'#ffebee':warn?'#fff8e1':'#e3f2fd';
+      const col=exceeded?'#c62828':warn?'#e65100':'#1565c0';
+      timeTag=`<div class="tl-time" style="background:${bg};color:${col}">
+        ⏳ منذ ${fmtDur(ms)} ${exceeded?'⚠️ تجاوز SLA':warn?'🟡 يقترب':''} ${sla?.h?`(SLA: ${sla.h}س — ${sla.owner})`:''}
+      </div>`;
+    }
 
     return `<li class="tl-item">
-      <div class="tl-dot" style="background:${dotBg};border:2px solid ${dotBorder};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1">${cfg.ic}</div>
+      <div class="tl-dot" style="background:${dotBg};border-color:${dotBorder}">${h.ic||'•'}</div>
       <div class="tl-body">
-        <div class="tl-title">${cfg.lbl||h.step}</div>
+        <div class="tl-title">${STATUS_LBL[h.step]||h.step}</div>
         <div class="tl-meta">👤 ${h.by||'—'} | 🕐 ${h.at?h.at.replace('T',' ').slice(0,16):'—'}</div>
         ${h.note?`<div class="tl-note">${h.note}</div>`:''}
-        ${durBadge}${currentBadge}
+        ${timeTag}
       </div>
     </li>`;
   }).join('');
 
-  document.getElementById('md-body').innerHTML = `
+  // إجمالي الوقت
+  const totalMs=s.closed_at?new Date(s.closed_at)-new Date(s.created_at):Date.now()-new Date(s.created_at);
+
+  const photos=s.photos?.length?`
+    <div class="sec-title" style="margin-top:14px">📷 الصور (${s.photos.length})</div>
+    <div class="photo-grid" style="margin-bottom:14px">
+      ${s.photos.map(p=>`<div class="photo-thumb"><img src="${p}" onclick="viewPhoto('${p}')"></div>`).join('')}
+    </div>`:'';
+
+  document.getElementById('md-body').innerHTML=`
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      <span class="badge ${st.cls}">${st.ic} ${st.lbl}</span>
-      <span class="badge ${sv.cls}">${sv.lbl}</span>
+      <span class="badge ${stCls}">${STATUS_IC[s.status]||'❓'} ${stLbl}</span>
+      <span class="badge ${sv.cls}">${sv.lbl}</span>${track}
     </div>
-    <div class="card" style="margin-bottom:12px">
+    <div class="card" style="margin-bottom:10px">
       <div class="sec-title">📋 بيانات العيب</div>
-      ${irow('رقم SNR', s.id)}
-      ${irow('العميل', s.client)}
-      ${irow('رقم العقد', s.contract)}
-      ${irow('البند', s.item)}
-      ${irow('نوع العيب', s.defect_type)}
-      ${irow('المجموعة', 'مجموعة '+s.team)}
-      ${irow('سجّله', s.created_by)}
-      ${irow('التاريخ', s.date)}
-      ${irow('ملاحظات', s.notes)}
+      ${ir('رقم SNR',s.id)} ${ir('العميل',s.client)} ${ir('رقم العقد',s.contract)}
+      ${ir('البند',s.item)} ${ir('نوع العيب',s.defect_type)} ${ir('المجموعة','مجموعة '+s.team)}
+      ${ir('السبب الجذري',s.root_cause)} ${ir('المصنع',s.factory)} ${ir('الوصف',s.desc)}
+      ${ir('سجّله',s.created_by)} ${ir('التاريخ',s.date)}
     </div>
-    ${s.analysis_desc?`<div class="card" style="margin-bottom:12px">
-      <div class="sec-title">🔍 التحليل</div>
-      ${irow('السبب الجذري', s.root_cause)}
-      ${irow('المصنع', s.factory)}
-      ${irow('الوصف', s.analysis_desc)}
-      ${irow('الحل المقترح', s.proposed_solution)}
-      ${irow('حلّله', s.analyzed_by)}
-    </div>`:''}
-    ${s.approved_by?`<div class="card" style="margin-bottom:12px">
-      <div class="sec-title">✅ الاعتماد</div>
-      ${irow('اعتمده', s.approved_by)}
-      ${irow('ملاحظة', s.approval_note)}
-    </div>`:''}
-    ${s.quality_cause?`<div class="card" style="margin-bottom:12px">
+    ${s.quality_cause?`<div class="card" style="margin-bottom:10px">
       <div class="sec-title">🔬 قرار الجودة</div>
-      ${irow('المتسبب', s.quality_cause)}
-      ${irow('النتيجة', s.quality_result)}
+      ${ir('المتسبب',s.quality_cause)} ${ir('النتيجة',s.quality_result)}
     </div>`:''}
+    ${s.sales_so?`<div class="card" style="margin-bottom:10px">
+      <div class="sec-title">💼 السيلز أوردر</div>
+      ${ir('رقم SO',s.sales_so)}
+    </div>`:''}
+    <div class="card" style="margin-bottom:10px">
+      <div class="sec-title">⏱️ إجمالي الوقت المنقضي</div>
+      <div style="font-size:18px;font-weight:900;color:#1565c0;text-align:center;padding:8px 0">${fmtDur(totalMs)}</div>
+    </div>
     ${photos}
-    ${buildTimeSummary(s)}
-    ${tl?`<div class="sec-title">📜 سجل التقدم مع الأوقات</div><ul class="tl">${tl}</ul>`:''}`;
+    ${tl?`<div class="sec-title">📜 سجل التقدم والأوقات</div><ul class="tl">${tl}</ul>`:''}`;
 
   openModal('m-detail');
 }
 
-// ═══════════════════════════════════════════
-// DELAY LEADERBOARD (داشبورد)
-// ═══════════════════════════════════════════
-function buildDelayLeaderboard() {
-  // لكل مرحلة: جمع الوقت المستغرق عبر كل العيوب
-  const stepTotals = {}; // step → {totalMs, count, exceededCount}
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function renderDash(){
+  const el=document.getElementById('tab-dash'); if(!el||!U) return;
+  const all=SNAGS;
+  const total=all.length, closed=all.filter(s=>s.status==='closed').length;
+  const open=all.filter(s=>s.status!=='closed').length;
+  const urgent=all.filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
+  const fast=all.filter(s=>s.track==='fast').length;
+  const full=all.filter(s=>s.track==='full').length;
+  const closedList=all.filter(s=>s.status==='closed'&&s.closed_at);
+  const avgDays=closedList.length?(closedList.reduce((a,s)=>a+(new Date(s.closed_at)-new Date(s.created_at))/864e5,0)/closedList.length).toFixed(1):'—';
+  const fastClosed=all.filter(s=>s.track==='fast'&&s.status==='closed').length;
+  const fullClosed=all.filter(s=>s.track==='full'&&s.status==='closed').length;
 
-  SNAGS.forEach(s => {
-    const hist = (s.history||[]).filter(h=>h.step!=='factory_notified');
-    hist.forEach((h,i) => {
-      if (i >= hist.length-1) return;
-      const ms  = new Date(hist[i+1].at)-new Date(h.at);
-      const sla = STEP_SLA_HOURS[h.step];
-      if (!stepTotals[h.step]) stepTotals[h.step]={totalMs:0,count:0,exceededCount:0,owner:sla?.owner||'—',lbl:STATUS[h.step]?.lbl||h.step,slaHours:sla?.hours};
-      stepTotals[h.step].totalMs += ms;
-      stepTotals[h.step].count++;
-      if (sla?.hours && ms > sla.hours*3600000) stepTotals[h.step].exceededCount++;
-    });
-  });
+  const sc=(ic,lbl,val,color)=>`<div class="stat"><div class="stat-ic">${ic}</div>
+    <div class="stat-val" style="color:${color}">${val}</div><div class="stat-lbl">${lbl}</div></div>`;
 
-  const rows = Object.values(stepTotals)
-    .filter(r=>r.count>0)
-    .sort((a,b)=>(b.exceededCount/b.count)-(a.exceededCount/a.count));
-
-  if (!rows.length) return '';
-
-  return `<div class="card">
-    <div class="sec-title">🚨 تحليل التأخير بالمرحلة</div>
-    ${rows.map(r=>{
-      const avgH = (r.totalMs/r.count/3600000).toFixed(1);
-      const pct  = Math.round(r.exceededCount/r.count*100);
-      const color= pct>50?'#c62828':pct>20?'#e65100':'#2e7d32';
-      const bg   = pct>50?'#ffebee':pct>20?'#fff8e1':'#e8f5e9';
-      return `<div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-          <div>
-            <div style="font-size:13px;font-weight:700">${r.lbl}</div>
-            <div style="font-size:10px;color:#aaa">المسؤول: ${r.owner}</div>
-          </div>
-          <div style="text-align:left">
-            <div style="background:${bg};color:${color};border-radius:8px;padding:2px 9px;font-size:12px;font-weight:800">
-              ${pct>0?'⚠️ ':'✅ '}${pct}% تجاوز SLA
-            </div>
-            <div style="font-size:10px;color:#aaa;text-align:center;margin-top:2px">متوسط ${avgH} ساعة</div>
-          </div>
+  el.innerHTML=`
+  <div class="stats">
+    ${sc('📋','إجمالي',total,'#1565c0')}
+    ${sc('🔴','عاجل مفتوح',urgent,'#c62828')}
+    ${sc('✅','مغلق',closed,'#2e7d32')}
+    ${sc('⏱️','متوسط الإغلاق',avgDays+(avgDays!=='—'?' يوم':''),'#6a1b9a')}
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">🛣️ توزيع المسارات</div>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <div style="flex:1;background:#e8f5e9;border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#2e7d32">${fast}</div>
+        <div style="font-size:12px;color:#555">🟢 مسار سريع</div>
+        <div style="font-size:11px;color:#aaa">${fastClosed} مغلق</div>
+      </div>
+      <div style="flex:1;background:#fce4ec;border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:900;color:#880e4f">${full}</div>
+        <div style="font-size:12px;color:#555">🔴 مسار كامل</div>
+        <div style="font-size:11px;color:#aaa">${fullClosed} مغلق</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">📊 حالة العيوب المفتوحة</div>
+    ${['registered','approved','qs_review','qs_complete','in_production'].map(st=>{
+      const cnt=all.filter(s=>s.status===st).length;
+      if(!cnt) return '';
+      const pct=Math.round(cnt/total*100);
+      return `<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span>${STATUS_IC[st]} ${STATUS_LBL[st]}</span>
+          <span style="font-weight:700">${cnt}</span>
         </div>
         <div style="background:#f0f0f0;border-radius:6px;height:6px;overflow:hidden">
-          <div style="width:${Math.min(pct,100)}%;height:100%;background:${color};border-radius:6px"></div>
+          <div style="width:${pct}%;height:100%;background:#1565c0;border-radius:6px"></div>
         </div>
       </div>`;
     }).join('')}
+  </div>
+  <div class="card">
+    <div class="sec-title">🏆 أداء المسارين</div>
+    <div class="irow"><span class="ilbl">🟢 مسار سريع — متوسط الإغلاق</span>
+      <span class="ival">${calcAvg('fast')}</span></div>
+    <div class="irow"><span class="ilbl">🔴 مسار كامل — متوسط الإغلاق</span>
+      <span class="ival">${calcAvg('full')}</span></div>
+    <div class="irow"><span class="ilbl">نسبة الإغلاق الكلية</span>
+      <span class="ival" style="color:#2e7d32">${total?Math.round(closed/total*100):0}%</span></div>
   </div>`;
 }
 
-// ═══════════════════════════════════════════
-// TIME SUMMARY
-// ═══════════════════════════════════════════
-function buildTimeSummary(s) {
-  const hist = (s.history||[]).filter(h=>h.step!=='factory_notified');
-  if (hist.length < 2) return '';
+function calcAvg(track){
+  const list=SNAGS.filter(s=>s.track===track&&s.status==='closed'&&s.closed_at);
+  if(!list.length) return '—';
+  const avg=list.reduce((a,s)=>a+(new Date(s.closed_at)-new Date(s.created_at))/864e5,0)/list.length;
+  return avg.toFixed(1)+' يوم';
+}
 
-  const totalMs = s.status==='closed' && s.closed_at
-    ? new Date(s.closed_at)-new Date(s.created_at)
-    : Date.now()-new Date(s.created_at);
-
-  const rows = hist.map((h,i)=>{
-    if (i===hist.length-1) return null; // آخر خطوة = الحالية
-    const nextH = hist[i+1];
-    const ms    = new Date(nextH.at)-new Date(h.at);
-    const sla   = STEP_SLA_HOURS[h.step];
-    const exceeded = sla?.hours && ms > sla.hours*3600000;
-    const warning  = sla?.hours && ms > sla.hours*3600000*0.85;
-    return {
-      from: STATUS[h.step]?.lbl||h.step,
-      to:   STATUS[nextH.step]?.lbl||nextH.step,
-      owner: sla?.owner||'—',
-      dur:  fmtDuration(ms),
-      exceeded, warning,
-    };
-  }).filter(Boolean);
-
-  const hasExceeded = rows.some(r=>r.exceeded);
-
-  return `<div class="card" style="margin-bottom:12px;${hasExceeded?'border-right:4px solid #c62828':''}">
-    <div class="sec-title" style="margin-bottom:8px">⏱️ ملخص أوقات المراحل</div>
-    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px;color:#888">
-      <span>إجمالي الوقت المنقضي</span>
-      <span style="font-weight:800;color:#1565c0">${fmtDuration(totalMs)}</span>
+// ══════════════════════════════════════════
+// GUIDE
+// ══════════════════════════════════════════
+function renderGuide(){
+  const el=document.getElementById('tab-guide'); if(!el) return;
+  el.innerHTML=`
+  <div class="card" style="margin-bottom:10px;border-right:4px solid #2e7d32">
+    <div style="font-weight:900;font-size:14px;color:#1b5e20;margin-bottom:12px">🟢 المسار السريع — 3 خطوات</div>
+    <div style="font-size:12px;color:#555;line-height:1.9">
+      <b>متى تستخدمه:</b> عيب يُحل في الموقع بدون تصنيع (خدش، إصلاح بسيط، قطعة من المخزن)<br>
+      <b>الهدف الزمني:</b> <span style="background:#e8f5e9;color:#2e7d32;border-radius:6px;padding:1px 8px;font-weight:700">24 ساعة</span><br><br>
+      <b>1️⃣ تسجيل + تحليل</b> — مدير المجموعة يسجل ويحلل في نفس الفورم<br>
+      <b>2️⃣ اعتماد</b> — إدارة التركيبات تعتمد بضغطة واحدة<br>
+      <b>3️⃣ إغلاق</b> — الفريق يؤكد الإصلاح ويغلق
     </div>
-    ${rows.map(r=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f5">
-      <div>
-        <div style="font-size:12px;font-weight:700;color:#333">${r.from}</div>
-        <div style="font-size:10px;color:#aaa">المسؤول: ${r.owner}</div>
-      </div>
-      <div style="background:${r.exceeded?'#ffebee':r.warning?'#fff8e1':'#e8f5e9'};
-                  color:${r.exceeded?'#c62828':r.warning?'#e65100':'#2e7d32'};
-                  border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;text-align:center">
-        ${r.exceeded?'⚠️ ':r.warning?'🟡 ':'✅ '}${r.dur}
-      </div>
-    </div>`).join('')}
+  </div>
+  <div class="card" style="margin-bottom:10px;border-right:4px solid #c62828">
+    <div style="font-weight:900;font-size:14px;color:#880e4f;margin-bottom:12px">🔴 المسار الكامل — 5 خطوات</div>
+    <div style="font-size:12px;color:#555;line-height:1.9">
+      <b>متى تستخدمه:</b> عيب يحتاج قطعة جديدة أو تصنيع<br>
+      <b>الهدف الزمني:</b> <span style="background:#fce4ec;color:#880e4f;border-radius:6px;padding:1px 8px;font-weight:700">3-7 أيام</span><br><br>
+      <b>1️⃣ تسجيل + تحليل</b> — مدير المجموعة<br>
+      <b>2️⃣ اعتماد</b> — إدارة التركيبات<br>
+      <b>3️⃣ جودة + بيع بالتوازي</b> — يعملان في نفس الوقت (يوفر أيام)<br>
+      <b>4️⃣ تصنيع</b> — محمد مختار يتابع مع المصنع<br>
+      <b>5️⃣ توريد وإغلاق</b> — خطوة واحدة
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">📣 إشعارات المصنع</div>
+    <div style="font-size:12px;color:#555;line-height:2">
+      📣 <b>الإشعار الأول:</b> عند تسجيل العيب فوراً — "استعد للتصنيع"<br>
+      📣 <b>الإشعار الثاني:</b> بعد اعتماد الجودة والبيع — "ابدأ فوراً"
+    </div>
+  </div>
+  <div class="card">
+    <div class="sec-title">⏱️ SLA لكل مرحلة</div>
+    ${Object.entries(STEP_SLA).map(([k,v])=>`
+      <div class="irow">
+        <span class="ilbl">${STATUS_LBL[k]||k}</span>
+        <span class="ival">${v.h?v.h+'س':'-'} / ${v.owner}</span>
+      </div>`).join('')}
   </div>`;
 }
 
-// ═══════════════════════════════════════════
-// PHOTO VIEWER
-// ═══════════════════════════════════════════
-function viewPhoto(src) {
-  document.getElementById('pv-img').src = src;
-  document.getElementById('photo-viewer').classList.add('open');
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function fmtDur(ms){
+  if(ms<0) ms=0;
+  const m=Math.floor(ms/60000), h=Math.floor(m/60), d=Math.floor(h/24);
+  if(d>0) return `${d} يوم${h%24?' '+h%24+'س':''}`;
+  if(h>0) return `${h} ساعة${m%60?' '+m%60+'د':''}`;
+  return `${m} دقيقة`;
 }
 
-// ═══════════════════════════════════════════
-// MODAL HELPERS
-// ═══════════════════════════════════════════
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function viewPhoto(src){
+  document.getElementById('pv-img').src=src;
+  document.getElementById('pviewer').classList.add('open');
+}
 
-// close on backdrop click
-document.querySelectorAll('.ov').forEach(ov => {
-  ov.addEventListener('click', e => { if(e.target===ov) closeModal(ov.id); });
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.ov').forEach(ov=>{
+  ov.addEventListener('click',e=>{ if(e.target===ov) closeModal(ov.id); });
 });
 
-// ═══════════════════════════════════════════
-// DEMO RESET
-// ═══════════════════════════════════════════
-function resetDemo() {
-  localStorage.removeItem(STORAGE_KEY);
-  SNAGS = JSON.parse(JSON.stringify(DEMO_DATA));
-  save();
-  toast('🔄 تم إعادة البيانات التجريبية');
-  renderList();
+let _tt;
+function toast(msg,ms=3500){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),ms);
 }
 
-// ═══════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════
-function find(id) { return SNAGS.find(s=>s.id===id); }
-
-let _tt;
-function toast(msg, ms=3500) {
-  const el = document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(_tt);
-  _tt=setTimeout(()=>el.classList.remove('show'), ms);
+function resetDemo(){
+  localStorage.removeItem(SK);
+  SNAGS=JSON.parse(JSON.stringify(DEMO));
+  save(); toast('🔄 إعادة البيانات'); renderList();
 }
 </script>
 </body>
