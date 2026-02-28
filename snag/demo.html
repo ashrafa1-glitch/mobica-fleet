@@ -151,9 +151,9 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <!-- LOGIN -->
-  <div class="login-wrap" id="loginWrap">
+<div id="loginWrap">
+  <div class="app">
+  <div class="login-wrap">
     <div class="login-box">
       <div class="login-logo">🔧</div>
       <div class="login-brand">Mobica Snag System</div>
@@ -194,7 +194,10 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       <button class="btn b-blue" onclick="doLogin()">🔐 دخول للنظام</button>
     </div>
   </div>
+  </div>
 </div>
+
+<div class="app" id="app" style="display:none"></div>
 
 <!-- MODALS -->
 <div class="ov" id="newSnagModal" style="display:none">
@@ -521,6 +524,8 @@ function doLogin(){
   if(!role) return toast('اختر دورك في النظام');
   if(pass !== 'demo') return toast('❌ كلمة المرور: demo');
   U = { role, ...ROLES[role] };
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
   renderApp();
 }
 
@@ -530,7 +535,6 @@ function saveSnags(){ localStorage.setItem('snag_demo_v2', JSON.stringify(SNAGS)
 // RENDER APP
 // ═══════════════════════════════════════════════
 function renderApp(){
-  document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('app').innerHTML = `
     <div class="hdr">
       <div class="hdr-left">
@@ -1160,8 +1164,9 @@ function openPhotoFull(idx){
 
 function doLogout(){
   U = null;
+  document.getElementById('app').style.display = 'none';
   document.getElementById('app').innerHTML = '';
-  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('loginWrap').style.display = 'block';
   document.getElementById('ln').value = '';
   document.getElementById('lp').value = '';
 }
