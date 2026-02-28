@@ -33,7 +33,7 @@ const MEMBER_CHAT_IDS = {
 
 // ── Bootstrap: أنشئ الـ Sheets لو مش موجودة ──────────────
 function setupSheets() {
-  const ss = SpreadsheetApp.openById("1qZSLK7zEsOxRactIxXVwvVR3tFYruR_CI8bU5rERGwI");
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   let rs = ss.getSheetByName(SHEET_REQUESTS);
   if (!rs) {
     rs = ss.insertSheet(SHEET_REQUESTS);
@@ -128,7 +128,7 @@ function uid() {
 }
 
 function getSheet() {
-  const ss = SpreadsheetApp.openById("1qZSLK7zEsOxRactIxXVwvVR3tFYruR_CI8bU5rERGwI");
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   return ss.getSheetByName(SHEET_REQUESTS) || (setupSheets(), ss.getSheetByName(SHEET_REQUESTS));
 }
 
@@ -248,7 +248,7 @@ function savePlan(body) {
   const approvedBy  = body.approved_by || 'مسؤول الحملة';
 
   // حفظ في Sheet
-  const ss = SpreadsheetApp.openById("1qZSLK7zEsOxRactIxXVwvVR3tFYruR_CI8bU5rERGwI");
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   let ps = ss.getSheetByName(SHEET_PLAN);
   if (!ps) {
     ps = ss.insertSheet(SHEET_PLAN);
