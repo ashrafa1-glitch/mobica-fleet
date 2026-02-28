@@ -375,7 +375,9 @@ function savePlan(body) {
       if (allMembers.length) msg += `👤 ${allMembers.join(' • ')}\n`;
       msg += `\n✅ اعتمده: ${approvedBy}`;
 
-      const chatId = TEAM_CHAT_IDS[team];
+      // البحث عن chatId سواء كان الـkey هو 'A' أو 'A — اسم'
+      const chatId = TEAM_CHAT_IDS[team] ||
+        Object.entries(TEAM_CHAT_IDS).find(([k])=>k.startsWith(team+' '))?.[1] || '';
       if (chatId) sendTelegram(chatId, msg);
 
       // إشعار الأفراد المعروف chat IDs

@@ -513,6 +513,7 @@ function renderApp(){
       <button class="btn b-green" style="margin-bottom:12px" onclick="runAutoDistribute()">⚡ توزيع تلقائي واعتماد</button>
       <div class="tabs" style="overflow-x:auto;white-space:nowrap">
         <div class="tab on"  onclick="fmTab('reqs',this)">الطلبات</div>
+        <div class="tab"     onclick="fmTab('dash',this)">📊 داشبورد</div>
         <div class="tab"     onclick="fmTab('plan',this)">📋 الخطة</div>
         <div class="tab"     onclick="fmTab('hist',this)">📅 السجل</div>
         <div class="tab"     onclick="fmTab('ratings',this)">⭐ التقييمات</div>
@@ -521,6 +522,7 @@ function renderApp(){
         <div class="tab"     onclick="fmTab('veh',this)">🚙 الأسطول</div>
       </div>
       <div id="tab-reqs"></div>
+      <div id="tab-dash"    style="display:none"></div>
       <div id="tab-plan"    style="display:none"></div>
       <div id="tab-hist"    style="display:none"></div>
       <div id="tab-ratings" style="display:none"></div>
@@ -778,12 +780,13 @@ function updStats(){
 
 function fmTab(name,btn){
   CUR_TAB=name;
-  ['reqs','plan','hist','ratings','drivers','order','veh'].forEach(t=>{
+  ['reqs','dash','plan','hist','ratings','drivers','order','veh'].forEach(t=>{
     const el=document.getElementById('tab-'+t); if(el) el.style.display=t===name?'':'none';
   });
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
   if(name==='reqs')    renderFmReqs();
+  if(name==='dash')    renderDashboard();
   if(name==='plan')    renderPlan();
   if(name==='hist')    loadHistory();
   if(name==='ratings') loadRatings();
@@ -854,6 +857,70 @@ async function loadDriverLog(){
         <div style="font-size:11px;color:#999">${l.time?l.time.substring(11,16):''}</div>
       </div>`).join('');
   }catch(e){ el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>'; }
+}
+
+// ══ DASHBOARD ══
+function renderDashboard(){
+  const el=document.getElementById('tab-dash'); if(!el) return;
+  const reqs=REQS||[];
+  const today=todayStr().replace('D:','');
+
+  // إحصائيات الطلبات
+  const total    = reqs.length;
+  const pending  = reqs.filter(r=>r.status==='pending').length;
+  const approved = reqs.filter(r=>r.status==='approved').length;
+  const totalTechs = reqs.reduce((s,r)=>s+parseInt(r.techs||0),0);
+
+  // إحصائيات السيارات من الخطة
+  const plan = _autoPlan?.companyAssignments||[];
+  const totalVeh     = getVehicles().length;
+  const assignedVeh  = plan.reduce((s,g)=>s+g.vehicles.length,0);
+  const freeVeh      = totalVeh - assignedVeh;
+
+  // توزيع المجموعات
+  const byTeam = {};
+  reqs.forEach(r=>{ const t=r.team||'—'; if(!byTeam[t]) byTeam[t]={total:0,pending:0,approved:0,techs:0};
+    byTeam[t].total++; byTeam[t][r.status]=(byTeam[t][r.status]||0)+1; byTeam[t].techs+=parseInt(r.techs||0); });
+
+  const teamColors={'A':'#1565c0','B':'#2e7d32','C':'#6a1b9a','D':'#e65100'};
+
+  const statCard=(icon,label,val,color)=>`
+    <div style="background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center">
+      <div style="font-size:24px">${icon}</div>
+      <div style="font-size:22px;font-weight:800;color:${color||'#1565c0'}">${val}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px">${label}</div>
+    </div>`;
+
+  el.innerHTML=`
+    <div style="font-size:13px;color:#888;margin-bottom:10px;text-align:center">📅 ${today}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      ${statCard('📋','إجمالي الطلبات',total,'#1565c0')}
+      ${statCard('⏳','في الانتظار',pending,'#f9a825')}
+      ${statCard('✅','معتمدة',approved,'#2e7d32')}
+      ${statCard('👥','إجمالي الفنيين',totalTechs,'#6a1b9a')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      ${statCard('🚗','إجمالي الأسطول',totalVeh,'#455a64')}
+      ${statCard('🟢','سيارات مخصصة',assignedVeh,'#2e7d32')}
+      ${statCard('⚪','سيارات متاحة',freeVeh,'#78909c')}
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.1);margin-bottom:16px">
+      <div style="font-weight:700;margin-bottom:12px;font-size:14px">📊 توزيع المجموعات</div>
+      ${Object.entries(byTeam).map(([t,d])=>`
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:700;color:${teamColors[t]||'#333'}">مجموعة ${t}</span>
+            <span style="font-size:12px;color:#555">${d.techs} فرد | ${d.approved||0} ✅ ${d.pending||0} ⏳</span>
+          </div>
+          <div style="background:#f5f5f5;border-radius:6px;height:8px;overflow:hidden">
+            <div style="background:${teamColors[t]||'#1565c0'};width:${total?Math.round(d.total/total*100):0}%;height:100%;border-radius:6px;transition:.3s"></div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn b-out" style="flex:1;font-size:13px" onclick="loadAllReqs();fmTab('reqs',document.querySelector('.tab'))">🔄 تحديث</button>
+      <button class="btn" style="flex:1;font-size:13px;background:#1565c0" onclick="fmTab('plan',document.querySelectorAll('.tab')[2])">📋 الخطة</button>
+    </div>`;
 }
 
 function renderFmReqs(){
@@ -1092,10 +1159,10 @@ function renderPlan(){
           <div style="font-size:12px;color:#888;margin-bottom:8px">👥 ${v.techs} فرد | ${FLEET_DEF[v.type]?.label||''} (سعة ${FLEET_DEF[v.type]?.cap||'?'})</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="btn b-out b-xs" onclick="openRouteFromPlan(${JSON.stringify(g.ids).replace(/"/g,"'")},${getVehicles().findIndex(x=>x.id===v.id)})">🗺 خطة الرحلة</button>
-            <button class="btn b-xs" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80"
+            ${U.role==='fleet_manager'?`<button class="btn b-xs" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffcc80"
               onclick="openReplaceDriver('${v.id}','${v.plate}','${v.driver}',${JSON.stringify(g.ids).replace(/"/g,"'")})">
               🔄 استبدال السائق
-            </button>
+            </button>`:''}
           </div>
         </div>`;
       });
