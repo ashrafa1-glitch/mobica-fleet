@@ -212,13 +212,13 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
           <option value="fathy">محمد فتحي</option>
           <option value="khalid">خالد علي</option>
         </optgroup>
-        <optgroup label="🔍 الجودة والبيع">
+        <optgroup label="🔍 الجودة والمكتب الفني">
           <option value="quality">مسؤول الجودة</option>
-          <option value="sales">إدارة البيع</option>
           <option value="technical">المكتب الفني</option>
         </optgroup>
-        <optgroup label="📋 المتابعة">
-          <option value="mokhtar">محمد مختار</option>
+        <optgroup label="📋 البيع والتنسيق">
+          <option value="sales">إدارة البيع</option>
+          <option value="mokhtar">محمد مختار — إدارة التركيبات</option>
         </optgroup>
       </select>
     </div>
@@ -258,6 +258,7 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
     <button class="rc" data-r="fathy"   onclick="switchRole(this)">فتحي</button>
     <button class="rc" data-r="khalid"  onclick="switchRole(this)">خالد</button>
     <button class="rc" data-r="quality" onclick="switchRole(this)">جودة</button>
+    <button class="rc" data-r="sales"   onclick="switchRole(this)">بيع</button>
     <button class="rc" data-r="mokhtar" onclick="switchRole(this)">مختار</button>
   </div>
 
@@ -491,7 +492,7 @@ const ROLES = {
   quality: { name:'مسؤول الجودة', lbl:'إدارة الجودة',        team:null, cat:'quality'},
   sales:   { name:'إدارة البيع',  lbl:'البيع',               team:null, cat:'sales' },
   technical:{name:'المكتب الفني', lbl:'المكتب الفني',         team:null, cat:'tech'  },
-  mokhtar: { name:'محمد مختار',   lbl:'متابعة وتنسيق',       team:null, cat:'follow'},
+  mokhtar: { name:'محمد مختار',   lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
 };
 
 const STATUS = {
@@ -501,9 +502,12 @@ const STATUS = {
   rejected:         { lbl:'مرفوض',          cls:'s-rejected',   ic:'❌', step:1 },
   quality_review:   { lbl:'مراجعة الجودة', cls:'s-quality',    ic:'🔬', step:3 },
   quality_approved: { lbl:'اعتمدت الجودة', cls:'s-qa-ok',      ic:'✅', step:4 },
-  in_production:    { lbl:'في التصنيع',     cls:'s-production', ic:'🏭', step:5 },
-  ready:            { lbl:'جاهز للتوريد',   cls:'s-ready',      ic:'📦', step:6 },
-  closed:           { lbl:'مغلق ✓',         cls:'s-closed',     ic:'🟢', step:7 },
+  sales_approved:   { lbl:'اعتمد البيع',   cls:'s-approved',   ic:'💼', step:5 },
+  in_production:    { lbl:'في التصنيع',     cls:'s-production', ic:'🏭', step:6 },
+  ready:            { lbl:'جاهز للتوريد',   cls:'s-ready',      ic:'📦', step:7 },
+  closed:           { lbl:'مغلق ✓',         cls:'s-closed',     ic:'🟢', step:8 },
+  factory_notified: { lbl:'إشعار المصنع',  cls:'s-production', ic:'📣', step:null },
+  sales_approved:   { lbl:'اعتمد البيع',   cls:'s-approved',   ic:'💼', step:5 },
 };
 
 const SEV = {
@@ -512,7 +516,26 @@ const SEV = {
   low:    { lbl:'🟢 بسيط',   cls:'sev-l', sla:14, color:'#2e7d32' },
 };
 
-const STEPS_LABELS = ['تسجيل','تحليل','اعتماد','جودة','تأكيد','تصنيع','توريد','إغلاق'];
+const STEPS_LABELS = ['تسجيل','تحليل','اعتماد','جودة','تأكيد','بيع','تصنيع','توريد','إغلاق'];
+
+// إشعار المصنع — يظهر في الـ timeline
+function notifyFactory(s, reason) {
+  const factories = {
+    'مصنع الملامين':'🏭 مصنع الملامين',
+    'مصنع المعدني':'🏭 مصنع المعدني',
+    'مصنع الخشب الطبيعي':'🏭 مصنع الخشب',
+    'مصنع الألوميتال':'🏭 مصنع الألوميتال',
+  };
+  const factory = s.factory ? (factories[s.factory]||s.factory) : '🏭 المصنع المختص';
+  const now = new Date().toISOString();
+  s.history.push({
+    step:'factory_notified',
+    by:'النظام',
+    at: now,
+    note:`📣 إشعار ${factory} — ${reason}\nالعيب: ${s.defect_type} | العقد: ${s.contract} | العميل: ${s.client}`,
+  });
+  toast(`📣 تم إخطار ${factory} — ${reason}`, 4000);
+}
 
 // ═══════════════════════════════════════════
 // STATE
@@ -536,12 +559,15 @@ const DEMO_DATA = [
     quality_cause:'تلف أثناء النقل — إدارة التسليمات', quality_result:'تأكد الفريق من أن السبب خلال النقل',
     notes:'العميل طلب الحل في أسرع وقت', photos:[],
     history:[
-      {step:'new',       by:'مشرف موقع',  at:'2026-02-25T08:30', note:'تسجيل العيب في الموقع'},
+      {step:'new',            by:'مشرف موقع',   at:'2026-02-25T08:30', note:'تسجيل العيب في الموقع | رقم العقد: 2026-041'},
+      {step:'factory_notified',by:'النظام',       at:'2026-02-25T08:31', note:'📣 إشعار مصنع الملامين — إشعار مبدئي، العيب قيد المراجعة، استعد للتصنيع'},
       {step:'analyzed',  by:'أحمد حسن',   at:'2026-02-25T10:15', note:'كسر كامل — سبب: تلف نقل'},
       {step:'approved',  by:'أشرف قاسم',  at:'2026-02-25T11:00', note:'اعتمدت — يستعجل التصنيع'},
       {step:'quality_review', by:'محمد مختار', at:'2026-02-25T12:00', note:'إرسال للجودة'},
-      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T09:00',note:'تأكيد: تلف نقل'},
-      {step:'in_production',by:'محمد مختار',at:'2026-02-26T10:30',note:'بدأ التصنيع — مصنع الملامين'},
+      {step:'quality_approved',  by:'مسؤول الجودة', at:'2026-02-26T09:00', note:'تأكيد: تلف نقل'},
+      {step:'sales_approved',    by:'إدارة البيع',   at:'2026-02-26T09:45', note:'اعتماد البيع | رقم العقد: 2026-041 | العميل: TMG'},
+      {step:'factory_notified',  by:'النظام',        at:'2026-02-26T09:46', note:'📣 إشعار مصنع الملامين — اعتماد البيع، ابدأ التصنيع فوراً | العقد: 2026-041'},
+      {step:'in_production',     by:'محمد مختار',    at:'2026-02-26T10:30', note:'بدأ التصنيع — مصنع الملامين | SLA: 3 أيام'},
     ]},
   { id:'SNR-2026-0002', date:'2026-02-26', client:'Emaar — الحي الثامن', contract:'2026-035',
     item:'مكتب المدير — سطح زجاجي', defect_type:'مقاس غلط', severity:'medium',
@@ -682,8 +708,9 @@ function needsMyAction(s) {
   const c = U.cat, k = U.key;
   if (c==='lead'    && s.status==='new'           && s.team===U.team) return true;
   if (c==='mgr'     && s.status==='analyzed')                         return true;
-  if (c==='quality' && s.status==='quality_review')                   return true;
-  if (c==='follow'  && ['approved','quality_approved','in_production','ready'].includes(s.status)) return true;
+  if (c==='quality' && s.status==='quality_review')                                          return true;
+  if (c==='sales'   && s.status==='quality_approved')                                         return true;
+  if (c==='mgr'     && ['approved','sales_approved','in_production','ready'].includes(s.status)) return true;
   return false;
 }
 
@@ -695,11 +722,13 @@ function actionBtn(s) {
     return `<button class="btn bg bxs" onclick="openApprove('${s.id}')">✅ اعتماد</button>`;
   if (c==='quality' && s.status==='quality_review')
     return `<button class="btn bt bxs" onclick="openQuality('${s.id}')">🔬 مراجعة</button>`;
-  if (c==='follow') {
+  if (c==='sales' && s.status==='quality_approved')
+    return `<button class="btn bxs" style="background:#1b5e20;color:#fff" onclick="submitSalesApprove('${s.id}')">💼 اعتماد البيع</button>`;
+  if (c==='mgr') {
     if (s.status==='approved')
       return `<button class="btn bxs" style="background:#e65100;color:#fff" onclick="move('${s.id}','quality_review','إرسال للجودة')">🔬 للجودة</button>`;
-    if (s.status==='quality_approved')
-      return `<button class="btn bxs" style="background:#3949ab;color:#fff" onclick="move('${s.id}','in_production','بدء التصنيع')">🏭 تصنيع</button>`;
+    if (s.status==='sales_approved')
+      return `<button class="btn bxs" style="background:#3949ab;color:#fff" onclick="startProduction('${s.id}')">🏭 بدء التصنيع</button>`;
     if (s.status==='in_production')
       return `<button class="btn bg bxs" onclick="move('${s.id}','ready','جاهز للتوريد')">📦 جاهز</button>`;
     if (s.status==='ready')
@@ -794,7 +823,10 @@ function snagCard(s) {
       </div>
     </div>
     <div style="font-weight:700;font-size:13px;margin-bottom:3px">🏢 ${s.client}</div>
-    <div style="font-size:12px;color:#666;margin-bottom:2px">📋 ${s.contract} — ${s.item}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+      <span style="background:#e8eaf6;color:#3949ab;border-radius:8px;padding:2px 9px;font-size:12px;font-weight:800">📄 ${s.contract}</span>
+      <span style="font-size:12px;color:#555">${s.item}</span>
+    </div>
     <div style="font-size:12px;color:#aaa;margin-bottom:6px">🔧 ${s.defect_type} | مجموعة ${s.team} | ${s.created_by} ${photoCount}</div>
     <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
     <div class="prog-steps">${STEPS_LABELS.map(l=>`<span>${l}</span>`).join('')}</div>
@@ -1002,17 +1034,20 @@ function submitNew() {
   const id  = 'SNR-'+new Date().getFullYear()+'-'+String(SNAGS.length+1).padStart(4,'0');
   const photos = _newPhotos.filter(Boolean);
 
-  SNAGS.push({
+  const newSnag = {
     id, date:now.substring(0,10), client, contract, item,
     defect_type:type, severity:_selSev, status:'new',
     team, created_by:U.name, created_at:now, closed_at:'',
     root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
     analyzed_by:'', approved_by:'', approval_note:'',
-    quality_cause:'', quality_result:'', notes, photos,
-    history:[{step:'new', by:U.name, at:now, note:'تم تسجيل العيب'}],
-  });
+    quality_cause:'', quality_result:'', sales_approved_by:'', notes, photos,
+    history:[{step:'new', by:U.name, at:now, note:`تم تسجيل العيب | رقم العقد: ${contract}`}],
+  };
+  SNAGS.push(newSnag);
+  // إشعار المصنع الأول — عند التسجيل للاستعداد
+  notifyFactory(newSnag, 'إشعار مبدئي — العيب قيد المراجعة، استعد للتصنيع');
   save();
-  toast(`✅ تم تسجيل ${id}${photos.length?' مع '+photos.length+' صورة':''} — إشعار أُرسل`);
+  toast(`✅ تم تسجيل ${id}${photos.length?' مع '+photos.length+' صورة':''} — إشعار أُرسل للمشرف والمصنع`);
   closeModal('m-new');
   renderList();
 }
@@ -1108,6 +1143,36 @@ function submitQuality() {
   save();
   toast('✅ اعتماد الجودة — إشعار لمحمد مختار');
   closeModal('m-quality');
+  renderList();
+}
+
+// ═══════════════════════════════════════════
+// SALES APPROVE
+// ═══════════════════════════════════════════
+function submitSalesApprove(id) {
+  const s = find(id); if (!s) return;
+  const now = new Date().toISOString();
+  Object.assign(s, { status:'sales_approved', sales_approved_by:U.name });
+  s.history.push({step:'sales_approved', by:U.name, at:now,
+    note:`اعتماد البيع | رقم العقد: ${s.contract} | العميل: ${s.client}`});
+  // إشعار المصنع الثاني — بعد اعتماد البيع
+  notifyFactory(s, `اعتماد البيع — ابدأ التصنيع فوراً | العقد: ${s.contract}`);
+  save();
+  toast('💼 اعتمد البيع — إشعار المصنع الثاني أُرسل لبدء التصنيع');
+  renderList();
+}
+
+// ═══════════════════════════════════════════
+// START PRODUCTION
+// ═══════════════════════════════════════════
+function startProduction(id) {
+  const s = find(id); if (!s) return;
+  const now = new Date().toISOString();
+  s.status = 'in_production';
+  s.history.push({step:'in_production', by:U.name, at:now,
+    note:`بدأ التصنيع | المصنع: ${s.factory||'المصنع المختص'} | SLA: ${SEV[s.severity]?.sla||7} أيام`});
+  save();
+  toast(`🏭 بدأ التصنيع — SLA ${SEV[s.severity]?.sla||7} أيام`);
   renderList();
 }
 
