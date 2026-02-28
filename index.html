@@ -599,8 +599,20 @@ async function submitReq(){
         created_by: U.name, status:'pending'
       };
       addLocalReq(newReq);
-      toast('✅ تم الإرسال — سيُخطر مسؤول الحملة');
+      // إعادة تعيين النموذج كاملاً
+      document.getElementById('e-from').value='';
+      document.getElementById('e-dest').value='';
+      document.getElementById('e-client').value='';
+      // إعادة المحطات لمحطة واحدة فارغة
+      const sl=document.getElementById('stops-list');
+      if(sl) sl.innerHTML=`<div class="stop-row" style="display:flex;gap:6px;margin-bottom:6px">
+        <select class="inp stop-sel" style="flex:1"><option value="">— بدون محطة —</option>${window.LOC_OPTS_HTML||''}</select>
+        <button type="button" onclick="addStopRow()" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:0 12px;font-size:18px;cursor:pointer">+</button>
+      </div>`;
+      const cbMgr2=document.getElementById('cb-manager'); if(cbMgr2) cbMgr2.checked=false;
       selectAllMembers(false);
+      // رسالة تأكيد واضحة
+      toast('✅ تم إرسال الطلب بنجاح!', 4000);
       loadMyReqs();
     } else toast('❌ '+(r.error||'خطأ'));
   }catch(e){toast('❌ تعذّر الاتصال');}
@@ -738,13 +750,20 @@ function rqHTML(r,mgr=false){
   const routeLine = r.stop_loc
     ? `📍 ${r.from_loc||'—'} ← 🔸 ${r.stop_loc} ← 🏁 ${r.dest||'—'}`
     : `📍 ${r.from_loc||'—'} ➜ 🏁 ${r.dest||'—'}`;
-  return `<div class="rq ${status}">
+  // تقييم الرحلة — يظهر للمهندس بعد الاعتماد
+  const ratingStored = r.rating ? `<div style="font-size:13px;margin-top:6px">⭐ تقييمك: ${'⭐'.repeat(r.rating)} (${r.rating}/5)${r.ratingNote?` — ${r.ratingNote}`:''}</div>` : '';
+  const ratingBtn = (!mgr && status==='approved' && !r.rating)
+    ? `<button class="btn b-sm b-out" style="margin-top:8px;font-size:13px" onclick="openRating('${r.id}')">⭐ قيّم الرحلة</button>` : '';
+
+  return `<div class="rq ${status}" id="rq-${r.id}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
     ${clientBadge}
     <div class="rq-route">${routeLine}</div>
     <div class="rq-sub">👥 ${r.techs||0} فرد | ${r.created_by||'—'}</div>
     ${members}
     ${veh}
+    ${ratingStored}
+    ${ratingBtn}
   </div>`;
 }
 
@@ -1508,7 +1527,53 @@ function demoGet(action,params){
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function todayStr(){return new Date().toISOString().split('T')[0];}
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',3500);}
+function toast(msg,ms=3500){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',ms);}
+</script>
+
+<!-- Rating Modal -->
+<div id="ratingModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:360px;margin:auto;margin-top:20vh">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center">⭐ تقييم الرحلة</div>
+    <div style="text-align:center;margin-bottom:16px" id="rating-stars">
+      <span class="star" data-v="1" onclick="setStar(1)" style="font-size:36px;cursor:pointer;color:#ccc">★</span>
+      <span class="star" data-v="2" onclick="setStar(2)" style="font-size:36px;cursor:pointer;color:#ccc">★</span>
+      <span class="star" data-v="3" onclick="setStar(3)" style="font-size:36px;cursor:pointer;color:#ccc">★</span>
+      <span class="star" data-v="4" onclick="setStar(4)" style="font-size:36px;cursor:pointer;color:#ccc">★</span>
+      <span class="star" data-v="5" onclick="setStar(5)" style="font-size:36px;cursor:pointer;color:#ccc">★</span>
+    </div>
+    <input id="rating-note" class="inp" type="text" placeholder="ملاحظة اختيارية (مثال: السائق ممتاز)..." style="margin-bottom:12px">
+    <div style="display:flex;gap:8px">
+      <button class="btn b-green" style="flex:1" onclick="submitRating()">✅ إرسال التقييم</button>
+      <button class="btn b-out"   style="flex:1" onclick="document.getElementById('ratingModal').style.display='none'">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _ratingReqId=null, _ratingVal=0;
+function openRating(id){
+  _ratingReqId=id; _ratingVal=0;
+  document.querySelectorAll('.star').forEach(s=>s.style.color='#ccc');
+  document.getElementById('rating-note').value='';
+  document.getElementById('ratingModal').style.display='flex';
+}
+function setStar(v){
+  _ratingVal=v;
+  document.querySelectorAll('.star').forEach(s=>{
+    s.style.color=parseInt(s.dataset.v)<=v?'#f9a825':'#ccc';
+  });
+}
+async function submitRating(){
+  if(!_ratingVal) return toast('✋ اختر عدد النجوم أولاً');
+  const note=document.getElementById('rating-note').value.trim();
+  const reqs=loadLocalReqs();
+  const req=reqs.find(r=>r.id===_ratingReqId);
+  if(req){ req.rating=_ratingVal; req.ratingNote=note; saveLocalReqs(reqs); }
+  await api('rateRequest',{id:_ratingReqId, rating:_ratingVal, ratingNote:note});
+  document.getElementById('ratingModal').style.display='none';
+  toast('✅ شكراً على تقييمك! ⭐'.repeat(_ratingVal));
+  loadMyReqs();
+}
 </script>
 </body>
 </html>
