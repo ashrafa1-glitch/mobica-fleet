@@ -636,12 +636,18 @@ async function loadMyReqs(){
   try{
     const r=await apiGet('getRequests',{date:todayStr()});
     const serverReqs = r.requests||[];
-    // دمج السيرفر مع الـ cache (السيرفر له الأولوية)
     if(serverReqs.length){
-      REQS = serverReqs;
-      saveLocalReqs(serverReqs); // حدّث الـ cache
+      // دمج: السيرفر يحدّث الـ status والسيارة، الـ cache يكمل الباقي
+      const merged = serverReqs.map(sr => {
+        const local = cached.find(c=>c.id===sr.id)||{};
+        return {...local, ...sr}; // السيرفر له الأولوية
+      });
+      // أضف طلبات الـ cache اللي مش على السيرفر (حديثة لسه)
+      cached.forEach(c=>{ if(!merged.find(m=>m.id===c.id)) merged.push(c); });
+      REQS = merged;
+      saveLocalReqs(merged);
     } else {
-      REQS = cached; // استخدم الـ cache لو السيرفر فاضي
+      REQS = cached;
     }
   }catch(e){ REQS = cached; }
 
@@ -703,8 +709,10 @@ async function loadAllReqs(){
     const r=await apiGet('getRequests',{date:todayStr()});
     const serverReqs=r.requests||[];
     if(serverReqs.length){
-      REQS=serverReqs;
-      saveLocalReqs(serverReqs);
+      const merged=serverReqs.map(sr=>({...(cached.find(c=>c.id===sr.id)||{}),...sr}));
+      cached.forEach(c=>{ if(!merged.find(m=>m.id===c.id)) merged.push(c); });
+      REQS=merged;
+      saveLocalReqs(merged);
     } else {
       REQS=cached;
     }
@@ -1526,7 +1534,9 @@ function demoGet(action,params){
   return Promise.resolve({ok:true,requests:_demo.filter(r=>!params.date||r.date===params.date)});
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function todayStr(){return new Date().toISOString().split('T')[0];}
+// بنستخدم صيغة D:YYYY-MM-DD عشان Sheets ميحوّلهاش لـ Date object تلقائياً
+function todayStr(){return 'D:'+new Date().toISOString().split('T')[0];}
+function dateDisplay(){return new Date().toISOString().split('T')[0];}
 function toast(msg,ms=3500){const el=document.getElementById('toast');el.textContent=msg;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',ms);}
 </script>
 
