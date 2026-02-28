@@ -2,232 +2,325 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Mobica — Snag Management System</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mobica — Snag System</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#eef2f7;color:#1a1a2e;min-height:100vh;direction:rtl}
-.app{max-width:500px;margin:0 auto;padding:12px;min-height:100vh}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#eef2f7;color:#1a1a2e;direction:rtl;min-height:100vh}
 
-/* LOGIN */
-.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.login-box{background:#fff;border-radius:24px;padding:36px 28px;box-shadow:0 12px 40px rgba(0,0,0,.14);width:100%;max-width:420px}
-.login-logo{text-align:center;margin-bottom:6px}
-.login-logo img{width:56px}
-.login-brand{text-align:center;font-size:22px;font-weight:900;color:#1a237e;letter-spacing:.5px;margin-bottom:2px}
-.login-sub{text-align:center;font-size:12px;color:#999;margin-bottom:28px}
-.demo-bar{background:#fffde7;border:1px solid #ffe082;border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:12px;color:#795548;text-align:center}
-.demo-bar b{color:#e65100}
+/* ─── LOGIN ─── */
+#screen-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#1a237e,#1565c0)}
+.login-card{background:#fff;border-radius:24px;padding:32px 24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-ic{text-align:center;font-size:48px;margin-bottom:8px}
+.login-title{text-align:center;font-size:20px;font-weight:900;color:#1a237e;margin-bottom:4px}
+.login-sub{text-align:center;font-size:12px;color:#999;margin-bottom:20px}
+.demo-note{background:#fffde7;border:1px solid #ffe082;border-radius:10px;padding:10px;margin-bottom:18px;font-size:12px;color:#795548;text-align:center;line-height:1.6}
 
-/* INPUTS */
-.inp{width:100%;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 15px;font-size:14px;font-family:inherit;direction:rtl;background:#f8f9fc;transition:.2s;outline:none;color:#1a1a2e}
-.inp:focus{border-color:#1565c0;background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.12)}
+/* ─── APP ─── */
+#screen-app{display:none;max-width:500px;margin:0 auto;padding:12px;min-height:100vh;padding-bottom:80px}
+
+/* ─── INPUTS ─── */
+.inp{width:100%;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;direction:rtl;background:#f8f9fc;outline:none;color:#1a1a2e;transition:.2s}
+.inp:focus{border-color:#1565c0;background:#fff;box-shadow:0 0 0 3px rgba(21,101,192,.1)}
 select.inp{appearance:none;-webkit-appearance:none}
 textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
-.inp-lbl{font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block}
-.fld{margin-bottom:16px}
-.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.lbl{font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block}
+.fld{margin-bottom:14px}
+.fld2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 
-/* BUTTONS */
-.btn{border:none;border-radius:12px;padding:13px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;width:100%;letter-spacing:.2px}
-.btn:active{transform:scale(.97)}
-.b-blue{background:#1565c0;color:#fff;box-shadow:0 3px 10px rgba(21,101,192,.3)}
-.b-green{background:#2e7d32;color:#fff;box-shadow:0 3px 10px rgba(46,125,50,.3)}
-.b-red{background:#c62828;color:#fff}
-.b-orange{background:#e65100;color:#fff;box-shadow:0 3px 10px rgba(230,81,0,.25)}
-.b-purple{background:#6a1b9a;color:#fff}
-.b-teal{background:#00695c;color:#fff}
-.b-navy{background:#1a237e;color:#fff}
-.b-out{background:#fff;color:#1565c0;border:1.5px solid #1565c0}
-.b-out-gray{background:#fff;color:#555;border:1.5px solid #ddd}
-.b-xs{padding:7px 12px;font-size:12px;width:auto;border-radius:8px}
-.b-sm{padding:10px 15px;font-size:13px;border-radius:10px}
-.btn-row{display:flex;gap:8px;margin-top:4px}
+/* ─── BUTTONS ─── */
+.btn{border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;width:100%}
+.btn:active{transform:scale(.97);opacity:.9}
+.bl{background:#1565c0;color:#fff}
+.bg{background:#2e7d32;color:#fff}
+.br{background:#c62828;color:#fff}
+.bo{background:#e65100;color:#fff}
+.bp{background:#6a1b9a;color:#fff}
+.bt{background:#00695c;color:#fff}
+.bw{background:#fff;color:#1565c0;border:1.5px solid #1565c0}
+.bgr{background:#fff;color:#555;border:1.5px solid #ddd}
+.bxs{padding:7px 12px;font-size:12px;width:auto;border-radius:8px}
+.bsm{padding:10px 14px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:8px}
 .btn-row .btn{flex:1}
 
-/* HEADER */
-.hdr{background:linear-gradient(135deg,#1a237e 0%,#1565c0 100%);border-radius:18px;padding:16px 18px;color:#fff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.hdr-left{display:flex;align-items:center;gap:12px}
-.hdr-ic{font-size:30px}
-.hdr-title{font-size:16px;font-weight:800;line-height:1.2}
+/* ─── HEADER ─── */
+.hdr{background:linear-gradient(135deg,#1a237e,#1565c0);border-radius:16px;padding:14px 16px;color:#fff;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.hdr-info{display:flex;align-items:center;gap:10px}
+.hdr-ic{font-size:28px}
+.hdr-title{font-size:15px;font-weight:800}
 .hdr-sub{font-size:11px;opacity:.75;margin-top:2px}
-.hdr-badge{background:rgba(255,255,255,.2);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700}
+.hdr-logout{background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:7px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.hdr-logout:active{background:rgba(255,255,255,.35)}
 
-/* TABS */
-.tabs{display:flex;background:#fff;border-radius:14px;padding:5px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.07);gap:3px;overflow-x:auto}
-.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;color:#bbb;cursor:pointer;white-space:nowrap;min-width:60px;transition:.2s}
-.tab.on{background:#1565c0;color:#fff;box-shadow:0 2px 6px rgba(21,101,192,.35)}
+/* ─── ROLE BAR (DEMO) ─── */
+.role-bar{background:#1a237e;border-radius:12px;padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.role-bar-lbl{color:rgba(255,255,255,.6);font-size:11px;font-weight:700;white-space:nowrap}
+.rc{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.rc.on{background:#fff;color:#1a237e}
+.rc:active{opacity:.8}
 
-/* CARDS */
-.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:11px;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:.2s}
-.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.11)}
+/* ─── TABS ─── */
+.tabs{display:flex;background:#fff;border-radius:14px;padding:4px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);gap:3px;overflow-x:auto}
+.tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;font-size:11px;font-weight:700;color:#bbb;cursor:pointer;white-space:nowrap;min-width:58px}
+.tab.on{background:#1565c0;color:#fff}
+
+/* ─── BOTTOM NAV ─── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:#fff;border-top:1px solid #eee;display:flex;padding:8px 0 14px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.07)}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;font-size:10px;color:#ccc;cursor:pointer;gap:2px;font-weight:700}
+.bni.on{color:#1565c0}
+.bni-ic{font-size:22px}
+.bni-badge{background:#c62828;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;min-width:18px;text-align:center;margin-top:1px;display:none}
+.bni.has-badge .bni-badge{display:block}
+
+/* ─── CARDS ─── */
+.card{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.snr-id{font-weight:800;font-size:15px;color:#1565c0;letter-spacing:.3px}
+.snr-id{font-size:15px;font-weight:800;color:#1565c0}
 .snr-date{font-size:11px;color:#bbb;margin-top:2px}
-.badges{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.card-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 
-/* BADGES */
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-.b-new{background:#e3f2fd;color:#1565c0}
-.b-analyzed{background:#f3e5f5;color:#6a1b9a}
-.b-approved{background:#e8f5e9;color:#2e7d32}
-.b-rejected{background:#ffebee;color:#c62828}
-.b-quality{background:#fff8e1;color:#f57f17}
-.b-qa-ok{background:#e8f5e9;color:#1b5e20}
-.b-production{background:#e8eaf6;color:#3949ab}
-.b-ready{background:#f1f8e9;color:#558b2f}
-.b-closed{background:#f5f5f5;color:#757575}
-.sev-urgent{background:#ffebee;color:#c62828}
-.sev-medium{background:#fff8e1;color:#e65100}
-.sev-low{background:#e8f5e9;color:#2e7d32}
+/* ─── BADGES ─── */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.s-new{background:#e3f2fd;color:#1565c0}
+.s-analyzed{background:#f3e5f5;color:#6a1b9a}
+.s-approved{background:#e8f5e9;color:#2e7d32}
+.s-rejected{background:#ffebee;color:#c62828}
+.s-quality{background:#fff8e1;color:#e65100}
+.s-qa-ok{background:#e8f5e9;color:#1b5e20}
+.s-production{background:#e8eaf6;color:#3949ab}
+.s-ready{background:#f1f8e9;color:#558b2f}
+.s-closed{background:#f5f5f5;color:#757575}
+.sev-u{background:#ffebee;color:#c62828}
+.sev-m{background:#fff8e1;color:#e65100}
+.sev-l{background:#e8f5e9;color:#2e7d32}
 
-/* PROGRESS */
-.prog-wrap{margin:10px 0 6px}
-.prog-labels{display:flex;justify-content:space-between;font-size:9px;color:#ccc;margin-bottom:4px}
-.prog{background:#f0f0f0;border-radius:8px;height:7px;overflow:hidden}
-.prog-fill{height:100%;border-radius:8px;transition:.5s}
-.prog-steps{display:flex;justify-content:space-between;margin-top:6px}
-.prog-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
-.pd-done{background:#1565c0;color:#fff}
-.pd-active{background:#fff;border:2px solid #1565c0;color:#1565c0}
-.pd-pending{background:#f0f0f0;color:#ccc}
+/* ─── PROGRESS ─── */
+.prog{background:#f0f0f0;border-radius:8px;height:7px;overflow:hidden;margin:8px 0 4px}
+.prog-fill{height:100%;border-radius:8px;transition:.4s}
+.prog-steps{display:flex;justify-content:space-between;font-size:9px;color:#ccc}
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-card{background:#fff;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
-.stat-val{font-size:28px;font-weight:900;line-height:1;margin-top:4px}
-.stat-lbl{font-size:11px;color:#999;margin-top:4px}
+/* ─── ACTIONS NEEDED ─── */
+.action-banner{background:#fff3e0;border-radius:12px;padding:10px 14px;margin-bottom:12px;border-right:4px solid #e65100}
+.action-banner-title{font-weight:700;font-size:13px;color:#e65100}
+.action-banner-ids{font-size:11px;color:#888;margin-top:2px}
+
+/* ─── FILTERS ─── */
+.filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.filter-btn{background:#fff;border:1.5px solid #e0e0e0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#555;display:flex;align-items:center;gap:4px}
+.filter-btn.on{background:#1565c0;border-color:#1565c0;color:#fff}
+.filter-count{background:#f0f0f0;border-radius:10px;padding:1px 7px;font-size:10px}
+.filter-btn.on .filter-count{background:rgba(255,255,255,.25);color:#fff}
+
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:#fff;border-radius:14px;padding:13px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .stat-ic{font-size:20px}
+.stat-val{font-size:26px;font-weight:900;margin-top:4px}
+.stat-lbl{font-size:11px;color:#999;margin-top:3px}
 
-/* TIMELINE */
-.timeline{list-style:none;padding:0}
-.tl-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
-.tl-item:not(:last-child)::after{content:'';position:absolute;right:13px;top:26px;bottom:0;width:2px;background:#f0f0f0}
+/* ─── TIMELINE ─── */
+.tl{list-style:none;padding:0}
+.tl-item{display:flex;gap:10px;padding-bottom:14px;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;right:13px;top:28px;bottom:0;width:2px;background:#f0f0f0}
 .tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1}
 .tl-done{background:#e8f5e9;border:2px solid #4caf50}
 .tl-active{background:#e3f2fd;border:2px solid #1565c0}
-.tl-pending{background:#f5f5f5;border:2px solid #e0e0e0}
-.tl-body{flex:1;padding-top:4px}
-.tl-title{font-weight:700;font-size:13px;color:#1a1a2e}
-.tl-meta{font-size:11px;color:#aaa;margin-top:2px}
-.tl-note{font-size:12px;color:#555;margin-top:4px;background:#f8f9fc;border-radius:8px;padding:6px 10px}
+.tl-body{flex:1;padding-top:3px}
+.tl-title{font-weight:700;font-size:13px}
+.tl-meta{font-size:11px;color:#aaa;margin-top:1px}
+.tl-note{font-size:12px;color:#555;margin-top:4px;background:#f8f9fc;border-radius:8px;padding:7px 10px;line-height:1.5}
 
-/* MODALS */
-.ov{position:fixed;inset:0;background:rgba(10,10,30,.55);display:flex;align-items:flex-end;justify-content:center;z-index:999;backdrop-filter:blur(3px)}
-.modal{background:#fff;border-radius:24px 24px 0 0;padding:22px 20px 30px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto}
-.modal-title{font-weight:800;font-size:17px;margin-bottom:18px;color:#1a237e;display:flex;align-items:center;gap:8px}
-.modal-info{background:#f8f9fc;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.9;border-right:4px solid #1565c0}
+/* ─── DETAIL ROWS ─── */
+.sec-title{font-weight:800;font-size:13px;color:#1a237e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e3f2fd}
+.irow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.irow:last-child{border:none}
+.ilbl{color:#888}
+.ival{font-weight:700;color:#1a1a2e;text-align:left;max-width:60%}
 
-/* TOAST */
-.toast-box{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.25)}
-.toast-box.show{opacity:1}
+/* ─── PHOTOS ─── */
+.photo-drop{border:2px dashed #d0d0d0;border-radius:12px;padding:18px;text-align:center;cursor:pointer;background:#fafafa;transition:.2s}
+.photo-drop:hover{border-color:#1565c0;background:#f0f6ff}
+.photo-drop-ic{font-size:30px;margin-bottom:6px}
+.photo-drop-lbl{font-size:13px;color:#aaa;font-weight:600}
+.photo-drop-sub{font-size:11px;color:#ccc;margin-top:3px}
+.photo-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.photo-thumb{position:relative;width:80px;height:80px}
+.photo-thumb img{width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #e0e0e0;cursor:pointer}
+.photo-del{position:absolute;top:-6px;left:-6px;background:#c62828;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:800;line-height:1}
 
-/* BOTTOM NAV */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0 14px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
-.bni{display:flex;flex-direction:column;align-items:center;font-size:10px;color:#ccc;cursor:pointer;gap:2px;flex:1;transition:.2s;font-weight:600}
-.bni.on{color:#1565c0}
-.bni-ic{font-size:22px}
-.bni-dot{width:6px;height:6px;border-radius:50%;background:#c62828;margin-top:2px;display:none}
-.bni.has-alert .bni-dot{display:block}
+/* ─── MODALS ─── */
+.ov{position:fixed;inset:0;background:rgba(0,0,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:999;backdrop-filter:blur(2px)}
+.ov.open{display:flex}
+.modal{background:#fff;border-radius:22px 22px 0 0;padding:22px 18px 32px;width:100%;max-width:500px;max-height:91vh;overflow-y:auto}
+.modal-title{font-weight:800;font-size:16px;color:#1a237e;margin-bottom:16px}
+.modal-info{background:#f0f4ff;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.8;border-right:3px solid #1565c0}
+.modal-divider{height:1px;background:#f0f0f0;margin:10px 0}
 
-/* MISC */
-.pb{padding-bottom:85px}
-.empty{text-align:center;padding:50px 20px;color:#ccc;font-size:14px}
-.empty-ic{font-size:48px;margin-bottom:10px}
-.div{height:1px;background:#f0f0f0;margin:10px 0}
-.chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#f0f4ff;color:#1565c0;margin-left:4px}
-.sec-title{font-weight:800;font-size:14px;color:#1a237e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e3f2fd}
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
-.info-row:last-child{border-bottom:none}
-.info-lbl{color:#888}
-.info-val{font-weight:700;color:#1a1a2e}
+/* ─── PHOTO VIEWER ─── */
+#photo-viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px}
+#photo-viewer.open{display:flex}
+#photo-viewer img{max-width:95vw;max-height:80vh;border-radius:12px;object-fit:contain}
+#photo-viewer-close{color:#fff;font-size:13px;opacity:.7;cursor:pointer;padding:8px}
 
-/* ROLE SWITCHER (DEMO) */
-.demo-role-bar{background:#1a237e;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.demo-role-bar span{color:rgba(255,255,255,.7);font-size:11px;font-weight:700}
-.role-chip{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.role-chip.on{background:#fff;color:#1a237e}
-.role-chip:hover{background:rgba(255,255,255,.25)}
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:50px 20px;color:#ccc}
+.empty-ic{font-size:50px;margin-bottom:10px}
+
+/* ─── SLA WARNING ─── */
+.sla-warn{font-size:10px;color:#c62828;font-weight:700;margin-right:6px}
+
+/* ─── GUIDE ─── */
+.guide-step{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.guide-ic{font-size:28px;flex-shrink:0}
+.guide-title{font-weight:800;font-size:13px;color:#1a237e;margin-bottom:4px}
+.guide-body{font-size:12px;color:#555;line-height:1.7}
+.guide-sla{display:inline-block;background:#e8f5e9;color:#2e7d32;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:700;margin-top:4px}
+
+/* ─── TOAST ─── */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;z-index:9999;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+#toast.show{opacity:1}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginWrap" style="min-height:100vh;background:#eef2f7;display:flex;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#fff;border-radius:24px;padding:36px 28px;box-shadow:0 12px 40px rgba(0,0,0,.14);width:100%;max-width:420px">
-    <div style="text-align:center;font-size:40px;margin-bottom:6px">🔧</div>
-    <div style="text-align:center;font-size:22px;font-weight:900;color:#1a237e;margin-bottom:2px">Mobica Snag System</div>
-    <div style="text-align:center;font-size:12px;color:#999;margin-bottom:24px">نظام إدارة عيوب التركيب — نسخة تجريبية</div>
-    <div style="background:#fffde7;border:1px solid #ffe082;border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:12px;color:#795548;text-align:center">
-      🎯 نسخة العرض — اختر أي دور لتجربة النظام<br><b style="color:#e65100">كلمة المرور: demo</b>
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-ic">🔧</div>
+    <div class="login-title">Mobica Snag System</div>
+    <div class="login-sub">نظام إدارة تقارير العيوب</div>
+    <div class="demo-note">
+      🎯 <b>نسخة تجريبية للعرض</b><br>
+      اختر أي دور وادخل كلمة المرور: <b style="color:#e65100">demo</b>
     </div>
-    <div style="margin-bottom:14px">
-      <label style="font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block">الدور / المستخدم</label>
-      <select class="inp" id="ln">
+    <div class="fld">
+      <label class="lbl">اختر دورك</label>
+      <select class="inp" id="login-role">
         <option value="">— اختر —</option>
         <optgroup label="👷 الموقع">
-          <option value="field">مشرف موقع (فني)</option>
+          <option value="field">مشرف موقع / فني</option>
         </optgroup>
-        <optgroup label="🧑‍💼 إدارة المجموعة">
-          <option value="team_lead_a">أحمد حسن — مدير مجموعة A</option>
-          <option value="team_lead_b">سامي فؤاد — مدير مجموعة B</option>
-          <option value="team_lead_c">حازم قاعود — مدير مجموعة C</option>
-          <option value="team_lead_d">هشام جمال — مدير مجموعة D</option>
+        <optgroup label="🧑‍💼 مديري المجموعات">
+          <option value="lead_a">أحمد حسن — مجموعة A</option>
+          <option value="lead_b">سامي فؤاد — مجموعة B</option>
+          <option value="lead_c">حازم قاعود — مجموعة C</option>
+          <option value="lead_d">هشام جمال — مجموعة D</option>
         </optgroup>
         <optgroup label="🏢 إدارة التركيبات">
           <option value="ashraf">أشرف قاسم</option>
           <option value="fathy">محمد فتحي</option>
           <option value="khalid">خالد علي</option>
         </optgroup>
-        <optgroup label="🔍 جودة وبيع">
+        <optgroup label="🔍 الجودة والبيع">
           <option value="quality">مسؤول الجودة</option>
           <option value="sales">إدارة البيع</option>
           <option value="technical">المكتب الفني</option>
         </optgroup>
-        <optgroup label="📋 متابعة">
+        <optgroup label="📋 المتابعة">
           <option value="mokhtar">محمد مختار</option>
         </optgroup>
       </select>
     </div>
-    <div style="margin-bottom:20px">
-      <label style="font-size:12px;font-weight:700;color:#444;margin-bottom:6px;display:block">كلمة المرور</label>
-      <input class="inp" type="password" id="lp" placeholder="demo" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="fld">
+      <label class="lbl">كلمة المرور</label>
+      <input class="inp" type="password" id="login-pass" placeholder="demo"
+        onkeydown="if(event.key==='Enter')login()">
     </div>
-    <button class="btn b-blue" onclick="doLogin()">🔐 دخول للنظام</button>
+    <button class="btn bl" onclick="login()">🔐 دخول للنظام</button>
   </div>
 </div>
 
-<!-- APP -->
-<div class="app" id="app" style="display:none"></div>
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="screen-app">
 
-<!-- MODALS -->
-<div class="ov" id="newSnagModal" style="display:none">
+  <!-- Header -->
+  <div class="hdr" id="hdr">
+    <div class="hdr-info">
+      <div class="hdr-ic">🔧</div>
+      <div>
+        <div class="hdr-title" id="hdr-name">—</div>
+        <div class="hdr-sub" id="hdr-role">—</div>
+      </div>
+    </div>
+    <button class="hdr-logout" onclick="logout()">🚪 خروج</button>
+  </div>
+
+  <!-- Role switcher (demo) -->
+  <div class="role-bar">
+    <span class="role-bar-lbl">تجربة كـ:</span>
+    <button class="rc" data-r="field"   onclick="switchRole(this)">فني</button>
+    <button class="rc" data-r="lead_a"  onclick="switchRole(this)">مجموعة A</button>
+    <button class="rc" data-r="lead_b"  onclick="switchRole(this)">B</button>
+    <button class="rc" data-r="lead_c"  onclick="switchRole(this)">C</button>
+    <button class="rc" data-r="lead_d"  onclick="switchRole(this)">D</button>
+    <button class="rc" data-r="ashraf"  onclick="switchRole(this)">أشرف</button>
+    <button class="rc" data-r="fathy"   onclick="switchRole(this)">فتحي</button>
+    <button class="rc" data-r="khalid"  onclick="switchRole(this)">خالد</button>
+    <button class="rc" data-r="quality" onclick="switchRole(this)">جودة</button>
+    <button class="rc" data-r="mokhtar" onclick="switchRole(this)">مختار</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab on"  id="tab-btn-list"  onclick="showTab('list',this)">📋 العيوب</div>
+    <div class="tab"     id="tab-btn-dash"  onclick="showTab('dash',this)">📊 داشبورد</div>
+    <div class="tab"     id="tab-btn-guide" onclick="showTab('guide',this)">📖 الدليل</div>
+  </div>
+
+  <!-- Tab content -->
+  <div id="tab-list"></div>
+  <div id="tab-dash"  style="display:none"></div>
+  <div id="tab-guide" style="display:none"></div>
+
+  <!-- Bottom nav -->
+  <div class="bnav">
+    <div class="bni on" id="bn-list" onclick="showTab('list',document.getElementById('tab-btn-list'))">
+      <div class="bni-ic">📋</div>العيوب
+      <div class="bni-badge" id="bn-badge">0</div>
+    </div>
+    <div class="bni" id="bn-dash" onclick="showTab('dash',document.getElementById('tab-btn-dash'))">
+      <div class="bni-ic">📊</div>داشبورد
+    </div>
+    <div class="bni" id="bn-guide" onclick="showTab('guide',document.getElementById('tab-btn-guide'))">
+      <div class="bni-ic">📖</div>الدليل
+    </div>
+    <div class="bni" onclick="logout()">
+      <div class="bni-ic">🚪</div>خروج
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- تسجيل عيب -->
+<div class="ov" id="m-new">
   <div class="modal">
     <div class="modal-title">➕ تسجيل عيب جديد</div>
     <div class="fld">
-      <label class="inp-lbl">اسم العميل *</label>
-      <input class="inp" id="ns-client" placeholder="مثال: TMG — كمبوند بلوم">
+      <label class="lbl">اسم العميل *</label>
+      <input class="inp" id="n-client" placeholder="مثال: TMG — كمبوند بلوم">
     </div>
-    <div class="fld-row">
+    <div class="fld2">
       <div>
-        <label class="inp-lbl">رقم العقد *</label>
-        <input class="inp" id="ns-contract" placeholder="2026-087">
+        <label class="lbl">رقم العقد *</label>
+        <input class="inp" id="n-contract" placeholder="2026-041">
       </div>
       <div>
-        <label class="inp-lbl">المجموعة</label>
-        <select class="inp" id="ns-team">
+        <label class="lbl">المجموعة</label>
+        <select class="inp" id="n-team">
           <option value="A">A</option><option value="B">B</option>
           <option value="C">C</option><option value="D">D</option>
         </select>
       </div>
     </div>
     <div class="fld">
-      <label class="inp-lbl">البند / القطعة المعيبة *</label>
-      <input class="inp" id="ns-item" placeholder="مثال: خزانة غرفة النوم — باب رئيسي">
+      <label class="lbl">البند / القطعة المعيبة *</label>
+      <input class="inp" id="n-item" placeholder="مثال: خزانة غرفة النوم — باب رئيسي">
     </div>
     <div class="fld">
-      <label class="inp-lbl">نوع العيب *</label>
-      <select class="inp" id="ns-type">
+      <label class="lbl">نوع العيب *</label>
+      <select class="inp" id="n-type">
         <option value="">— اختر —</option>
         <option>كسر</option><option>خدش</option><option>مشكلة دهان</option>
         <option>مقاس غلط</option><option>قطعة ناقصة</option>
@@ -236,67 +329,73 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       </select>
     </div>
     <div class="fld">
-      <label class="inp-lbl">درجة الخطورة *</label>
+      <label class="lbl">درجة الخطورة *</label>
       <div style="display:flex;gap:8px">
-        <button class="btn b-out b-sm" style="flex:1;border-color:#c62828;color:#c62828" onclick="setSev(this,'urgent')">🔴 عاجل</button>
-        <button class="btn b-out b-sm" style="flex:1;border-color:#e65100;color:#e65100" onclick="setSev(this,'medium')">🟡 متوسط</button>
-        <button class="btn b-out b-sm" style="flex:1;border-color:#2e7d32;color:#2e7d32" onclick="setSev(this,'low')">🟢 بسيط</button>
+        <button class="btn bxs" id="sev-u" onclick="pickSev('urgent')"
+          style="flex:1;border:2px solid #c62828;color:#c62828;background:#fff">🔴 عاجل</button>
+        <button class="btn bxs" id="sev-m" onclick="pickSev('medium')"
+          style="flex:1;border:2px solid #e65100;color:#e65100;background:#fff">🟡 متوسط</button>
+        <button class="btn bxs" id="sev-l" onclick="pickSev('low')"
+          style="flex:1;border:2px solid #2e7d32;color:#2e7d32;background:#fff">🟢 بسيط</button>
       </div>
-      <input type="hidden" id="ns-sev" value="">
     </div>
     <div class="fld">
-      <label class="inp-lbl">ملاحظات إضافية</label>
-      <textarea class="inp" id="ns-notes" placeholder="وصف مختصر للعيب..."></textarea>
+      <label class="lbl">ملاحظات</label>
+      <textarea class="inp" id="n-notes" placeholder="أي تفاصيل إضافية..."></textarea>
     </div>
     <div class="fld">
-      <label class="inp-lbl">📷 صور العيب</label>
-      <div id="photo-area" style="border:2px dashed #ddd;border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:#fafafa;transition:.2s" onclick="document.getElementById('ns-photos').click()">
-        <div style="font-size:28px;margin-bottom:6px">📷</div>
-        <div style="font-size:13px;color:#aaa;font-weight:600">اضغط لإضافة صور من الكاميرا أو المعرض</div>
-        <div style="font-size:11px;color:#ccc;margin-top:3px">يمكن إضافة أكثر من صورة</div>
+      <label class="lbl">📷 صور العيب</label>
+      <div class="photo-drop" onclick="document.getElementById('n-photos').click()">
+        <div class="photo-drop-ic">📷</div>
+        <div class="photo-drop-lbl">اضغط لالتقاط صورة أو اختيار من المعرض</div>
+        <div class="photo-drop-sub">يمكن إضافة أكثر من صورة</div>
       </div>
-      <input type="file" id="ns-photos" accept="image/*" multiple capture="environment" style="display:none" onchange="previewPhotos(this)">
-      <div id="photos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+      <input type="file" id="n-photos" accept="image/*" multiple capture="environment"
+        style="display:none" onchange="addPhotos(this)">
+      <div class="photo-grid" id="n-photo-grid"></div>
     </div>
-    <div class="btn-row">
-      <button class="btn b-orange" onclick="submitNewSnag()">✅ تسجيل العيب</button>
-      <button class="btn b-out-gray" onclick="closeModal('newSnagModal')">إلغاء</button>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn bo" onclick="submitNew()">✅ تسجيل العيب</button>
+      <button class="btn bgr bsm" onclick="closeModal('m-new')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<div class="ov" id="analyzeModal" style="display:none">
+<!-- تحليل العيب -->
+<div class="ov" id="m-analyze">
   <div class="modal">
     <div class="modal-title">🔍 تحليل العيب</div>
-    <div class="modal-info" id="am-info"></div>
+    <div class="modal-info" id="ma-info"></div>
     <div class="fld">
-      <label class="inp-lbl">السبب الجذري *</label>
-      <select class="inp" id="am-cause">
+      <label class="lbl">السبب الجذري *</label>
+      <select class="inp" id="ma-cause">
         <option value="">— اختر —</option>
         <option value="manufacturing">خطأ في التصنيع</option>
         <option value="transport">تلف أثناء النقل</option>
         <option value="installation">خطأ في التركيب</option>
         <option value="design">خطأ في التصميم</option>
-        <option value="misuse">إساءة استخدام من العميل</option>
+        <option value="misuse">إساءة استخدام</option>
         <option value="unknown">غير محدد — يحتاج تحقيق</option>
       </select>
     </div>
     <div class="fld">
-      <label class="inp-lbl">المصنع المسؤول</label>
-      <select class="inp" id="am-factory">
+      <label class="lbl">المصنع المسؤول</label>
+      <select class="inp" id="ma-factory">
         <option value="">— غير محدد —</option>
-        <option>مصنع الخشب الطبيعي</option><option>مصنع الملامين</option>
-        <option>مصنع المعدني</option><option>مصنع الألوميتال</option>
+        <option>مصنع الخشب الطبيعي</option>
+        <option>مصنع الملامين</option>
+        <option>مصنع المعدني</option>
+        <option>مصنع الألوميتال</option>
         <option>لا يتعلق بالمصنع</option>
       </select>
     </div>
     <div class="fld">
-      <label class="inp-lbl">وصف تفصيلي للعيب *</label>
-      <textarea class="inp" id="am-desc" placeholder="اشرح العيب بدقة — الحجم، الموقع، الشدة، التأثير..."></textarea>
+      <label class="lbl">وصف تفصيلي للعيب *</label>
+      <textarea class="inp" id="ma-desc" placeholder="اشرح العيب بالتفصيل — الحجم، الموقع، الشدة..."></textarea>
     </div>
     <div class="fld">
-      <label class="inp-lbl">الحل المقترح</label>
-      <select class="inp" id="am-sol">
+      <label class="lbl">الحل المقترح</label>
+      <select class="inp" id="ma-sol">
         <option value="">— اختر —</option>
         <option value="fix_site">إصلاح في الموقع (24 ساعة)</option>
         <option value="replace_part">استبدال قطعة (7 أيام)</option>
@@ -305,38 +404,41 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       </select>
     </div>
     <div class="btn-row">
-      <button class="btn b-purple" onclick="submitAnalysis()">📤 إرسال للاعتماد</button>
-      <button class="btn b-out-gray" onclick="closeModal('analyzeModal')">إلغاء</button>
+      <button class="btn bp" onclick="submitAnalysis()">📤 إرسال للاعتماد</button>
+      <button class="btn bgr bsm" onclick="closeModal('m-analyze')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<div class="ov" id="approveModal" style="display:none">
+<!-- اعتماد -->
+<div class="ov" id="m-approve">
   <div class="modal">
     <div class="modal-title">✅ اعتماد تقرير العيب</div>
-    <div class="modal-info" id="apm-info"></div>
+    <div class="modal-info" id="map-info"></div>
     <div class="fld">
-      <label class="inp-lbl">ملاحظة الاعتماد (اختياري)</label>
-      <textarea class="inp" id="apm-note" placeholder="أي تعليق على التقرير أو توجيه..."></textarea>
+      <label class="lbl">ملاحظة (اختياري)</label>
+      <textarea class="inp" id="map-note" placeholder="أي توجيه أو تعليق..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn b-green" onclick="submitApprove(true)">✅ اعتماد وإرسال للجودة</button>
-      <button class="btn b-red" onclick="submitApprove(false)">❌ رفض مع سبب</button>
+      <button class="btn bg" onclick="submitApprove(true)">✅ اعتماد وإرسال للجودة</button>
+      <button class="btn br bsm" onclick="submitApprove(false)">❌ رفض</button>
     </div>
-    <button class="btn b-out-gray b-sm" style="margin-top:8px" onclick="closeModal('approveModal')">إلغاء</button>
+    <button class="btn bgr bsm" style="margin-top:8px" onclick="closeModal('m-approve')">إلغاء</button>
   </div>
 </div>
 
-<div class="ov" id="qualityModal" style="display:none">
+<!-- مراجعة الجودة -->
+<div class="ov" id="m-quality">
   <div class="modal">
     <div class="modal-title">🔬 مراجعة الجودة</div>
-    <div class="modal-info" id="qm-info"></div>
+    <div class="modal-info" id="mq-info"></div>
     <div class="fld">
-      <label class="inp-lbl">تأكيد المتسبب</label>
-      <select class="inp" id="qm-cause">
+      <label class="lbl">المتسبب الرسمي *</label>
+      <select class="inp" id="mq-cause">
         <option value="">— اختر —</option>
         <option>خطأ في التصنيع — مصنع الملامين</option>
         <option>خطأ في التصنيع — مصنع المعدني</option>
+        <option>خطأ في التصنيع — مصنع الخشب</option>
         <option>تلف أثناء النقل — إدارة التسليمات</option>
         <option>خطأ في التركيب — فريق التركيبات</option>
         <option>خطأ في التصميم — المكتب الفني</option>
@@ -344,846 +446,805 @@ textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
       </select>
     </div>
     <div class="fld">
-      <label class="inp-lbl">نتيجة التحقيق</label>
-      <textarea class="inp" id="qm-result" placeholder="نتيجة المراجعة الميدانية..."></textarea>
+      <label class="lbl">نتيجة التحقيق</label>
+      <textarea class="inp" id="mq-result" placeholder="ملاحظات الجودة بعد المراجعة..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn b-teal" onclick="submitQuality()">✅ اعتماد الجودة</button>
-      <button class="btn b-out-gray" onclick="closeModal('qualityModal')">إلغاء</button>
+      <button class="btn bt" onclick="submitQuality()">✅ اعتماد الجودة</button>
+      <button class="btn bgr bsm" onclick="closeModal('m-quality')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<div class="ov" id="detailModal" style="display:none">
+<!-- تفاصيل -->
+<div class="ov" id="m-detail">
   <div class="modal">
     <div class="modal-title">📋 تفاصيل العيب</div>
-    <div id="detail-body"></div>
-    <button class="btn b-out-gray b-sm" style="margin-top:16px" onclick="closeModal('detailModal')">إغلاق</button>
+    <div id="md-body"></div>
+    <button class="btn bgr bsm" style="margin-top:14px" onclick="closeModal('m-detail')">إغلاق</button>
   </div>
 </div>
 
-<div class="ov" id="photoModal" style="display:none;align-items:center;justify-content:center" onclick="closeModal('photoModal')">
-  <div style="max-width:95vw;max-height:90vh;position:relative">
-    <img id="photo-full" style="max-width:95vw;max-height:85vh;border-radius:16px;object-fit:contain">
-    <div style="text-align:center;color:#fff;margin-top:10px;font-size:13px">اضغط في أي مكان للإغلاق</div>
-  </div>
+<!-- عارض الصور -->
+<div id="photo-viewer" onclick="document.getElementById('photo-viewer').classList.remove('open')">
+  <img id="pv-img" src="">
+  <div id="photo-viewer-close">اضغط في أي مكان للإغلاق ✕</div>
 </div>
 
-<div class="toast-box" id="toast"></div>
+<!-- Toast -->
+<div id="toast"></div>
 
+<!-- ══════════════════ SCRIPT ══════════════════ -->
 <script>
-// ═══════════════════════════════════════════════
-// DEMO DATA
-// ═══════════════════════════════════════════════
-const DEMO_SNAGS = [
-  {
-    id:'SNR-2026-0001', date:'2026-02-25', client:'TMG — كمبوند بلوم', contract:'2026-041',
-    item:'خزانة غرفة النوم — باب رئيسي', defect_type:'كسر', severity:'urgent',
-    status:'in_production', team:'A', created_by:'مشرف موقع',
-    created_at:'2026-02-25T08:30:00', closed_at:'',
-    root_cause:'transport', factory:'مصنع الملامين',
-    analysis_desc:'كسر في الباب الرئيسي للخزانة بسبب ضغط أثناء النقل — الكسر بالكامل وليس مجرد خدش',
-    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
-    approved_by:'أشرف قاسم', approval_note:'اعتمدت — يُستعجل التصنيع',
-    quality_result:'تأكد الفريق من أن السبب تلف نقل — المصنع غير مسؤول',
-    quality_cause:'تلف أثناء النقل — إدارة التسليمات',
-    notes:'العميل طلب الحل في أسرع وقت',
-    history:[
-      {step:'new',by:'مشرف موقع',at:'2026-02-25T08:30:00',note:'تسجيل العيب'},
-      {step:'analyzed',by:'أحمد حسن',at:'2026-02-25T10:15:00',note:'تحليل: تلف نقل — باب مكسور بالكامل'},
-      {step:'approved',by:'أشرف قاسم',at:'2026-02-25T11:00:00',note:'اعتمدت — يُستعجل'},
-      {step:'quality_review',by:'محمد مختار',at:'2026-02-25T12:00:00',note:'إرسال للجودة'},
-      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T09:00:00',note:'تأكيد: تلف نقل'},
-      {step:'in_production',by:'محمد مختار',at:'2026-02-26T10:30:00',note:'بدء التصنيع في مصنع الملامين — SLA 7 أيام'},
-    ]
-  },
-  {
-    id:'SNR-2026-0002', date:'2026-02-26', client:'Emaar — الحي الثامن', contract:'2026-035',
-    item:'مكتب المدير — سطح زجاجي', defect_type:'مقاس غلط', severity:'medium',
-    status:'analyzed', team:'B', created_by:'مشرف موقع',
-    created_at:'2026-02-26T09:00:00', closed_at:'',
-    root_cause:'manufacturing', factory:'مصنع الزجاج',
-    analysis_desc:'سطح الزجاج أصغر من المقاس المطلوب بـ 5 سم من الجانب الأيسر',
-    proposed_solution:'replace_part', analyzed_by:'سامي فؤاد',
-    approved_by:'', approval_note:'', quality_result:'', quality_cause:'',
-    notes:'يوقف تركيب المكتب',
-    history:[
-      {step:'new',by:'مشرف موقع',at:'2026-02-26T09:00:00',note:'تسجيل العيب'},
-      {step:'analyzed',by:'سامي فؤاد',at:'2026-02-26T11:30:00',note:'مقاس غلط — يحتاج زجاج جديد'},
-    ]
-  },
-  {
-    id:'SNR-2026-0003', date:'2026-02-26', client:'TMG — برج العرب', contract:'2026-052',
-    item:'ستائر قاطعة — وحدة 3', defect_type:'خدش', severity:'low',
-    status:'closed', team:'C', created_by:'مشرف موقع',
-    created_at:'2026-02-26T13:00:00', closed_at:'2026-02-27T16:00:00',
-    root_cause:'installation', factory:'لا يتعلق بالمصنع',
-    analysis_desc:'خدش خفيف في الإطار الألوميتال — حدث أثناء التجميع',
-    proposed_solution:'fix_site', analyzed_by:'حازم قاعود',
-    approved_by:'محمد فتحي', approval_note:'تم — إصلاح في الموقع',
-    quality_result:'إصلاح في الموقع بطلاء — تم التحقق', quality_cause:'خطأ في التركيب — فريق التركيبات',
-    notes:'',
-    history:[
-      {step:'new',by:'مشرف موقع',at:'2026-02-26T13:00:00',note:'تسجيل العيب'},
-      {step:'analyzed',by:'حازم قاعود',at:'2026-02-26T14:00:00',note:'خدش بسيط — إصلاح في الموقع'},
-      {step:'approved',by:'محمد فتحي',at:'2026-02-26T14:30:00',note:'موافق — إصلاح سريع'},
-      {step:'quality_review',by:'محمد مختار',at:'2026-02-26T15:00:00',note:'مراجعة الجودة'},
-      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T16:00:00',note:'تم الإصلاح وتم التحقق'},
-      {step:'closed',by:'محمد مختار',at:'2026-02-27T16:00:00',note:'إغلاق العيب — تم الحل في الموقع'},
-    ]
-  },
-  {
-    id:'SNR-2026-0004', date:'2026-02-27', client:'Emaar — داون تاون', contract:'2026-061',
-    item:'غرفة اجتماعات — باب زجاجي', defect_type:'مشكلة دهان', severity:'medium',
-    status:'new', team:'D', created_by:'مشرف موقع',
-    created_at:'2026-02-27T10:00:00', closed_at:'',
-    root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
-    analyzed_by:'', approved_by:'', approval_note:'', quality_result:'', quality_cause:'',
-    notes:'الدهان غير متجانس في الزاوية العلوية',
-    history:[
-      {step:'new',by:'مشرف موقع',at:'2026-02-27T10:00:00',note:'تسجيل العيب'},
-    ]
-  },
-  {
-    id:'SNR-2026-0005', date:'2026-02-27', client:'TMG — كمبوند بلوم', contract:'2026-041',
-    item:'مكتبة المدخل — رف علوي', defect_type:'قطعة ناقصة', severity:'medium',
-    status:'approved', team:'A', created_by:'مشرف موقع',
-    created_at:'2026-02-27T11:30:00', closed_at:'',
-    root_cause:'manufacturing', factory:'مصنع الملامين',
-    analysis_desc:'الرف العلوي غير موجود في الشحنة — نقص في التعبئة',
-    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
-    approved_by:'خالد علي', approval_note:'اعتمدت — يراجع مع المخازن أولاً',
-    quality_result:'', quality_cause:'',
-    notes:'',
-    history:[
-      {step:'new',by:'مشرف موقع',at:'2026-02-27T11:30:00',note:'تسجيل العيب'},
-      {step:'analyzed',by:'أحمد حسن',at:'2026-02-27T13:00:00',note:'رف مفقود من الشحنة'},
-      {step:'approved',by:'خالد علي',at:'2026-02-27T14:00:00',note:'اعتمدت — يراجع مع المخازن'},
-    ]
-  },
-];
-
-// ═══════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// ROLES CONFIG
+// ═══════════════════════════════════════════
 const ROLES = {
-  field:        { name:'مشرف موقع',            team:'A', label:'فني/مشرف' },
-  team_lead_a:  { name:'أحمد حسن',             team:'A', label:'مدير مجموعة A' },
-  team_lead_b:  { name:'سامي فؤاد',            team:'B', label:'مدير مجموعة B' },
-  team_lead_c:  { name:'حازم قاعود',           team:'C', label:'مدير مجموعة C' },
-  team_lead_d:  { name:'هشام جمال',            team:'D', label:'مدير مجموعة D' },
-  ashraf:       { name:'أشرف قاسم',            team:null, label:'إدارة التركيبات' },
-  fathy:        { name:'محمد فتحي',            team:null, label:'إدارة التركيبات' },
-  khalid:       { name:'خالد علي',             team:null, label:'إدارة التركيبات' },
-  quality:      { name:'مسؤول الجودة',          team:null, label:'إدارة الجودة' },
-  sales:        { name:'إدارة البيع',           team:null, label:'إدارة البيع' },
-  technical:    { name:'المكتب الفني',          team:null, label:'المكتب الفني' },
-  mokhtar:      { name:'محمد مختار',           team:null, label:'متابعة وتنسيق' },
+  field:   { name:'مشرف موقع',    lbl:'فني / مشرف',          team:'A', cat:'field' },
+  lead_a:  { name:'أحمد حسن',     lbl:'مدير مجموعة A',       team:'A', cat:'lead'  },
+  lead_b:  { name:'سامي فؤاد',    lbl:'مدير مجموعة B',       team:'B', cat:'lead'  },
+  lead_c:  { name:'حازم قاعود',   lbl:'مدير مجموعة C',       team:'C', cat:'lead'  },
+  lead_d:  { name:'هشام جمال',    lbl:'مدير مجموعة D',       team:'D', cat:'lead'  },
+  ashraf:  { name:'أشرف قاسم',    lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
+  fathy:   { name:'محمد فتحي',    lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
+  khalid:  { name:'خالد علي',     lbl:'إدارة التركيبات',     team:null, cat:'mgr'  },
+  quality: { name:'مسؤول الجودة', lbl:'إدارة الجودة',        team:null, cat:'quality'},
+  sales:   { name:'إدارة البيع',  lbl:'البيع',               team:null, cat:'sales' },
+  technical:{name:'المكتب الفني', lbl:'المكتب الفني',         team:null, cat:'tech'  },
+  mokhtar: { name:'محمد مختار',   lbl:'متابعة وتنسيق',       team:null, cat:'follow'},
 };
 
-const STATUS_CFG = {
-  new:              { label:'جديد',            badge:'b-new',        icon:'🆕', step:0 },
-  analyzed:         { label:'تم التحليل',      badge:'b-analyzed',   icon:'🔍', step:1 },
-  approved:         { label:'معتمد',           badge:'b-approved',   icon:'✅', step:2 },
-  rejected:         { label:'مرفوض',           badge:'b-rejected',   icon:'❌', step:1 },
-  quality_review:   { label:'مراجعة الجودة',   badge:'b-quality',    icon:'🔬', step:3 },
-  quality_approved: { label:'اعتمدت الجودة',  badge:'b-qa-ok',      icon:'✅', step:3 },
-  in_production:    { label:'في التصنيع',      badge:'b-production', icon:'🏭', step:4 },
-  ready:            { label:'جاهز للتوريد',    badge:'b-ready',      icon:'📦', step:5 },
-  closed:           { label:'مغلق ✓',          badge:'b-closed',     icon:'🟢', step:6 },
+const STATUS = {
+  new:              { lbl:'جديد',           cls:'s-new',        ic:'🆕', step:0 },
+  analyzed:         { lbl:'تم التحليل',     cls:'s-analyzed',   ic:'🔍', step:1 },
+  approved:         { lbl:'معتمد',          cls:'s-approved',   ic:'✅', step:2 },
+  rejected:         { lbl:'مرفوض',          cls:'s-rejected',   ic:'❌', step:1 },
+  quality_review:   { lbl:'مراجعة الجودة', cls:'s-quality',    ic:'🔬', step:3 },
+  quality_approved: { lbl:'اعتمدت الجودة', cls:'s-qa-ok',      ic:'✅', step:4 },
+  in_production:    { lbl:'في التصنيع',     cls:'s-production', ic:'🏭', step:5 },
+  ready:            { lbl:'جاهز للتوريد',   cls:'s-ready',      ic:'📦', step:6 },
+  closed:           { lbl:'مغلق ✓',         cls:'s-closed',     ic:'🟢', step:7 },
 };
 
-const SEV_CFG = {
-  urgent: { label:'🔴 عاجل',   badge:'sev-urgent', sla:3 },
-  medium: { label:'🟡 متوسط',  badge:'sev-medium', sla:7 },
-  low:    { label:'🟢 بسيط',   badge:'sev-low',    sla:14 },
+const SEV = {
+  urgent: { lbl:'🔴 عاجل',   cls:'sev-u', sla:3,  color:'#c62828' },
+  medium: { lbl:'🟡 متوسط',  cls:'sev-m', sla:7,  color:'#e65100' },
+  low:    { lbl:'🟢 بسيط',   cls:'sev-l', sla:14, color:'#2e7d32' },
 };
 
-const WORKFLOW = [
-  { key:'new',      label:'تسجيل',    icon:'🆕' },
-  { key:'analyzed', label:'تحليل',    icon:'🔍' },
-  { key:'approved', label:'اعتماد',   icon:'✅' },
-  { key:'quality',  label:'جودة',     icon:'🔬' },
-  { key:'production',label:'تصنيع',  icon:'🏭' },
-  { key:'closed',   label:'إغلاق',   icon:'🟢' },
-];
+const STEPS_LABELS = ['تسجيل','تحليل','اعتماد','جودة','تأكيد','تصنيع','توريد','إغلاق'];
 
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
 let U = null;
 let SNAGS = [];
 let _curId = null;
+let _newPhotos = [];
+let _curFilter = '';
 
-// ═══════════════════════════════════════════════
+const STORAGE_KEY = 'snag_v3';
+
+const DEMO_DATA = [
+  { id:'SNR-2026-0001', date:'2026-02-25', client:'TMG — كمبوند بلوم', contract:'2026-041',
+    item:'خزانة غرفة النوم — باب رئيسي', defect_type:'كسر', severity:'urgent',
+    status:'in_production', team:'A', created_by:'مشرف موقع', created_at:'2026-02-25T08:30:00', closed_at:'',
+    root_cause:'تلف أثناء النقل', factory:'مصنع الملامين',
+    analysis_desc:'كسر كامل في الباب الرئيسي للخزانة نتيجة ضغط أثناء النقل',
+    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
+    approved_by:'أشرف قاسم', approval_note:'يُستعجل التصنيع',
+    quality_cause:'تلف أثناء النقل — إدارة التسليمات', quality_result:'تأكد الفريق من أن السبب خلال النقل',
+    notes:'العميل طلب الحل في أسرع وقت', photos:[],
+    history:[
+      {step:'new',       by:'مشرف موقع',  at:'2026-02-25T08:30', note:'تسجيل العيب في الموقع'},
+      {step:'analyzed',  by:'أحمد حسن',   at:'2026-02-25T10:15', note:'كسر كامل — سبب: تلف نقل'},
+      {step:'approved',  by:'أشرف قاسم',  at:'2026-02-25T11:00', note:'اعتمدت — يستعجل التصنيع'},
+      {step:'quality_review', by:'محمد مختار', at:'2026-02-25T12:00', note:'إرسال للجودة'},
+      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T09:00',note:'تأكيد: تلف نقل'},
+      {step:'in_production',by:'محمد مختار',at:'2026-02-26T10:30',note:'بدأ التصنيع — مصنع الملامين'},
+    ]},
+  { id:'SNR-2026-0002', date:'2026-02-26', client:'Emaar — الحي الثامن', contract:'2026-035',
+    item:'مكتب المدير — سطح زجاجي', defect_type:'مقاس غلط', severity:'medium',
+    status:'analyzed', team:'B', created_by:'مشرف موقع', created_at:'2026-02-26T09:00:00', closed_at:'',
+    root_cause:'خطأ في التصنيع', factory:'مصنع الملامين',
+    analysis_desc:'سطح الزجاج أصغر بـ 5 سم من الجانب الأيسر',
+    proposed_solution:'replace_part', analyzed_by:'سامي فؤاد',
+    approved_by:'', approval_note:'', quality_cause:'', quality_result:'',
+    notes:'يوقف تركيب المكتب', photos:[],
+    history:[
+      {step:'new',      by:'مشرف موقع', at:'2026-02-26T09:00', note:'تسجيل العيب'},
+      {step:'analyzed', by:'سامي فؤاد', at:'2026-02-26T11:30', note:'مقاس غلط — يحتاج زجاج جديد'},
+    ]},
+  { id:'SNR-2026-0003', date:'2026-02-26', client:'TMG — برج العرب', contract:'2026-052',
+    item:'ستائر قاطعة — وحدة 3', defect_type:'خدش', severity:'low',
+    status:'closed', team:'C', created_by:'مشرف موقع', created_at:'2026-02-26T13:00:00', closed_at:'2026-02-27T16:00:00',
+    root_cause:'خطأ في التركيب', factory:'لا يتعلق بالمصنع',
+    analysis_desc:'خدش خفيف في الإطار الألوميتال أثناء التجميع',
+    proposed_solution:'fix_site', analyzed_by:'حازم قاعود',
+    approved_by:'محمد فتحي', approval_note:'إصلاح سريع',
+    quality_cause:'خطأ في التركيب — فريق التركيبات', quality_result:'إصلاح بالطلاء — تم التحقق',
+    notes:'', photos:[],
+    history:[
+      {step:'new',             by:'مشرف موقع',   at:'2026-02-26T13:00', note:'تسجيل العيب'},
+      {step:'analyzed',        by:'حازم قاعود',  at:'2026-02-26T14:00', note:'خدش بسيط — إصلاح موقعي'},
+      {step:'approved',        by:'محمد فتحي',   at:'2026-02-26T14:30', note:'موافق — إصلاح سريع'},
+      {step:'quality_review',  by:'محمد مختار',  at:'2026-02-26T15:00', note:'إرسال للجودة'},
+      {step:'quality_approved',by:'مسؤول الجودة',at:'2026-02-26T16:00', note:'تم الإصلاح وتم التحقق'},
+      {step:'closed',          by:'محمد مختار',  at:'2026-02-27T16:00', note:'إغلاق العيب — حُل في الموقع'},
+    ]},
+  { id:'SNR-2026-0004', date:'2026-02-27', client:'Emaar — داون تاون', contract:'2026-061',
+    item:'غرفة اجتماعات — باب زجاجي', defect_type:'مشكلة دهان', severity:'medium',
+    status:'new', team:'D', created_by:'مشرف موقع', created_at:'2026-02-27T10:00:00', closed_at:'',
+    root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
+    analyzed_by:'', approved_by:'', approval_note:'', quality_cause:'', quality_result:'',
+    notes:'الدهان غير متجانس في الزاوية العلوية', photos:[],
+    history:[
+      {step:'new', by:'مشرف موقع', at:'2026-02-27T10:00', note:'تسجيل العيب'},
+    ]},
+  { id:'SNR-2026-0005', date:'2026-02-27', client:'TMG — كمبوند بلوم', contract:'2026-041',
+    item:'مكتبة المدخل — رف علوي', defect_type:'قطعة ناقصة', severity:'medium',
+    status:'approved', team:'A', created_by:'مشرف موقع', created_at:'2026-02-27T11:30:00', closed_at:'',
+    root_cause:'خطأ في التصنيع', factory:'مصنع الملامين',
+    analysis_desc:'الرف العلوي غير موجود في الشحنة — نقص في التعبئة',
+    proposed_solution:'replace_part', analyzed_by:'أحمد حسن',
+    approved_by:'خالد علي', approval_note:'اعتمدت — يراجع مع المخازن',
+    quality_cause:'', quality_result:'',
+    notes:'', photos:[],
+    history:[
+      {step:'new',      by:'مشرف موقع', at:'2026-02-27T11:30', note:'تسجيل العيب'},
+      {step:'analyzed', by:'أحمد حسن',  at:'2026-02-27T13:00', note:'رف مفقود من الشحنة'},
+      {step:'approved', by:'خالد علي',  at:'2026-02-27T14:00', note:'اعتمدت — يراجع مع المخازن'},
+    ]},
+];
+
+// ═══════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 window.onload = () => {
-  SNAGS = JSON.parse(localStorage.getItem('snag_demo_v2') || 'null') || DEMO_SNAGS;
+  const saved = localStorage.getItem(STORAGE_KEY);
+  SNAGS = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEMO_DATA));
 };
 
-function doLogin(){
-  const role = document.getElementById('ln').value;
-  const pass = document.getElementById('lp').value;
-  if(!role) return toast('اختر دورك في النظام');
-  if(pass !== 'demo') return toast('❌ كلمة المرور: demo');
-  U = { role, ...ROLES[role] };
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  renderApp();
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(SNAGS)); }
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+function login() {
+  const role = document.getElementById('login-role').value;
+  const pass = document.getElementById('login-pass').value;
+  if (!role) return toast('⚠️ اختر دورك أولاً');
+  if (pass !== 'demo') return toast('❌ كلمة المرور: demo');
+  setUser(role);
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display   = 'block';
+  renderAll();
 }
 
-function saveSnags(){ localStorage.setItem('snag_demo_v2', JSON.stringify(SNAGS)); }
-
-// ═══════════════════════════════════════════════
-// RENDER APP
-// ═══════════════════════════════════════════════
-function renderApp(){
-  document.getElementById('app').innerHTML = `
-    <div class="hdr">
-      <div class="hdr-left">
-        <div class="hdr-ic">🔧</div>
-        <div>
-          <div class="hdr-title">Snag System</div>
-          <div class="hdr-sub">${U.name} | ${U.label}</div>
-        </div>
-      </div>
-      <div class="hdr-badge">Demo ⚡</div>
-    </div>
-
-    <!-- Role switcher (demo only) -->
-    <div class="demo-role-bar">
-      <span>تجربة كـ:</span>
-      ${Object.entries(ROLES).map(([k,v])=>`<button class="role-chip ${k===U.role?'on':''}" onclick="switchRole('${k}')">${v.label.split(' ')[0]} ${v.team?v.team:''}</button>`).join('')}
-    </div>
-
-    <div class="tabs" id="tabs">
-      <div class="tab on" onclick="switchTab('list',this)">📋 العيوب</div>
-      <div class="tab" onclick="switchTab('dash',this)">📊 داشبورد</div>
-      <div class="tab" onclick="switchTab('guide',this)">📖 الدليل</div>
-    </div>
-
-    <div id="tab-list" class="pb"></div>
-    <div id="tab-dash" class="pb" style="display:none"></div>
-    <div id="tab-guide" class="pb" style="display:none"></div>
-
-    <div class="bnav">
-      <div class="bni on" id="bn-list" onclick="switchTab('list',document.querySelector('.tab'))">
-        <div class="bni-ic">📋</div>العيوب
-        <div class="bni-dot"></div>
-      </div>
-      <div class="bni" id="bn-dash" onclick="switchTab('dash',document.querySelectorAll('.tab')[1])">
-        <div class="bni-ic">📊</div>داشبورد
-      </div>
-      <div class="bni" id="bn-guide" onclick="switchTab('guide',document.querySelectorAll('.tab')[2])">
-        <div class="bni-ic">📖</div>الدليل
-      </div>
-      <div class="bni" onclick="resetDemo()">
-        <div class="bni-ic">🔄</div>إعادة
-      </div>
-      <div class="bni" onclick="doLogout()">
-        <div class="bni-ic">🚪</div>خروج
-      </div>
-    </div>`;
-
-  checkAlerts();
-  renderList();
+function logout() {
+  U = null;
+  document.getElementById('screen-app').style.display   = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('login-role').value = '';
+  document.getElementById('login-pass').value = '';
 }
 
-function switchRole(role){
-  U = { role, ...ROLES[role] };
-  renderApp();
-  toast(`🔄 الدور: ${U.name}`);
-}
-
-function switchTab(name, btn){
-  ['list','dash','guide'].forEach(t=>{
-    const el=document.getElementById('tab-'+t);
-    if(el) el.style.display=t===name?'':'none';
+function setUser(roleKey) {
+  U = { key: roleKey, ...ROLES[roleKey] };
+  // header
+  document.getElementById('hdr-name').textContent = U.name;
+  document.getElementById('hdr-role').textContent = U.lbl;
+  // role bar highlight
+  document.querySelectorAll('.rc').forEach(b => {
+    b.classList.toggle('on', b.dataset.r === roleKey);
   });
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
-  if(btn) btn.classList.add('on');
-  const bn=document.getElementById('bn-'+name);
-  if(bn) bn.classList.add('on');
-  if(name==='list')  renderList();
-  if(name==='dash')  renderDash();
-  if(name==='guide') renderGuide();
 }
 
-function checkAlerts(){
-  const urgent = visibleSnags().filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
-  const pending = visibleSnags().filter(s=>canAct(s)).length;
-  const bn = document.getElementById('bn-list');
-  if(bn && (urgent||pending)) bn.classList.add('has-alert');
+function switchRole(btn) {
+  setUser(btn.dataset.r);
+  _curFilter = '';
+  renderAll();
+  toast('🔄 ' + U.name + ' — ' + U.lbl);
 }
 
-// ═══════════════════════════════════════════════
-// RENDER LIST
-// ═══════════════════════════════════════════════
-function visibleSnags(){
-  if(['field'].includes(U.role)) return SNAGS.filter(s=>s.created_by===U.name||s.team===U.team);
-  if(U.role.startsWith('team_lead')) return SNAGS.filter(s=>s.team===U.team||s.created_by===U.name);
-  return SNAGS;
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function showTab(name, btn) {
+  ['list','dash','guide'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? '' : 'none';
+    document.getElementById('tab-btn-'+t).classList.toggle('on', t===name);
+    document.getElementById('bn-'+t)?.classList.toggle('on', t===name);
+  });
+  if (name==='list')  renderList();
+  if (name==='dash')  renderDash();
+  if (name==='guide') renderGuide();
 }
 
-function canAct(s){
-  const r = U.role;
-  if(r.startsWith('team_lead') && s.status==='new' && s.team===U.team) return true;
-  if(['ashraf','fathy','khalid'].includes(r) && s.status==='analyzed') return true;
-  if(r==='quality' && s.status==='quality_review') return true;
-  if(r==='mokhtar' && ['approved','quality_approved','in_production','ready'].includes(s.status)) return true;
+function renderAll() {
+  renderList();
+  // reset to list tab
+  showTab('list', document.getElementById('tab-btn-list'));
+}
+
+// ═══════════════════════════════════════════
+// VISIBILITY & ACTIONS
+// ═══════════════════════════════════════════
+function mySnags() {
+  if (!U) return [];
+  const c = U.cat;
+  if (c==='field') return SNAGS.filter(s => s.created_by===U.name || s.team===U.team);
+  if (c==='lead')  return SNAGS.filter(s => s.team===U.team);
+  return SNAGS; // mgr, quality, follow, sales, tech
+}
+
+function needsMyAction(s) {
+  const c = U.cat, k = U.key;
+  if (c==='lead'    && s.status==='new'           && s.team===U.team) return true;
+  if (c==='mgr'     && s.status==='analyzed')                         return true;
+  if (c==='quality' && s.status==='quality_review')                   return true;
+  if (c==='follow'  && ['approved','quality_approved','in_production','ready'].includes(s.status)) return true;
   return false;
 }
 
-function renderList(){
+function actionBtn(s) {
+  const c = U.cat;
+  if (c==='lead'    && s.status==='new'            && s.team===U.team)
+    return `<button class="btn bp bxs" onclick="openAnalyze('${s.id}')">🔍 تحليل</button>`;
+  if (c==='mgr'     && s.status==='analyzed')
+    return `<button class="btn bg bxs" onclick="openApprove('${s.id}')">✅ اعتماد</button>`;
+  if (c==='quality' && s.status==='quality_review')
+    return `<button class="btn bt bxs" onclick="openQuality('${s.id}')">🔬 مراجعة</button>`;
+  if (c==='follow') {
+    if (s.status==='approved')
+      return `<button class="btn bxs" style="background:#e65100;color:#fff" onclick="move('${s.id}','quality_review','إرسال للجودة')">🔬 للجودة</button>`;
+    if (s.status==='quality_approved')
+      return `<button class="btn bxs" style="background:#3949ab;color:#fff" onclick="move('${s.id}','in_production','بدء التصنيع')">🏭 تصنيع</button>`;
+    if (s.status==='in_production')
+      return `<button class="btn bg bxs" onclick="move('${s.id}','ready','جاهز للتوريد')">📦 جاهز</button>`;
+    if (s.status==='ready')
+      return `<button class="btn bg bxs" onclick="closeSnag('${s.id}')">🟢 إغلاق</button>`;
+  }
+  return '';
+}
+
+// ═══════════════════════════════════════════
+// RENDER LIST
+// ═══════════════════════════════════════════
+function renderList() {
   const el = document.getElementById('tab-list');
-  if(!el) return;
-  const snags = visibleSnags();
-  const canAdd = ['field','team_lead_a','team_lead_b','team_lead_c','team_lead_d'].includes(U.role);
-  const myActions = snags.filter(canAct);
+  if (!el || !U) return;
+
+  const all    = mySnags();
+  const canAdd = ['field','lead'].includes(U.cat);
+  const urgent = all.filter(s => needsMyAction(s));
+
+  // badge
+  const bn = document.getElementById('bn-badge');
+  if (urgent.length) { bn.textContent=urgent.length; document.getElementById('bn-list').classList.add('has-badge'); }
+  else               { bn.textContent='';             document.getElementById('bn-list').classList.remove('has-badge'); }
 
   let html = '';
-  if(canAdd){
-    html += `<button class="btn b-orange" style="margin-bottom:12px" onclick="openNewSnag()">➕ تسجيل عيب جديد</button>`;
-  }
 
-  if(myActions.length){
-    html += `<div style="background:#fff3e0;border-radius:12px;padding:10px 14px;margin-bottom:12px;border-right:4px solid #e65100">
-      <div style="font-weight:700;font-size:13px;color:#e65100">⚡ تحتاج إجراء منك (${myActions.length})</div>
-      <div style="font-size:12px;color:#888;margin-top:2px">${myActions.map(s=>s.id).join(' • ')}</div>
+  if (canAdd) html += `<button class="btn bo" style="margin-bottom:12px" onclick="openNew()">➕ تسجيل عيب جديد</button>`;
+
+  if (urgent.length)
+    html += `<div class="action-banner">
+      <div class="action-banner-title">⚡ تحتاج إجراءً منك (${urgent.length})</div>
+      <div class="action-banner-ids">${urgent.map(s=>s.id).join(' • ')}</div>
     </div>`;
-  }
 
-  // فلاتر
-  html += `<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
-    ${filterBtn('الكل',snags.length,'')}
-    ${filterBtn('🔴 عاجل',snags.filter(s=>s.severity==='urgent').length,'urgent')}
-    ${filterBtn('مفتوح',snags.filter(s=>s.status!=='closed').length,'open')}
-    ${filterBtn('مغلق',snags.filter(s=>s.status==='closed').length,'closed')}
+  // filters
+  const f = (lbl, val, list) =>
+    `<button class="filter-btn ${_curFilter===val?'on':''}" onclick="setFilter('${val}')">
+      ${lbl} <span class="filter-count">${list.length}</span>
+    </button>`;
+
+  html += `<div class="filters">
+    ${f('الكل','',all)}
+    ${f('🔴 عاجل','urgent', all.filter(s=>s.severity==='urgent'&&s.status!=='closed'))}
+    ${f('مفتوح','open',  all.filter(s=>s.status!=='closed'))}
+    ${f('مغلق','closed', all.filter(s=>s.status==='closed'))}
   </div>`;
 
-  html += '<div id="cards-wrap">' + renderCards(snags) + '</div>';
+  // filtered
+  let list = [...all];
+  if (_curFilter==='urgent') list = list.filter(s=>s.severity==='urgent'&&s.status!=='closed');
+  if (_curFilter==='open')   list = list.filter(s=>s.status!=='closed');
+  if (_curFilter==='closed') list = list.filter(s=>s.status==='closed');
+
+  // sort: urgent first, then by date desc
+  list.sort((a,b) => {
+    if (a.status!=='closed' && b.status==='closed') return -1;
+    if (a.status==='closed' && b.status!=='closed') return 1;
+    const sv = {urgent:0,medium:1,low:2};
+    if (sv[a.severity] !== sv[b.severity]) return sv[a.severity]-sv[b.severity];
+    return new Date(b.created_at)-new Date(a.created_at);
+  });
+
+  html += list.length ? list.map(snagCard).join('') : `<div class="empty"><div class="empty-ic">📭</div>لا توجد عيوب</div>`;
   el.innerHTML = html;
 }
 
-function filterBtn(lbl, count, val){
-  return `<button class="btn b-out b-xs" onclick="applyFilter('${val}')">${lbl} <span style="background:#f0f4ff;border-radius:10px;padding:1px 7px;font-size:10px">${count}</span></button>`;
-}
+function setFilter(val) { _curFilter=val; renderList(); }
 
-function applyFilter(val){
-  let snags = visibleSnags();
-  if(val==='urgent') snags=snags.filter(s=>s.severity==='urgent');
-  if(val==='open')   snags=snags.filter(s=>s.status!=='closed');
-  if(val==='closed') snags=snags.filter(s=>s.status==='closed');
-  document.getElementById('cards-wrap').innerHTML = renderCards(snags);
-}
+function snagCard(s) {
+  const st  = STATUS[s.status] || {lbl:s.status,cls:'s-new',ic:'❓',step:0};
+  const sv  = SEV[s.severity]  || {lbl:'—',cls:'sev-l',sla:7,color:'#1565c0'};
+  const pct = Math.round((st.step/7)*100);
+  const progColor = s.status==='closed' ? '#2e7d32' : sv.color;
+  const leftBorder = s.severity==='urgent'&&s.status!=='closed' ? 'border-right:4px solid #c62828;' : '';
 
-function renderCards(snags){
-  if(!snags.length) return `<div class="empty"><div class="empty-ic">📭</div>لا توجد عيوب</div>`;
-  return snags.sort((a,b)=>{
-    const sevOrder={urgent:0,medium:1,low:2};
-    if(a.status!=='closed'&&b.status==='closed') return -1;
-    if(a.status==='closed'&&b.status!=='closed') return 1;
-    return (sevOrder[a.severity]||1)-(sevOrder[b.severity]||1);
-  }).map(snagCard).join('');
-}
+  const days = Math.floor((Date.now()-new Date(s.created_at))/(864e5));
+  const slaWarn = days>sv.sla && s.status!=='closed'
+    ? `<span class="sla-warn">⚠️ تجاوز SLA (${days} يوم)</span>` : '';
 
-function snagCard(s){
-  const st  = STATUS_CFG[s.status]||{label:s.status,badge:'b-new',icon:'❓',step:0};
-  const sv  = SEV_CFG[s.severity]||{label:'—',badge:'sev-low',sla:7};
-  const act = canAct(s);
-  const stepIdx = st.step;
-  const progress = Math.round((stepIdx/6)*100);
-  const progColor = s.status==='closed'?'#2e7d32':s.severity==='urgent'?'#c62828':'#1565c0';
-  const urgentBorder = s.severity==='urgent'&&s.status!=='closed' ? 'border-right:4px solid #c62828;' : '';
+  const act = actionBtn(s);
+  const photoCount = s.photos&&s.photos.length ? `<span style="font-size:11px;color:#1565c0">📷 ${s.photos.length} صورة</span>` : '';
 
-  // حساب الأيام
-  const days = Math.floor((new Date()-new Date(s.created_at))/(1000*60*60*24));
-  const slaExceeded = days > sv.sla && s.status!=='closed';
-
-  let actionBtn = '';
-  const r = U.role;
-  if(r.startsWith('team_lead') && s.status==='new' && s.team===U.team)
-    actionBtn = `<button class="btn b-purple b-xs" onclick="openAnalyze('${s.id}')">🔍 تحليل العيب</button>`;
-  else if(['ashraf','fathy','khalid'].includes(r) && s.status==='analyzed')
-    actionBtn = `<button class="btn b-green b-xs" onclick="openApprove('${s.id}')">✅ اعتماد / رفض</button>`;
-  else if(r==='quality' && s.status==='quality_review')
-    actionBtn = `<button class="btn b-teal b-xs" onclick="openQuality('${s.id}')">🔬 مراجعة الجودة</button>`;
-  else if(r==='mokhtar'){
-    if(s.status==='approved')
-      actionBtn=`<button class="btn b-xs" style="background:#ff6f00;color:#fff" onclick="moveStatus('${s.id}','quality_review','إرسال للجودة')">🔬 إرسال للجودة</button>`;
-    else if(s.status==='quality_approved')
-      actionBtn=`<button class="btn b-xs" style="background:#3949ab;color:#fff" onclick="moveStatus('${s.id}','in_production','بدء التصنيع — SLA 7 أيام')">🏭 بدء التصنيع</button>`;
-    else if(s.status==='in_production')
-      actionBtn=`<button class="btn b-xs b-green" onclick="moveStatus('${s.id}','ready','جاهز للتوريد')">📦 جاهز للتوريد</button>`;
-    else if(s.status==='ready')
-      actionBtn=`<button class="btn b-xs b-green" onclick="closeSnag('${s.id}')">🟢 إغلاق العيب</button>`;
-  }
-
-  return `<div class="card" style="${urgentBorder}">
+  return `<div class="card" style="${leftBorder}">
     <div class="card-top">
       <div>
         <div class="snr-id">${s.id}</div>
-        <div class="snr-date">📅 ${s.date} ${slaExceeded?'<span style="color:#c62828;font-size:10px;font-weight:700">⚠️ تجاوز SLA</span>':''}</div>
+        <div class="snr-date">📅 ${s.date} ${slaWarn}</div>
       </div>
-      <div class="badges">
-        <span class="badge ${st.badge}">${st.icon} ${st.label}</span>
-        <span class="badge ${sv.badge}">${sv.label}</span>
+      <div class="card-badges">
+        <span class="badge ${st.cls}">${st.ic} ${st.lbl}</span>
+        <span class="badge ${sv.cls}">${sv.lbl}</span>
       </div>
     </div>
-    <div style="font-weight:700;font-size:14px;margin-bottom:3px">🏢 ${s.client}</div>
-    <div style="font-size:12px;color:#666;margin-bottom:3px">📋 ${s.contract} | ${s.item}</div>
-    <div style="font-size:12px;color:#aaa;margin-bottom:8px">🔧 ${s.defect_type} | 👷 ${s.created_by} | مجموعة ${s.team}</div>
-    <div class="prog-wrap">
-      <div class="prog-labels">
-        ${WORKFLOW.map(w=>`<span>${w.icon}</span>`).join('')}
-      </div>
-      <div class="prog"><div class="prog-fill" style="width:${progress}%;background:${progColor}"></div></div>
-    </div>
-    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-      <button class="btn b-out b-xs" onclick="openDetail('${s.id}')">📋 التفاصيل والتاريخ</button>
-      ${actionBtn}
+    <div style="font-weight:700;font-size:13px;margin-bottom:3px">🏢 ${s.client}</div>
+    <div style="font-size:12px;color:#666;margin-bottom:2px">📋 ${s.contract} — ${s.item}</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:6px">🔧 ${s.defect_type} | مجموعة ${s.team} | ${s.created_by} ${photoCount}</div>
+    <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
+    <div class="prog-steps">${STEPS_LABELS.map(l=>`<span>${l}</span>`).join('')}</div>
+    <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn bw bxs" onclick="openDetail('${s.id}')">📋 التفاصيل</button>
+      ${act}
     </div>
   </div>`;
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // DASHBOARD
-// ═══════════════════════════════════════════════
-function renderDash(){
+// ═══════════════════════════════════════════
+function renderDash() {
   const el = document.getElementById('tab-dash');
-  if(!el) return;
-  const snags = SNAGS;
-  const total   = snags.length;
-  const open    = snags.filter(s=>s.status!=='closed').length;
-  const closed  = snags.filter(s=>s.status==='closed').length;
-  const urgent  = snags.filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
-  const byStatus= {};
-  snags.forEach(s=>{ byStatus[s.status]=(byStatus[s.status]||0)+1; });
-  const byTeam  = {};
-  snags.forEach(s=>{ byTeam[s.team]=(byTeam[s.team]||0)+1; });
-  const byType  = {};
-  snags.forEach(s=>{ if(s.defect_type) byType[s.defect_type]=(byType[s.defect_type]||0)+1; });
+  if (!el || !U) return;
 
-  const closedSnags = snags.filter(s=>s.status==='closed'&&s.closed_at&&s.created_at);
-  const avgDays = closedSnags.length
-    ? (closedSnags.reduce((acc,s)=>{
-        return acc + (new Date(s.closed_at)-new Date(s.created_at))/(1000*60*60*24);
-      },0)/closedSnags.length).toFixed(1)
+  const all     = SNAGS;
+  const total   = all.length;
+  const open    = all.filter(s=>s.status!=='closed').length;
+  const closed  = all.filter(s=>s.status==='closed').length;
+  const urgent  = all.filter(s=>s.severity==='urgent'&&s.status!=='closed').length;
+
+  const byStatus = {};
+  all.forEach(s=>{ byStatus[s.status]=(byStatus[s.status]||0)+1; });
+
+  const byTeam = {A:0,B:0,C:0,D:0};
+  all.forEach(s=>{ if(byTeam[s.team]!==undefined) byTeam[s.team]++; });
+
+  const byType = {};
+  all.forEach(s=>{ if(s.defect_type) byType[s.defect_type]=(byType[s.defect_type]||0)+1; });
+
+  const closedList = all.filter(s=>s.status==='closed'&&s.closed_at);
+  const avgDays = closedList.length
+    ? (closedList.reduce((a,s)=>a+(new Date(s.closed_at)-new Date(s.created_at))/864e5,0)/closedList.length).toFixed(1)
     : '—';
 
-  const statCard=(ic,lbl,val,color,sub='')=>`
-    <div class="stat-card">
-      <div class="stat-ic">${ic}</div>
-      <div class="stat-val" style="color:${color}">${val}</div>
-      <div class="stat-lbl">${lbl}</div>
-      ${sub?`<div style="font-size:10px;color:#bbb;margin-top:2px">${sub}</div>`:''}
-    </div>`;
+  const sc=(ic,lbl,val,color)=>`<div class="stat">
+    <div class="stat-ic">${ic}</div>
+    <div class="stat-val" style="color:${color}">${val}</div>
+    <div class="stat-lbl">${lbl}</div>
+  </div>`;
 
-  const teamColors={A:'#1565c0',B:'#2e7d32',C:'#6a1b9a',D:'#e65100'};
-  const typeIcons={'كسر':'💔','خدش':'🖊','مشكلة دهان':'🎨','مقاس غلط':'📐','قطعة ناقصة':'🧩','تلف أثناء النقل':'🚛','خطأ في التجميع':'🔩','اكسسوار ناقص':'🔧'};
+  const teamColor={A:'#1565c0',B:'#2e7d32',C:'#6a1b9a',D:'#e65100'};
+  const barRow=(lbl,val,max,color)=>`<div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+      <span>${lbl}</span><span style="font-weight:700">${val}</span>
+    </div>
+    <div class="prog"><div class="prog-fill" style="width:${max?Math.round(val/max*100):0}%;background:${color}"></div></div>
+  </div>`;
 
   el.innerHTML = `
-    <div class="sec-title">📊 ملخص اليوم</div>
-    <div class="stats-grid">
-      ${statCard('📋','إجمالي العيوب',total,'#1565c0')}
-      ${statCard('🔴','عاجل مفتوح',urgent,'#c62828','يحتاج إجراء فوري')}
-      ${statCard('⚙️','قيد المعالجة',open,'#e65100')}
-      ${statCard('✅','تم إغلاقه',closed,'#2e7d32','avg '+avgDays+' يوم')}
+  <div class="stats">
+    ${sc('📋','إجمالي',total,'#1565c0')}
+    ${sc('🔴','عاجل مفتوح',urgent,'#c62828')}
+    ${sc('⚙️','قيد المعالجة',open,'#e65100')}
+    ${sc('✅','مغلق',closed,'#2e7d32')}
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">🔄 توزيع المراحل</div>
+    ${Object.entries(STATUS).map(([k,v])=>{
+      const c=byStatus[k]||0;
+      return c?barRow(`${v.ic} ${v.lbl}`,c,total,'#1565c0'):'';
+    }).join('')}
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">👥 توزيع المجموعات</div>
+    ${Object.entries(byTeam).map(([t,v])=>barRow(`مجموعة ${t}`,v,total,teamColor[t])).join('')}
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="sec-title">🔧 أكثر أنواع العيوب</div>
+    ${Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px">
+        <span style="color:#555">${t}</span><span style="font-weight:700">${v} حالة</span>
+      </div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="sec-title">⏱️ مؤشرات الأداء</div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px">
+      <span style="color:#888">متوسط وقت الإغلاق</span>
+      <span style="font-weight:700">${avgDays}${avgDays!=='—'?' يوم':''}</span>
     </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div class="sec-title">🔄 توزيع المراحل</div>
-      ${Object.entries(STATUS_CFG).map(([key,cfg])=>{
-        const count = byStatus[key]||0;
-        const pct = total?Math.round(count/total*100):0;
-        return count?`<div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-            <span>${cfg.icon} ${cfg.label}</span>
-            <span style="font-weight:700">${count} <span style="color:#bbb;font-weight:400">(${pct}%)</span></span>
-          </div>
-          <div class="prog"><div class="prog-fill" style="width:${pct}%;background:#1565c0"></div></div>
-        </div>`:'';
-      }).join('')}
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
+      <span style="color:#888">نسبة الإغلاق</span>
+      <span style="font-weight:700;color:#2e7d32">${total?Math.round(closed/total*100):0}%</span>
     </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div class="sec-title">👥 توزيع المجموعات</div>
-      ${['A','B','C','D'].map(t=>{
-        const count=byTeam[t]||0;
-        const pct=total?Math.round(count/total*100):0;
-        return `<div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-            <span style="font-weight:700;color:${teamColors[t]}">مجموعة ${t}</span>
-            <span style="font-weight:700">${count}</span>
-          </div>
-          <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${teamColors[t]}"></div></div>
-        </div>`;
-      }).join('')}
-    </div>
-
-    <div class="card" style="margin-bottom:12px">
-      <div class="sec-title">🔧 أنواع العيوب الأكثر تكراراً</div>
-      ${Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([type,count])=>`
-        <div class="info-row">
-          <span class="info-lbl">${typeIcons[type]||'🔧'} ${type}</span>
-          <span class="info-val">${count} <span style="color:#bbb;font-size:11px">حالة</span></span>
-        </div>`).join('')}
-    </div>
-
-    <div class="card">
-      <div class="sec-title">⏱️ مؤشرات الأداء</div>
-      <div class="info-row">
-        <span class="info-lbl">متوسط وقت الإغلاق</span>
-        <span class="info-val">${avgDays} ${avgDays!=='—'?'يوم':''}</span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">SLA compliance</span>
-        <span class="info-val" style="color:#2e7d32">${closed?Math.round((closed/total)*100):0}%</span>
-      </div>
-      <div class="info-row">
-        <span class="info-lbl">أعلى خطورة مفتوح</span>
-        <span class="info-val" style="color:#c62828">${urgent} عيب عاجل</span>
-      </div>
-    </div>`;
+  </div>`;
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // GUIDE
-// ═══════════════════════════════════════════════
-function renderGuide(){
+// ═══════════════════════════════════════════
+function renderGuide() {
   const el = document.getElementById('tab-guide');
-  if(!el) return;
-  el.innerHTML = `
-    <div class="card">
-      <div class="sec-title">📖 دليل استخدام النظام</div>
-      <div style="font-size:13px;line-height:1.9;color:#444">
-        <b>🆕 الخطوة 1 — تسجيل العيب (الفني/المشرف)</b><br>
-        عند اكتشاف أي عيب في الموقع، اضغط "تسجيل عيب جديد" وأدخل بيانات العميل والقطعة وصور العيب. الـ app يولد رقم SNR تلقائي.<br><br>
-
-        <b>🔍 الخطوة 2 — تحليل العيب (مدير المجموعة)</b><br>
-        مدير المجموعة يستلم إشعار فوري، يفتح الـ SNR ويحدد السبب الجذري ويكتب وصفاً تفصيلياً ويقترح الحل.<br><br>
-
-        <b>✅ الخطوة 3 — الاعتماد (إدارة التركيبات)</b><br>
-        أشرف أو محمد فتحي أو خالد علي يراجع التقرير ويعتمده بضغطة واحدة. أول واحد يعتمد = التقرير يتحرك.<br><br>
-
-        <b>🔬 الخطوة 4 — مراجعة الجودة</b><br>
-        الجودة تتحقق وتحدد المتسبب الرسمي. محمد مختار يتابع ويرسل للجودة.<br><br>
-
-        <b>🏭 الخطوة 5 — التصنيع</b><br>
-        محمد مختار يتابع مع المصنع المختص. SLA: 7 أيام للعيوب المتوسطة، 3 أيام للعاجلة.<br><br>
-
-        <b>🟢 الخطوة 6 — الإغلاق</b><br>
-        بعد التوريد والتركيب، مدير المجموعة يؤكد الحل والـ SNR يُغلق تلقائياً.<br><br>
-
-        <div style="background:#e8f5e9;border-radius:10px;padding:10px;margin-top:8px">
-          ⚡ <b>SLA:</b> عاجل 3 أيام | متوسط 7 أيام | بسيط 14 يوم<br>
-          📱 <b>الإشعارات:</b> كل خطوة تبعت إشعار تيليجرام لأصحاب الدور<br>
-          📊 <b>التقارير:</b> تقرير أسبوعي تلقائي كل خميس
-        </div>
+  if (!el) return;
+  const steps = [
+    {ic:'🆕',title:'تسجيل العيب',role:'الفني / المشرف',
+     body:'عند اكتشاف أي عيب، اضغط "تسجيل عيب جديد"، أدخل بيانات العميل والقطعة وحدد الخطورة والتق صور للعيب. يُولَّد رقم SNR تلقائياً.', sla:''},
+    {ic:'🔍',title:'تحليل العيب',role:'مدير المجموعة',
+     body:'مدير المجموعة يستلم إشعار فوري ويفتح العيب ويحدد السبب الجذري ويكتب وصفاً تفصيلياً ويقترح الحل المناسب.', sla:''},
+    {ic:'✅',title:'الاعتماد',role:'أشرف / محمد فتحي / خالد علي',
+     body:'إدارة التركيبات تراجع التقرير وتعتمده أو ترفضه مع سبب. أول واحد يعتمد = التقرير يتحرك تلقائياً.', sla:''},
+    {ic:'🔬',title:'مراجعة الجودة',role:'إدارة الجودة',
+     body:'الجودة تتحقق وتحدد المتسبب الرسمي وتعتمد التقرير. محمد مختار يتابع ويرسل تلقائياً.', sla:''},
+    {ic:'🏭',title:'التصنيع',role:'محمد مختار + المصنع',
+     body:'يبدأ التصنيع في المصنع المختص. محمد مختار يتابع يومياً حتى الانتهاء.',
+     sla:'عاجل: 3 أيام | متوسط: 7 أيام | بسيط: 14 يوم'},
+    {ic:'📦',title:'التوريد والإغلاق',role:'إدارة التسليمات + مدير المجموعة',
+     body:'بعد التصنيع، يُنسَّق التوريد للموقع. مدير المجموعة يؤكد التركيب ويُغلق العيب رسمياً.', sla:''},
+  ];
+  el.innerHTML = steps.map(s=>`
+    <div class="guide-step">
+      <div class="guide-ic">${s.ic}</div>
+      <div>
+        <div class="guide-title">${s.title}</div>
+        <div style="font-size:11px;color:#1565c0;font-weight:700;margin-bottom:4px">المسؤول: ${s.role}</div>
+        <div class="guide-body">${s.body}</div>
+        ${s.sla?`<div class="guide-sla">⏱️ SLA: ${s.sla}</div>`:''}
+      </div>
+    </div>`).join('') +
+    `<div class="card" style="margin-top:4px">
+      <div class="sec-title">💡 ملاحظات</div>
+      <div style="font-size:13px;color:#555;line-height:2">
+        📱 كل خطوة تُرسل إشعار تيليجرام فوري<br>
+        ⚠️ تنبيه تلقائي عند تجاوز الـ SLA<br>
+        📊 تقرير أسبوعي تلقائي كل خميس<br>
+        📷 الصور مطلوبة للتوثيق وتُحفظ مع العيب<br>
+        🔄 كلمة المرور: <b>demo</b> — اضغط خروج للتبديل بين الأدوار
       </div>
     </div>`;
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // NEW SNAG
-// ═══════════════════════════════════════════════
-let _photos = []; // base64 photos
+// ═══════════════════════════════════════════
+let _selSev = '';
 
-function openNewSnag(){
-  ['ns-client','ns-contract','ns-item','ns-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('ns-type').value='';
-  document.getElementById('ns-sev').value='';
-  document.getElementById('ns-team').value = U.team||'A';
-  document.querySelectorAll('[onclick^="setSev"]').forEach(b=>{ b.style.background='#fff'; b.style.fontWeight=''; });
-  document.getElementById('photos-preview').innerHTML='';
-  document.getElementById('ns-photos').value='';
-  _photos=[];
-  document.getElementById('newSnagModal').style.display='flex';
+function openNew() {
+  _newPhotos = [];
+  _selSev = '';
+  ['n-client','n-contract','n-item','n-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('n-type').value = '';
+  document.getElementById('n-team').value = U.team||'A';
+  document.getElementById('n-photo-grid').innerHTML='';
+  document.getElementById('n-photos').value='';
+  ['sev-u','sev-m','sev-l'].forEach(id=>{
+    const b=document.getElementById(id);
+    b.style.opacity='1'; b.style.transform='';
+  });
+  openModal('m-new');
 }
 
-function previewPhotos(input){
-  const files = Array.from(input.files);
-  if(!files.length) return;
-  const preview = document.getElementById('photos-preview');
-  files.forEach(file=>{
+function pickSev(val) {
+  _selSev = val;
+  const styles = {urgent:'#ffebee',medium:'#fff8e1',low:'#e8f5e9'};
+  const map = {urgent:'sev-u',medium:'sev-m',low:'sev-l'};
+  ['sev-u','sev-m','sev-l'].forEach(id=>{
+    const b=document.getElementById(id);
+    const isSelected = map[val]===id;
+    b.style.background   = isSelected ? styles[val]  : '#fff';
+    b.style.fontWeight   = isSelected ? '800' : '';
+    b.style.transform    = isSelected ? 'scale(1.05)' : '';
+  });
+}
+
+function addPhotos(input) {
+  Array.from(input.files).forEach(file => {
     const reader = new FileReader();
-    reader.onload = e=>{
-      _photos.push(e.target.result);
-      const img = document.createElement('div');
-      img.style.cssText='position:relative;width:80px;height:80px';
-      img.innerHTML=`
-        <img src="${e.target.result}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #e0e0e0">
-        <div onclick="removePhoto(${_photos.length-1},this.parentNode)" style="position:absolute;top:-6px;left:-6px;background:#c62828;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:700">×</div>`;
-      preview.appendChild(img);
-      // تحديث مؤشر المنطقة
-      document.getElementById('photo-area').style.borderColor='#1565c0';
-      document.getElementById('photo-area').style.background='#f0f6ff';
+    reader.onload = e => {
+      _newPhotos.push(e.target.result);
+      const idx = _newPhotos.length - 1;
+      const wrap = document.createElement('div');
+      wrap.className = 'photo-thumb';
+      wrap.id = 'pthumb-'+idx;
+      wrap.innerHTML = `
+        <img src="${e.target.result}" onclick="viewPhoto('${e.target.result}')">
+        <div class="photo-del" onclick="removeNewPhoto(${idx})">×</div>`;
+      document.getElementById('n-photo-grid').appendChild(wrap);
     };
     reader.readAsDataURL(file);
   });
 }
 
-function removePhoto(idx, el){
-  _photos.splice(idx,1);
-  el.remove();
-  if(!_photos.length){
-    document.getElementById('photo-area').style.borderColor='#ddd';
-    document.getElementById('photo-area').style.background='#fafafa';
-  }
+function removeNewPhoto(idx) {
+  _newPhotos[idx] = null;
+  const el = document.getElementById('pthumb-'+idx);
+  if (el) el.remove();
 }
 
-function setSev(btn, val){
-  document.getElementById('ns-sev').value = val;
-  document.querySelectorAll('[onclick^="setSev"]').forEach(b=>{ b.style.background='#fff'; b.style.fontWeight=''; });
-  btn.style.background = val==='urgent'?'#ffebee':val==='medium'?'#fff8e1':'#e8f5e9';
-  btn.style.fontWeight = '800';
-}
+function submitNew() {
+  const client   = document.getElementById('n-client').value.trim();
+  const contract = document.getElementById('n-contract').value.trim();
+  const item     = document.getElementById('n-item').value.trim();
+  const type     = document.getElementById('n-type').value;
+  const team     = document.getElementById('n-team').value;
+  const notes    = document.getElementById('n-notes').value.trim();
 
-function submitNewSnag(){
-  const client   = document.getElementById('ns-client').value.trim();
-  const contract = document.getElementById('ns-contract').value.trim();
-  const item     = document.getElementById('ns-item').value.trim();
-  const type     = document.getElementById('ns-type').value;
-  const sev      = document.getElementById('ns-sev').value;
-  const team     = document.getElementById('ns-team').value;
-  const notes    = document.getElementById('ns-notes').value.trim();
-  if(!client||!contract||!item||!type||!sev) return toast('⚠️ أكمل البيانات المطلوبة');
+  if (!client)   return toast('⚠️ أدخل اسم العميل');
+  if (!contract) return toast('⚠️ أدخل رقم العقد');
+  if (!item)     return toast('⚠️ أدخل البند المعيب');
+  if (!type)     return toast('⚠️ اختر نوع العيب');
+  if (!_selSev)  return toast('⚠️ اختر درجة الخطورة');
 
   const now = new Date().toISOString();
   const id  = 'SNR-'+new Date().getFullYear()+'-'+String(SNAGS.length+1).padStart(4,'0');
+  const photos = _newPhotos.filter(Boolean);
+
   SNAGS.push({
     id, date:now.substring(0,10), client, contract, item,
-    defect_type:type, severity:sev, status:'new', team,
-    created_by:U.name, created_at:now, closed_at:'',
+    defect_type:type, severity:_selSev, status:'new',
+    team, created_by:U.name, created_at:now, closed_at:'',
     root_cause:'', factory:'', analysis_desc:'', proposed_solution:'',
     analyzed_by:'', approved_by:'', approval_note:'',
-    quality_result:'', quality_cause:'', notes,
-    photos: [..._photos],
-    history:[{ step:'new', by:U.name, at:now, note:'تم تسجيل العيب' }]
+    quality_cause:'', quality_result:'', notes, photos,
+    history:[{step:'new', by:U.name, at:now, note:'تم تسجيل العيب'}],
   });
-  saveSnags();
-  toast(`✅ تم تسجيل ${id} — إشعار أُرسل لمدير المجموعة`);
-  closeModal('newSnagModal');
+  save();
+  toast(`✅ تم تسجيل ${id}${photos.length?' مع '+photos.length+' صورة':''} — إشعار أُرسل`);
+  closeModal('m-new');
   renderList();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // ANALYZE
-// ═══════════════════════════════════════════════
-function openAnalyze(id){
-  _curId=id;
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  document.getElementById('am-info').innerHTML=
-    `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.contract} | ${s.item}<br>🔧 ${s.defect_type} | ${SEV_CFG[s.severity]?.label||'—'}${s.notes?`<br>📝 ${s.notes}`:''}`;
-  ['am-cause','am-factory','am-sol'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('am-desc').value='';
-  document.getElementById('analyzeModal').style.display='flex';
+// ═══════════════════════════════════════════
+function openAnalyze(id) {
+  _curId = id;
+  const s = find(id); if (!s) return;
+  document.getElementById('ma-info').innerHTML =
+    `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.contract} | ${s.item}<br>
+     🔧 ${s.defect_type} | ${SEV[s.severity]?.lbl||'—'}
+     ${s.notes?`<br>📝 ${s.notes}`:''}`;
+  ['ma-cause','ma-factory','ma-sol'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ma-desc').value='';
+  openModal('m-analyze');
 }
 
-function submitAnalysis(){
-  const cause   = document.getElementById('am-cause').value;
-  const factory = document.getElementById('am-factory').value;
-  const desc    = document.getElementById('am-desc').value.trim();
-  const sol     = document.getElementById('am-sol').value;
-  if(!cause||!desc) return toast('⚠️ حدد السبب وأكتب الوصف');
-  const now=new Date().toISOString();
-  const s=SNAGS.find(x=>x.id===_curId);
-  if(!s) return;
-  Object.assign(s,{ status:'analyzed', root_cause:cause, factory, analysis_desc:desc, proposed_solution:sol, analyzed_by:U.name });
-  s.history.push({ step:'analyzed', by:U.name, at:now, note:`السبب: ${cause} | ${desc}` });
-  saveSnags();
+function submitAnalysis() {
+  const cause   = document.getElementById('ma-cause').value;
+  const factory = document.getElementById('ma-factory').value;
+  const desc    = document.getElementById('ma-desc').value.trim();
+  const sol     = document.getElementById('ma-sol').value;
+  if (!cause) return toast('⚠️ حدد السبب الجذري');
+  if (!desc)  return toast('⚠️ اكتب الوصف التفصيلي');
+  const s = find(_curId); if (!s) return;
+  const now = new Date().toISOString();
+  Object.assign(s, {status:'analyzed', root_cause:cause, factory, analysis_desc:desc, proposed_solution:sol, analyzed_by:U.name});
+  s.history.push({step:'analyzed', by:U.name, at:now, note:`السبب: ${cause} | ${desc}`});
+  save();
   toast('✅ تم التحليل — إشعار أُرسل لإدارة التركيبات');
-  closeModal('analyzeModal');
+  closeModal('m-analyze');
   renderList();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // APPROVE
-// ═══════════════════════════════════════════════
-function openApprove(id){
-  _curId=id;
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  const sv=SEV_CFG[s.severity]||{label:'—'};
-  document.getElementById('apm-info').innerHTML=
+// ═══════════════════════════════════════════
+function openApprove(id) {
+  _curId = id;
+  const s = find(id); if (!s) return;
+  document.getElementById('map-info').innerHTML =
     `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.contract} | ${s.item}<br>
-     🔧 ${s.defect_type} | ${sv.label}<br><div class="div"></div>
+     ${SEV[s.severity]?.lbl||'—'} | 🔧 ${s.defect_type}
+     <div class="modal-divider"></div>
      🔍 <b>التحليل:</b> ${s.analysis_desc||'—'}<br>
      🎯 <b>السبب:</b> ${s.root_cause||'—'}<br>
      🏭 <b>المصنع:</b> ${s.factory||'—'}<br>
      💡 <b>الحل:</b> ${s.proposed_solution||'—'}<br>
      👷 <b>حلّله:</b> ${s.analyzed_by||'—'}`;
-  document.getElementById('apm-note').value='';
-  document.getElementById('approveModal').style.display='flex';
+  document.getElementById('map-note').value='';
+  openModal('m-approve');
 }
 
-function submitApprove(approved){
-  const note=document.getElementById('apm-note').value.trim();
-  const now=new Date().toISOString();
-  const s=SNAGS.find(x=>x.id===_curId);
-  if(!s) return;
-  const newStatus = approved?'approved':'rejected';
-  Object.assign(s,{ status:newStatus, approved_by:U.name, approval_note:note });
-  s.history.push({ step:newStatus, by:U.name, at:now, note:approved?'اعتماد: '+note:'رفض: '+note });
-  saveSnags();
-  toast(approved?'✅ تم الاعتماد — إيميل للجودة والبيع':'❌ تم الرفض مع إشعار');
-  closeModal('approveModal');
+function submitApprove(approved) {
+  const note = document.getElementById('map-note').value.trim();
+  const s = find(_curId); if (!s) return;
+  const now = new Date().toISOString();
+  const st  = approved ? 'approved' : 'rejected';
+  Object.assign(s, {status:st, approved_by:U.name, approval_note:note});
+  s.history.push({step:st, by:U.name, at:now, note: approved?('اعتماد'+(note?' — '+note:'')):'رفض — '+note});
+  save();
+  toast(approved ? '✅ معتمد — إيميل للجودة والبيع' : '❌ مرفوض — إشعار أُرسل');
+  closeModal('m-approve');
   renderList();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // QUALITY
-// ═══════════════════════════════════════════════
-function openQuality(id){
-  _curId=id;
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  document.getElementById('qm-info').innerHTML=
+// ═══════════════════════════════════════════
+function openQuality(id) {
+  _curId = id;
+  const s = find(id); if (!s) return;
+  document.getElementById('mq-info').innerHTML =
     `<b>${s.id}</b> | 🏢 ${s.client}<br>📋 ${s.item}<br>
      🎯 السبب المقترح: ${s.root_cause||'—'}<br>
      🏭 المصنع: ${s.factory||'—'}<br>
-     💡 الحل: ${s.proposed_solution||'—'}`;
-  document.getElementById('qm-cause').value='';
-  document.getElementById('qm-result').value='';
-  document.getElementById('qualityModal').style.display='flex';
+     💡 الحل المقترح: ${s.proposed_solution||'—'}`;
+  document.getElementById('mq-cause').value='';
+  document.getElementById('mq-result').value='';
+  openModal('m-quality');
 }
 
-function submitQuality(){
-  const cause  = document.getElementById('qm-cause').value;
-  const result = document.getElementById('qm-result').value.trim();
-  if(!cause) return toast('⚠️ حدد المتسبب');
-  const now=new Date().toISOString();
-  const s=SNAGS.find(x=>x.id===_curId);
-  if(!s) return;
-  Object.assign(s,{ status:'quality_approved', quality_cause:cause, quality_result:result });
-  s.history.push({ step:'quality_approved', by:U.name, at:now, note:`المتسبب: ${cause}` });
-  saveSnags();
+function submitQuality() {
+  const cause  = document.getElementById('mq-cause').value;
+  const result = document.getElementById('mq-result').value.trim();
+  if (!cause) return toast('⚠️ حدد المتسبب الرسمي');
+  const s = find(_curId); if (!s) return;
+  const now = new Date().toISOString();
+  Object.assign(s, {status:'quality_approved', quality_cause:cause, quality_result:result});
+  s.history.push({step:'quality_approved', by:U.name, at:now, note:`المتسبب: ${cause}`});
+  save();
   toast('✅ اعتماد الجودة — إشعار لمحمد مختار');
-  closeModal('qualityModal');
+  closeModal('m-quality');
   renderList();
 }
 
-// ═══════════════════════════════════════════════
-// MOVE STATUS
-// ═══════════════════════════════════════════════
-function moveStatus(id, newStatus, note){
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  const now=new Date().toISOString();
-  s.status=newStatus;
-  s.history.push({ step:newStatus, by:U.name, at:now, note });
-  saveSnags();
+// ═══════════════════════════════════════════
+// MOVE / CLOSE
+// ═══════════════════════════════════════════
+function move(id, newStatus, note) {
+  const s = find(id); if (!s) return;
+  s.status = newStatus;
+  s.history.push({step:newStatus, by:U.name, at:new Date().toISOString(), note});
+  save();
   toast(`✅ ${note} — إشعار أُرسل`);
   renderList();
 }
 
-function closeSnag(id){
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  const now=new Date().toISOString();
-  s.status='closed';
-  s.closed_at=now;
-  s.history.push({ step:'closed', by:U.name, at:now, note:'تم التوريد والتركيب — إغلاق العيب' });
-  saveSnags();
-  toast('🟢 تم إغلاق العيب بنجاح');
+function closeSnag(id) {
+  const s = find(id); if (!s) return;
+  const now = new Date().toISOString();
+  Object.assign(s, {status:'closed', closed_at:now});
+  s.history.push({step:'closed', by:U.name, at:now, note:'تم التوريد والتركيب — إغلاق العيب'});
+  save();
+  toast('🟢 تم الإغلاق بنجاح');
   renderList();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // DETAIL
-// ═══════════════════════════════════════════════
-function openDetail(id){
-  const s=SNAGS.find(x=>x.id===id);
-  if(!s) return;
-  const st=STATUS_CFG[s.status]||{label:s.status,badge:'b-new',icon:'❓',step:0};
-  const sv=SEV_CFG[s.severity]||{label:'—',badge:'sev-low'};
+// ═══════════════════════════════════════════
+function openDetail(id) {
+  _curId = id;
+  const s = find(id); if (!s) return;
+  const st = STATUS[s.status] || {lbl:s.status,cls:'s-new',ic:'❓'};
+  const sv = SEV[s.severity]  || {lbl:'—',cls:'sev-l'};
 
-  const tlHtml=(s.history||[]).map((h,i)=>{
-    const cfg=STATUS_CFG[h.step]||{icon:'•',label:h.step};
-    const isLast=i===s.history.length-1;
+  const irow = (lbl,val) => val ? `<div class="irow"><span class="ilbl">${lbl}</span><span class="ival">${val}</span></div>` : '';
+
+  const photos = s.photos&&s.photos.length
+    ? `<div class="sec-title" style="margin-top:14px">📷 صور العيب (${s.photos.length})</div>
+       <div class="photo-grid" style="margin-bottom:14px">
+         ${s.photos.map(p=>`<div class="photo-thumb"><img src="${p}" onclick="viewPhoto('${p}')"></div>`).join('')}
+       </div>` : '';
+
+  const tl = (s.history||[]).map((h,i)=>{
+    const cfg = STATUS[h.step]||{ic:'•',lbl:h.step};
+    const cls = i===s.history.length-1 ? 'tl-active' : 'tl-done';
     return `<li class="tl-item">
-      <div class="tl-dot ${isLast?'tl-active':'tl-done'}">${cfg.icon}</div>
+      <div class="tl-dot ${cls}">${cfg.ic}</div>
       <div class="tl-body">
-        <div class="tl-title">${STATUS_CFG[h.step]?.label||h.step}</div>
-        <div class="tl-meta">${h.by||'—'} | ${h.at?h.at.replace('T',' ').substring(0,16):'—'}</div>
+        <div class="tl-title">${STATUS[h.step]?.lbl||h.step}</div>
+        <div class="tl-meta">${h.by||'—'} | ${h.at?h.at.replace('T',' ').slice(0,16):'—'}</div>
         ${h.note?`<div class="tl-note">${h.note}</div>`:''}
       </div>
     </li>`;
   }).join('');
 
-  document.getElementById('detail-body').innerHTML=`
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <span class="badge ${st.badge}">${st.icon} ${st.label}</span>
-      <span class="badge ${sv.badge}">${sv.label}</span>
+  document.getElementById('md-body').innerHTML = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <span class="badge ${st.cls}">${st.ic} ${st.lbl}</span>
+      <span class="badge ${sv.cls}">${sv.lbl}</span>
     </div>
     <div class="card" style="margin-bottom:12px">
-      <div class="sec-title">بيانات العيب</div>
-      <div class="info-row"><span class="info-lbl">رقم SNR</span><span class="info-val">${s.id}</span></div>
-      <div class="info-row"><span class="info-lbl">العميل</span><span class="info-val">${s.client}</span></div>
-      <div class="info-row"><span class="info-lbl">العقد</span><span class="info-val">${s.contract}</span></div>
-      <div class="info-row"><span class="info-lbl">البند</span><span class="info-val">${s.item}</span></div>
-      <div class="info-row"><span class="info-lbl">نوع العيب</span><span class="info-val">${s.defect_type}</span></div>
-      <div class="info-row"><span class="info-lbl">المجموعة</span><span class="info-val">${s.team}</span></div>
-      <div class="info-row"><span class="info-lbl">سجّله</span><span class="info-val">${s.created_by}</span></div>
-      <div class="info-row"><span class="info-lbl">التاريخ</span><span class="info-val">${s.date}</span></div>
-      ${s.notes?`<div class="info-row"><span class="info-lbl">ملاحظات</span><span class="info-val">${s.notes}</span></div>`:''}
+      <div class="sec-title">📋 بيانات العيب</div>
+      ${irow('رقم SNR', s.id)}
+      ${irow('العميل', s.client)}
+      ${irow('رقم العقد', s.contract)}
+      ${irow('البند', s.item)}
+      ${irow('نوع العيب', s.defect_type)}
+      ${irow('المجموعة', 'مجموعة '+s.team)}
+      ${irow('سجّله', s.created_by)}
+      ${irow('التاريخ', s.date)}
+      ${irow('ملاحظات', s.notes)}
     </div>
     ${s.analysis_desc?`<div class="card" style="margin-bottom:12px">
-      <div class="sec-title">🔍 نتيجة التحليل</div>
-      <div class="info-row"><span class="info-lbl">السبب</span><span class="info-val">${s.root_cause||'—'}</span></div>
-      <div class="info-row"><span class="info-lbl">المصنع</span><span class="info-val">${s.factory||'—'}</span></div>
-      <div class="info-row"><span class="info-lbl">الوصف</span><span class="info-val">${s.analysis_desc}</span></div>
-      <div class="info-row"><span class="info-lbl">الحل المقترح</span><span class="info-val">${s.proposed_solution||'—'}</span></div>
-      <div class="info-row"><span class="info-lbl">حلّله</span><span class="info-val">${s.analyzed_by||'—'}</span></div>
+      <div class="sec-title">🔍 التحليل</div>
+      ${irow('السبب الجذري', s.root_cause)}
+      ${irow('المصنع', s.factory)}
+      ${irow('الوصف', s.analysis_desc)}
+      ${irow('الحل المقترح', s.proposed_solution)}
+      ${irow('حلّله', s.analyzed_by)}
+    </div>`:''}
+    ${s.approved_by?`<div class="card" style="margin-bottom:12px">
+      <div class="sec-title">✅ الاعتماد</div>
+      ${irow('اعتمده', s.approved_by)}
+      ${irow('ملاحظة', s.approval_note)}
     </div>`:''}
     ${s.quality_cause?`<div class="card" style="margin-bottom:12px">
       <div class="sec-title">🔬 قرار الجودة</div>
-      <div class="info-row"><span class="info-lbl">المتسبب</span><span class="info-val">${s.quality_cause}</span></div>
-      ${s.quality_result?`<div class="info-row"><span class="info-lbl">النتيجة</span><span class="info-val">${s.quality_result}</span></div>`:''}
+      ${irow('المتسبب', s.quality_cause)}
+      ${irow('النتيجة', s.quality_result)}
     </div>`:''}
-    ${s.photos&&s.photos.length?`
-      <div class="sec-title" style="margin-bottom:8px">📷 صور العيب (${s.photos.length})</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
-        ${s.photos.map((p,i)=>`<img src="${p}" onclick="openPhotoFull('${i}')" style="width:90px;height:90px;object-fit:cover;border-radius:12px;border:2px solid #e0e0e0;cursor:pointer">`).join('')}
-      </div>`:''}
-    ${tlHtml?`<div class="sec-title" style="margin-bottom:8px">📜 سجل التقدم</div><ul class="timeline">${tlHtml}</ul>`:''}`;
+    ${photos}
+    ${tl?`<div class="sec-title">📜 سجل التقدم</div><ul class="tl">${tl}</ul>`:''}`;
 
-  document.getElementById('detailModal').style.display='flex';
+  openModal('m-detail');
 }
 
-// ═══════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════
-function closeModal(id){ document.getElementById(id).style.display='none'; }
-
-function openPhotoFull(idx){
-  const s = SNAGS.find(x=>x.id===_curId);
-  if(!s||!s.photos) return;
-  document.getElementById('photo-full').src = s.photos[idx];
-  document.getElementById('photoModal').style.display='flex';
+// ═══════════════════════════════════════════
+// PHOTO VIEWER
+// ═══════════════════════════════════════════
+function viewPhoto(src) {
+  document.getElementById('pv-img').src = src;
+  document.getElementById('photo-viewer').classList.add('open');
 }
 
-function doLogout(){
-  U = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('app').innerHTML = '';
-  document.getElementById('loginWrap').style.display = 'block';
-  document.getElementById('ln').value = '';
-  document.getElementById('lp').value = '';
-}
+// ═══════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-function resetDemo(){
-  localStorage.removeItem('snag_demo_v2');
-  SNAGS = JSON.parse(JSON.stringify(DEMO_SNAGS));
-  toast('🔄 تم إعادة ضبط البيانات التجريبية');
+// close on backdrop click
+document.querySelectorAll('.ov').forEach(ov => {
+  ov.addEventListener('click', e => { if(e.target===ov) closeModal(ov.id); });
+});
+
+// ═══════════════════════════════════════════
+// DEMO RESET
+// ═══════════════════════════════════════════
+function resetDemo() {
+  localStorage.removeItem(STORAGE_KEY);
+  SNAGS = JSON.parse(JSON.stringify(DEMO_DATA));
+  save();
+  toast('🔄 تم إعادة البيانات التجريبية');
   renderList();
 }
 
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function find(id) { return SNAGS.find(s=>s.id===id); }
+
 let _tt;
-function toast(msg,ms=3500){
-  const el=document.getElementById('toast');
+function toast(msg, ms=3500) {
+  const el = document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
-  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),ms);
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>el.classList.remove('show'), ms);
 }
 </script>
 </body>
