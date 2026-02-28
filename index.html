@@ -508,18 +508,25 @@ function renderApp(){
         <div class="stat"><div class="sn" id="st0">0</div><div class="sl">طلبات</div></div>
         <div class="stat"><div class="sn" id="st1">0</div><div class="sl">انتظار</div></div>
         <div class="stat"><div class="sn" id="st2">0</div><div class="sl">معتمدة</div></div>
+        <div class="stat"><div class="sn" id="st3">0</div><div class="sl">أفراد</div></div>
       </div>
       <button class="btn b-green" style="margin-bottom:12px" onclick="runAutoDistribute()">⚡ توزيع تلقائي واعتماد</button>
-      <div class="tabs">
+      <div class="tabs" style="overflow-x:auto;white-space:nowrap">
         <div class="tab on"  onclick="fmTab('reqs',this)">الطلبات</div>
         <div class="tab"     onclick="fmTab('plan',this)">📋 الخطة</div>
+        <div class="tab"     onclick="fmTab('hist',this)">📅 السجل</div>
+        <div class="tab"     onclick="fmTab('ratings',this)">⭐ التقييمات</div>
+        <div class="tab"     onclick="fmTab('drivers',this)">🚗 السائقين</div>
         <div class="tab"     onclick="fmTab('order',this)">📄 إيجار</div>
-        <div class="tab"     onclick="fmTab('veh',this)">🚗 الأسطول</div>
+        <div class="tab"     onclick="fmTab('veh',this)">🚙 الأسطول</div>
       </div>
       <div id="tab-reqs"></div>
-      <div id="tab-plan"  style="display:none"></div>
-      <div id="tab-order" style="display:none"></div>
-      <div id="tab-veh"   style="display:none"></div>
+      <div id="tab-plan"    style="display:none"></div>
+      <div id="tab-hist"    style="display:none"></div>
+      <div id="tab-ratings" style="display:none"></div>
+      <div id="tab-drivers" style="display:none"></div>
+      <div id="tab-order"   style="display:none"></div>
+      <div id="tab-veh"     style="display:none"></div>
     </div>
     <div class="bnav">
       <div class="ni on"><div class="ni-ic">🏠</div>الرئيسية</div>
@@ -541,6 +548,45 @@ function updateSelCount(){
   if(el) el.textContent=n+' فرد محدد';
 }
 // ربط الـ checkboxes بعد render
+// ── إلغاء الطلب ──
+async function cancelReq(id){
+  if(!confirm('هل تريد إلغاء هذا الطلب؟')) return;
+  const reqs=loadLocalReqs();
+  const req=reqs.find(r=>r.id===id);
+  if(req){ req.status='cancelled'; saveLocalReqs(reqs); }
+  await api('cancelRequest',{id, cancelled_by:U.name});
+  toast('✅ تم إلغاء الطلب');
+  loadMyReqs();
+}
+
+// ── تعديل الطلب ──
+function openEditReq(id){
+  const r=loadLocalReqs().find(x=>x.id===id)||REQS.find(x=>x.id===id);
+  if(!r) return toast('⚠️ الطلب غير موجود');
+  const html=`
+  <div style="background:#fff;border-radius:16px;padding:20px;position:fixed;inset:10px;z-index:1000;overflow-y:auto;box-shadow:0 4px 24px rgba(0,0,0,.3)">
+    <div style="font-weight:700;font-size:16px;margin-bottom:16px">✏️ تعديل الطلب</div>
+    <label class="fl">اسم العميل<input class="inp" id="ed-client" value="${r.client||''}"></label>
+    <label class="fl">ملاحظات<input class="inp" id="ed-notes" value="${r.notes||''}"></label>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn b-green" style="flex:1" onclick="confirmEditReq('${id}')">💾 حفظ</button>
+      <button class="btn b-out" style="flex:1" onclick="this.closest('div').parentNode.remove()">إلغاء</button>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+async function confirmEditReq(id){
+  const client=document.getElementById('ed-client').value.trim();
+  const notes =document.getElementById('ed-notes').value.trim();
+  const reqs=loadLocalReqs();
+  const req=reqs.find(r=>r.id===id);
+  if(req){ req.client=client; req.notes=notes; saveLocalReqs(reqs); }
+  await api('updateRequest',{id, client, notes});
+  document.querySelectorAll('[onclick*="confirmEditReq"]').forEach(b=>b.closest('div[style*="position:fixed"]')?.remove());
+  toast('✅ تم التعديل');
+  loadMyReqs();
+}
+
 function addStopRow(){
   const list = document.getElementById('stops-list');
   const div  = document.createElement('div');
@@ -722,21 +768,92 @@ async function loadAllReqs(){
 }
 
 function updStats(){
-  const e0=document.getElementById('st0'),e1=document.getElementById('st1'),e2=document.getElementById('st2');
+  const e0=document.getElementById('st0'),e1=document.getElementById('st1'),
+        e2=document.getElementById('st2'),e3=document.getElementById('st3');
   if(e0) e0.textContent=REQS.length;
   if(e1) e1.textContent=REQS.filter(r=>r.status==='pending').length;
   if(e2) e2.textContent=REQS.filter(r=>r.status==='approved').length;
+  if(e3) e3.textContent=REQS.reduce((s,r)=>s+parseInt(r.techs||0),0);
 }
 
 function fmTab(name,btn){
   CUR_TAB=name;
-  ['reqs','plan','order','veh'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t===name?'':'none';});
+  ['reqs','plan','hist','ratings','drivers','order','veh'].forEach(t=>{
+    const el=document.getElementById('tab-'+t); if(el) el.style.display=t===name?'':'none';
+  });
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
-  if(name==='reqs')  renderFmReqs();
-  if(name==='plan')  renderPlan();
-  if(name==='order') renderOrder();
-  if(name==='veh')   renderVehicles();
+  if(name==='reqs')    renderFmReqs();
+  if(name==='plan')    renderPlan();
+  if(name==='hist')    loadHistory();
+  if(name==='ratings') loadRatings();
+  if(name==='drivers') loadDriverLog();
+  if(name==='order')   renderOrder();
+  if(name==='veh')     renderVehicles();
+}
+
+// ── تاريخ الرحلات ──
+async function loadHistory(){
+  const el=document.getElementById('tab-hist'); if(!el) return;
+  el.innerHTML='<div class="empty">⏳ جارى التحميل...</div>';
+  try{
+    const r=await apiGet('getHistory',{days:30});
+    const reqs=r.requests||[];
+    if(!reqs.length){ el.innerHTML='<div class="empty">لا توجد سجلات سابقة</div>'; return; }
+    // تجميع بالتاريخ
+    const byDate={};
+    reqs.forEach(r=>{ const d=r.date||'—'; if(!byDate[d]) byDate[d]=[]; byDate[d].push(r); });
+    const html=Object.entries(byDate).reverse().map(([d,rows])=>`
+      <div style="margin-bottom:16px">
+        <div style="font-weight:700;color:#1565c0;padding:6px 0;border-bottom:2px solid #e3f2fd;margin-bottom:8px">
+          📅 ${d.replace('D:','')} — ${rows.length} طلب | ${rows.reduce((s,r)=>s+parseInt(r.techs||0),0)} فرد
+        </div>
+        ${rows.map(r=>rqHTML(r,false)).join('')}
+      </div>`).join('');
+    el.innerHTML=html;
+  }catch(e){ el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>'; }
+}
+
+// ── تقييمات السائقين ──
+async function loadRatings(){
+  const el=document.getElementById('tab-ratings'); if(!el) return;
+  el.innerHTML='<div class="empty">⏳...</div>';
+  try{
+    const r=await apiGet('getRatings',{});
+    const summary=r.summary||[];
+    if(!summary.length){ el.innerHTML='<div class="empty">لا توجد تقييمات بعد</div>'; return; }
+    const medals=['🥇','🥈','🥉'];
+    el.innerHTML=`
+      <div style="font-weight:700;color:#4a148c;padding:8px 0;margin-bottom:12px;font-size:15px">⭐ مقارنة أداء السائقين</div>
+      ${summary.map((d,i)=>`
+        <div style="background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.1);display:flex;align-items:center;gap:12px">
+          <div style="font-size:24px">${medals[i]||'🏅'}</div>
+          <div style="flex:1">
+            <div style="font-weight:700">${d.driver}</div>
+            <div style="font-size:12px;color:#666">${d.plate} | ${d.count} رحلة</div>
+          </div>
+          <div style="font-size:20px;font-weight:700;color:#f9a825">${d.avg} ⭐</div>
+        </div>`).join('')}`;
+  }catch(e){ el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>'; }
+}
+
+// ── سجل السائقين (في الطريق) ──
+async function loadDriverLog(){
+  const el=document.getElementById('tab-drivers'); if(!el) return;
+  el.innerHTML='<div class="empty">⏳...</div>';
+  try{
+    const r=await apiGet('getDriverLog',{date:todayStr()});
+    const log=r.log||[];
+    if(!log.length){ el.innerHTML='<div class="empty">لا توجد تحديثات اليوم</div>'; return; }
+    const statusLabel=s=>s==='on_way'?'🚀 في الطريق':s==='arrived'?'✅ وصل':'📍 '+s;
+    el.innerHTML=log.map(l=>`
+      <div style="background:#fff;border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.1)">
+        <div style="font-weight:700">${statusLabel(l.status)}</div>
+        <div style="font-size:13px;color:#333">👤 ${l.driver} | 🚗 ${l.plate}</div>
+        ${l.location?`<div style="font-size:12px;color:#1565c0">📍 ${l.location}</div>`:''}
+        <div style="font-size:11px;color:#999">${l.time?l.time.substring(11,16):''}</div>
+      </div>`).join('');
+  }catch(e){ el.innerHTML='<div class="empty">⚠️ تعذّر التحميل</div>'; }
 }
 
 function renderFmReqs(){
@@ -759,9 +876,15 @@ function rqHTML(r,mgr=false){
     ? `📍 ${r.from_loc||'—'} ← 🔸 ${r.stop_loc} ← 🏁 ${r.dest||'—'}`
     : `📍 ${r.from_loc||'—'} ➜ 🏁 ${r.dest||'—'}`;
   // تقييم الرحلة — يظهر للمهندس بعد الاعتماد
-  const ratingStored = r.rating ? `<div style="font-size:13px;margin-top:6px">⭐ تقييمك: ${'⭐'.repeat(r.rating)} (${r.rating}/5)${r.ratingNote?` — ${r.ratingNote}`:''}</div>` : '';
+  const ratingStored = r.rating ? `<div style="font-size:13px;margin-top:6px">⭐ ${'⭐'.repeat(r.rating)} (${r.rating}/5)${r.ratingNote?` — ${r.ratingNote}`:''}</div>` : '';
   const ratingBtn = (!mgr && status==='approved' && !r.rating)
     ? `<button class="btn b-sm b-out" style="margin-top:8px;font-size:13px" onclick="openRating('${r.id}')">⭐ قيّم الرحلة</button>` : '';
+  // أزرار تعديل وإلغاء (للمهندس فقط قبل الاعتماد)
+  const editBtns = (!mgr && status==='pending')
+    ? `<div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn b-sm b-out" style="font-size:12px;flex:1" onclick="openEditReq('${r.id}')">✏️ تعديل</button>
+        <button class="btn b-sm" style="font-size:12px;flex:1;background:#e53935" onclick="cancelReq('${r.id}')">❌ إلغاء</button>
+       </div>` : '';
 
   return `<div class="rq ${status}" id="rq-${r.id}">
     <div class="rq-top"><div class="rq-team">👷 ${r.team||'—'}</div>${badge}</div>
@@ -772,6 +895,7 @@ function rqHTML(r,mgr=false){
     ${veh}
     ${ratingStored}
     ${ratingBtn}
+    ${editBtns}
   </div>`;
 }
 
