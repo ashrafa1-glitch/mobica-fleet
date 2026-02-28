@@ -437,6 +437,7 @@ function renderApp(){
   if(!isManager){
     // ENGINEER — request form + read-only view
     const locOpts=LOCS.map(l=>`<option value="${l}">${l}</option>`).join('');
+    window.LOC_OPTS_HTML=locOpts;
     R.innerHTML=`
     <div class="topbar">
       <div><div class="tb-l">🚐 حملة موبيكا</div><div class="tb-s">${U.name} | ${roleLabel}</div></div>
@@ -452,8 +453,13 @@ function renderApp(){
           <div class="fl"><label>🏁 مكان الوصول</label><select id="e-dest"><option value="">— اختر —</option>${locOpts}</select></div>
         </div>
         <div class="fl">
-          <label>🔸 محطة (اختياري)</label>
-          <select id="e-stop"><option value="">— بدون محطة —</option>${locOpts}</select>
+          <label>🔸 محطات (اختياري)</label>
+          <div id="stops-list">
+            <div class="stop-row" style="display:flex;gap:6px;margin-bottom:6px">
+              <select class="inp stop-sel" style="flex:1"><option value="">— بدون محطة —</option>${locOpts}</select>
+              <button type="button" onclick="addStopRow()" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:0 12px;font-size:18px;cursor:pointer">+</button>
+            </div>
+          </div>
         </div>
         <div class="fl">
           <label>🏢 اسم العميل</label>
@@ -535,6 +541,16 @@ function updateSelCount(){
   if(el) el.textContent=n+' فرد محدد';
 }
 // ربط الـ checkboxes بعد render
+function addStopRow(){
+  const list = document.getElementById('stops-list');
+  const div  = document.createElement('div');
+  div.className='stop-row';
+  div.style='display:flex;gap:6px;margin-bottom:6px';
+  div.innerHTML=`<select class="inp stop-sel" style="flex:1"><option value="">— بدون محطة —</option>${LOC_OPTS_HTML}</select>
+    <button type="button" onclick="this.parentNode.remove()" style="background:#e53935;color:#fff;border:none;border-radius:8px;padding:0 12px;font-size:18px;cursor:pointer">−</button>`;
+  list.appendChild(div);
+}
+
 function bindMemberCbs(){
   document.querySelectorAll('.mem-cb').forEach(cb=>{
     cb.addEventListener('change', updateSelCount);
@@ -545,7 +561,8 @@ function bindMemberCbs(){
 async function submitReq(){
   const team = U.team; // تلقائي من الـ login
   const from   = document.getElementById('e-from').value;
-  const stop   = document.getElementById('e-stop').value;
+  const stops  = [...document.querySelectorAll('.stop-sel')].map(s=>s.value).filter(Boolean);
+  const stop   = stops.join(' ← ');
   const dest   = document.getElementById('e-dest').value;
   const client = (document.getElementById('e-client').value||'').trim();
 
