@@ -288,6 +288,15 @@ function assignVehicle(body) {
 
   const ids = Array.isArray(body.ids) ? body.ids : (body.ids||'').split(',');
   let updated = 0;
+  const teamCol   = headers.indexOf('team');
+  const clientCol = headers.indexOf('client');
+  const fromCol   = headers.indexOf('from_loc');
+  const destCol   = headers.indexOf('dest');
+  const techsCol  = headers.indexOf('techs');
+
+  // تجميع الطلبات المعتمدة لإرسال إشعار لمديري المجموعات
+  const teamNotifs = {}; // team -> [{client, from, dest, techs}]
+
   data.forEach((row, i) => {
     if (i === 0) return;
     if (ids.includes(row[idCol])) {
@@ -296,8 +305,36 @@ function assignVehicle(body) {
       sh.getRange(i+1, typeCol+1)  .setValue(body.car_type || '');
       sh.getRange(i+1, statusCol+1).setValue('assigned');
       updated++;
+
+      // تجميع بيانات الإشعار
+      const team = row[teamCol] || '';
+      if (!teamNotifs[team]) teamNotifs[team] = [];
+      teamNotifs[team].push({
+        client: row[clientCol] || '—',
+        from:   row[fromCol]   || '—',
+        dest:   row[destCol]   || '—',
+        techs:  row[techsCol]  || 0,
+      });
     }
   });
+
+  // إرسال إشعار لكل مدير مجموعة
+  const approvedBy = body.approved_by || 'عماد';
+  Object.entries(teamNotifs).forEach(([team, reqs]) => {
+    const chatId = TEAM_CHAT_IDS[''+team] ||
+      Object.entries(TEAM_CHAT_IDS).find(([k]) => k.startsWith(team+' — '))?.[1] || '';
+    if (!chatId) return;
+    let msg = `✅ *تم اعتماد طلبك*\n🗓 اليوم | 👤 اعتمده: ${approvedBy}\n\n`;
+    reqs.forEach((r, idx) => {
+      msg += `🔹 *رحلة ${idx+1}*\n`;
+      msg += `🏢 العميل: ${r.client}\n`;
+      msg += `📍 من: ${r.from} ➜ ${r.dest}\n`;
+      msg += `🚗 السيارة: ${body.plate||'—'} | 👤 ${body.driver||'—'}\n`;
+      msg += `👥 الفنيين: ${r.techs}\n\n`;
+    });
+    sendTelegram(chatId, msg);
+  });
+
   return { ok: true, updated };
 }
 
