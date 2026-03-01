@@ -7,14 +7,14 @@ const SHEET_ID           = '1qZSLK7zEsOxRactIxXVwvVR3tFYruR_CI8bU5rERGwI'; // ن
 const NOTIFY_IDS = {
   'أشرف قاسم':   '7055250567',
   'محمد فتحي':   '8562342656',
-  'خالد علي':    '',             // أضف رقمه
+  'خالد علي':    '8017935026',
   'محمد مختار':  '',             // أضف رقمه
   'أحمد حسن':    '8583850058',
   'حازم قاعود':  '979158814',
   'هشام جمال':   '5555531128',
 };
 
-const INSTALLATION_MGR_IDS = ['7055250567','8562342656']; // أشرف + محمد فتحي + خالد
+const INSTALLATION_MGR_IDS = ['7055250567','8562342656','8017935026']; // أشرف + محمد فتحي + خالد
 
 const SHEET_SNAGS   = 'Snags';
 const SHEET_HISTORY = 'SnagHistory';
