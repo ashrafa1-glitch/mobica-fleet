@@ -750,7 +750,7 @@ function updCard(u){
 // ═══════════════════════════════════════════
 function renderIR(){
   const irs=UPD.filter(u=>u.type==='ir').sort((a,b)=>b.ts-a.ts);
-  let h='<div style="padding:10px 14px 10px"><button class="btn bs" style="width:100%;padding:12px" onclick="openIR('','')">+ إضافة محضر تسليم</button></div>';
+  let h='<div style="padding:10px 14px 10px"><button class="btn bs" style="width:100%;padding:12px" onclick="openIR(\'\',\'\')">+ إضافة محضر تسليم</button></div>';
   if(!irs.length) h+='<div class="empty"><div class="ei">📋</div>لا توجد محاضر بعد</div>';
   else {
     h+='<div style="padding:0 14px 80px">';
