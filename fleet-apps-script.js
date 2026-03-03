@@ -215,6 +215,7 @@ function addRequest(body) {
     `👥 الأفراد: ${body.techs||0}${membersLine}\n👤 أضافه: ${body.created_by||'—'}`
   );
 
+  logActivity('USAGE', 'طلب نقل جديد | فريق: ' + (body.team||'—') + ' | عميل: ' + (body.client||'—') + ' | بواسطة: ' + (body.created_by||'—'));
   return { ok: true, id };
 }
 
@@ -335,6 +336,7 @@ function assignVehicle(body) {
     sendTelegram(chatId, msg);
   });
 
+  logActivity('USAGE', 'تعيين سيارة | ' + (body.plate||'—') + ' | ' + (body.driver||'—') + ' | ' + updated + ' طلبات');
   return { ok: true, updated };
 }
 
@@ -443,6 +445,7 @@ function savePlan(body) {
   const sumMsg = `✅ *خطة الحملة معتمدة*\n🗓 ${date.replace('D:','')}\n👤 ${approvedBy}\n\n${summary}`;
   notifyManagers(sumMsg);
 
+  logActivity('DEPLOYMENT', 'اعتماد خطة يومية | ' + date.replace('D:','') + ' | ' + plan.length + ' سيارات | بواسطة: ' + approvedBy);
   return { ok: true, notified: plan.length };
 }
 
@@ -572,6 +575,22 @@ function weeklyReport() {
 // ══════════════════════════════════════════════════════════
 // TELEGRAM
 // ══════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════
+// AUTO LOGGER
+// ══════════════════════════════════════════════════════════
+function logActivity(category, desc) {
+  try {
+    const ss = SpreadsheetApp.openById("1qZSLK7zEsOxRactIxXVwvVR3tFYruR_CI8bU5rERGwI");
+    let sheet = ss.getSheetByName('AgentLog');
+    if (!sheet) {
+      sheet = ss.insertSheet('AgentLog');
+      sheet.appendRow(['Timestamp', 'Category', 'Description', 'User']);
+    }
+    sheet.appendRow([new Date().toISOString(), category, desc, '']);
+  } catch(e) {}
+}
+
 function notifyManagers(text) {
   [EMAD_CHAT_ID, ASHRAF_CHAT_ID, FATHY_CHAT_ID, KHALED_CHAT_ID].forEach(id => sendTelegram(id, text));
 }
