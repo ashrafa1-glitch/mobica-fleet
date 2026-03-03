@@ -249,8 +249,12 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
 <div class="ov" id="m-ir">
 <div class="modal">
   <div class="mh">📋 إضافة محضر تسليم</div>
-  <div class="msub" id="ir-info"></div>
+  <div class="msub" id="ir-info">اختر العقد لتظهر البنود والكميات</div>
   <div class="mfg">
+    <label>العقد</label>
+    <select id="ir-cno" onchange="onIRContractChange()">
+      <option value="">— اختار العقد —</option>
+    </select>
     <label>نوع المحضر</label>
     <select id="ir-tp">
       <option value="IR">📋 IR — Inspection Report</option>
@@ -259,13 +263,30 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
     </select>
     <label>رقم المحضر</label>
     <input type="text" id="ir-no" placeholder="مثال: IR-2026-041-001">
-    <label>القيمة (اختياري)</label>
+    <label>القيمة الإجمالية (اختياري)</label>
     <input type="number" id="ir-vl" placeholder="بالجنيه المصري">
+  </div>
+
+  <!-- items table appears after contract selected -->
+  <div id="ir-items-section" style="display:none;margin-bottom:12px">
+    <div style="font-weight:700;font-size:12px;color:#6a1b9a;margin-bottom:6px">📦 الكميات في هذا المحضر</div>
+    <div style="font-size:11px;color:#888;margin-bottom:8px">أدخل الكمية المسلّمة في المحضر لكل بند:</div>
+    <table class="tbl" id="ir-items-tbl">
+      <tr>
+        <th>البند</th>
+        <th>متعاقد</th>
+        <th>مورّد</th>
+        <th>في المحضر</th>
+      </tr>
+    </table>
+  </div>
+
+  <div class="mfg">
     <label>ملاحظة</label>
     <textarea id="ir-nt" placeholder="ملاحظات المحضر..."></textarea>
   </div>
   <div class="mbtns">
-    <button class="btn bs" onclick="subIR()">✅ حفظ</button>
+    <button class="btn bs" onclick="subIR()">✅ حفظ المحضر</button>
     <button class="btn bgr" onclick="cls('m-ir')">إلغاء</button>
   </div>
 </div>
@@ -750,21 +771,133 @@ function updCard(u){
 // ═══════════════════════════════════════════
 function renderIR(){
   const irs=UPD.filter(u=>u.type==='ir').sort((a,b)=>b.ts-a.ts);
-  let h='<div style="padding:10px 14px 10px"><button class="btn bs" style="width:100%;padding:12px" onclick="openIR(\'\',\'\')">+ إضافة محضر تسليم</button></div>';
-  if(!irs.length) h+='<div class="empty"><div class="ei">📋</div>لا توجد محاضر بعد</div>';
-  else {
-    h+='<div style="padding:0 14px 80px">';
-    irs.forEach(u=>{
-      h+=`<div class="ui ir2">
-        <b>📋 ${u.ir_type}</b> — رقم: <b>${u.ir_no}</b>
-        <br>العقد: ${u.contract_no||'—'} | ${u.customer||'—'}
-        ${u.ir_vl?`<br>💰 ${Number(u.ir_vl).toLocaleString()} EGP`:''}
-        ${u.note?`<br><i>${u.note}</i>`:''}
+
+  // Summary totals per contract
+  const totals={};
+  irs.forEach(u=>{
+    const k=u.contract_no||'—';
+    if(!totals[k]) totals[k]={count:0,val:0,customer:u.customer||'—',types:[]};
+    totals[k].count++;
+    totals[k].val+=Number(u.ir_vl||0);
+    if(!totals[k].types.includes(u.ir_type)) totals[k].types.push(u.ir_type);
+  });
+
+  let h=`<div style="padding:10px 14px 0">
+    <button class="btn bs" style="width:100%;padding:12px;margin-bottom:10px" onclick="openIRNew()">+ إضافة محضر تسليم</button>`;
+
+  // Stats row
+  if(irs.length){
+    const totalVal=irs.reduce((s,u)=>s+Number(u.ir_vl||0),0);
+    h+=`<div style="display:flex;gap:8px;margin-bottom:10px">
+      <div style="flex:1;background:#f3e5f5;border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:20px;font-weight:900;color:#6a1b9a">${irs.length}</div>
+        <div style="font-size:10px;color:#888">إجمالي المحاضر</div>
+      </div>
+      <div style="flex:1;background:#e8f5e9;border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:20px;font-weight:900;color:#2e7d32">${Object.keys(totals).length}</div>
+        <div style="font-size:10px;color:#888">عقود</div>
+      </div>
+      ${totalVal?`<div style="flex:1;background:#e3f2fd;border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:14px;font-weight:900;color:#1565c0">${(totalVal/1000).toFixed(0)}K</div>
+        <div style="font-size:10px;color:#888">EGP مستخلص</div>
+      </div>`:''}
+    </div>`;
+  }
+  h+='</div>';
+
+  if(!irs.length){
+    h+='<div class="empty"><div class="ei">📋</div>لا توجد محاضر بعد</div>';
+    return h;
+  }
+
+  // Group by contract
+  const byContract={};
+  irs.forEach(u=>{
+    const k=u.contract_no||'—';
+    if(!byContract[k]) byContract[k]=[];
+    byContract[k].push(u);
+  });
+
+  h+='<div style="padding:0 14px 80px">';
+  Object.entries(byContract).forEach(([cno,list],ci)=>{
+    const con=CONTRACTS.find(c=>c.contract_no===cno);
+    const totalIrVal=list.reduce((s,u)=>s+Number(u.ir_vl||0),0);
+
+    h+=`<div class="card pc" style="margin-bottom:10px">
+      <div class="ch" onclick="tog('ir-grp-${ci}')">
+        <div class="ci">
+          <div class="ct">📋 ${cno}</div>
+          <div class="cs">${list[0].customer||'—'}</div>
+          <div class="cbadges">
+            <span class="b bp">${list.length} محضر</span>
+            ${totalIrVal?`<span class="b bb">💰 ${Number(totalIrVal).toLocaleString()} EGP</span>`:''}
+            ${list.find(u=>u.ir_type==='تسليم نهائي')?'<span class="b bg">✅ تسليم نهائي</span>':''}
+          </div>
+        </div>
+        <span style="font-size:18px;color:#ddd">▾</span>
+      </div>
+      <div class="cb2" id="ir-grp-${ci}">`;
+
+    // Contract items table if contract found
+    if(con){
+      // Get IR qty per item from saved data
+      h+=`<div style="font-weight:700;font-size:12px;color:#6a1b9a;margin-bottom:6px">📦 بنود العقد</div>
+        <table class="tbl">
+          <tr>
+            <th>البند</th>
+            <th>متعاقد</th>
+            <th>مورّد</th>
+            <th>في المحضر</th>
+          </tr>`;
+      con.items.forEach((it,ii)=>{
+        // Sum IR quantities for this item across all IRs for this contract
+        const irQty=list.reduce((s,u)=>{
+          const itData=(u.items||[]).find(x=>x.idx===ii);
+          return s+(itData?Number(itData.qty||0):0);
+        },0);
+        const delivPct=it.contract_qty?Math.round(it.delivered_qty/it.contract_qty*100):0;
+        const irPct=it.delivered_qty?Math.round(irQty/it.delivered_qty*100):0;
+        h+=`<tr>
+          <td style="font-size:11px">${it.desc}<br><span style="color:#bbb;font-size:10px">${it.group}</span></td>
+          <td style="text-align:center">${it.contract_qty}</td>
+          <td style="text-align:center">
+            <b style="color:${pc(delivPct)}">${it.delivered_qty}</b>
+            <div class="mini-bar"><div class="mini-f" style="width:${delivPct}%;background:${pc(delivPct)}"></div></div>
+          </td>
+          <td style="text-align:center">
+            <b style="color:${irQty?'#6a1b9a':'#bbb'}">${irQty||'—'}</b>
+            ${irQty?`<div class="mini-bar"><div class="mini-f" style="width:${Math.min(irPct,100)}%;background:#6a1b9a"></div></div>`:''}
+          </td>
+        </tr>`;
+      });
+      h+='</table>';
+    }
+
+    // Individual IR records
+    h+=`<div style="font-weight:700;font-size:12px;color:#6a1b9a;margin:10px 0 6px">📋 سجل المحاضر</div>`;
+    list.forEach(u=>{
+      const irItems=u.items||[];
+      h+=`<div style="background:#f9f5ff;border-radius:8px;padding:10px;margin-bottom:6px;border-right:3px solid #6a1b9a">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;color:#6a1b9a">${u.ir_type}</span>
+          <span style="font-weight:700;font-size:13px">${u.ir_no}</span>
+        </div>
+        ${u.ir_vl?`<div style="font-size:12px;color:#2e7d32;margin-top:3px">💰 ${Number(u.ir_vl).toLocaleString()} EGP</div>`:''}
+        ${irItems.length?`<div style="margin-top:6px">
+          ${irItems.map(it=>`<div style="font-size:11px;color:#555;padding:2px 0;border-bottom:1px solid #f0e8ff">
+            ${it.desc} — <b style="color:#6a1b9a">${it.qty} قطعة</b>
+          </div>`).join('')}
+        </div>`:''}
+        ${u.note?`<div style="font-size:11px;color:#888;margin-top:4px;font-style:italic">${u.note}</div>`:''}
         <div class="um">👤 ${u.by} | ${new Date(u.ts).toLocaleString('ar-EG')}</div>
       </div>`;
     });
-    h+='</div>';
-  }
+
+    // Add IR button for this contract
+    h+=`<button class="btn bs" style="width:100%;margin-top:6px" onclick="openIRForContract('${cno}','${(list[0].customer||'').replace(/'/g,"\\'")}')">+ إضافة محضر لهذا العقد</button>`;
+    h+='</div></div>';
+  });
+  h+='</div>';
   return h;
 }
 
@@ -827,13 +960,81 @@ function openIss(no,cust){
   document.getElementById('mi-ds').value='';
   opn('m-iss');
 }
+function openIRNew(){
+  openIR('','');
+}
+function openIRForContract(cno,cust){
+  openIR(cno,cust);
+}
 function openIR(cno,cust){
   CUR={contract_no:cno,customer:cust};
-  document.getElementById('ir-info').textContent=cust||(cno?cno:'اختر العقد من الصفحة السابقة');
+  // Populate contract dropdown
+  const sel=document.getElementById('ir-cno');
+  sel.innerHTML='<option value="">— اختار العقد —</option>';
+  CONTRACTS.forEach(c=>{
+    const opt=document.createElement('option');
+    opt.value=c.contract_no;
+    opt.textContent=c.contract_no+' — '+c.customer;
+    if(c.contract_no===cno) opt.selected=true;
+    sel.appendChild(opt);
+  });
   document.getElementById('ir-no').value='';
   document.getElementById('ir-vl').value='';
   document.getElementById('ir-nt').value='';
+  document.getElementById('ir-items-section').style.display='none';
+  if(cno) {
+    document.getElementById('ir-info').textContent=cust+' | '+cno;
+    buildIRItemsTable(cno);
+  } else {
+    document.getElementById('ir-info').textContent='اختر العقد لتظهر البنود والكميات';
+  }
   opn('m-ir');
+}
+function onIRContractChange(){
+  const cno=document.getElementById('ir-cno').value;
+  if(!cno){ document.getElementById('ir-items-section').style.display='none'; return; }
+  const con=CONTRACTS.find(c=>c.contract_no===cno);
+  if(con){
+    CUR.contract_no=cno;
+    CUR.customer=con.customer;
+    document.getElementById('ir-info').textContent=con.customer+' | '+cno;
+    buildIRItemsTable(cno);
+  }
+}
+function buildIRItemsTable(cno){
+  const con=CONTRACTS.find(c=>c.contract_no===cno);
+  if(!con){ document.getElementById('ir-items-section').style.display='none'; return; }
+
+  // Get previously recorded IR totals per item for this contract
+  const prevIRs=UPD.filter(u=>u.type==='ir'&&u.contract_no===cno);
+  const prevQty={}; // item idx => total qty in previous IRs
+  prevIRs.forEach(u=>(u.items||[]).forEach(it=>{ prevQty[it.idx]=(prevQty[it.idx]||0)+Number(it.qty||0); }));
+
+  const tbl=document.getElementById('ir-items-tbl');
+  tbl.innerHTML=`<tr><th>البند</th><th>متعاقد</th><th>مورّد</th><th>سابق</th><th>هذا المحضر</th></tr>`;
+  con.items.forEach((it,i)=>{
+    const delivPct=it.contract_qty?Math.round(it.delivered_qty/it.contract_qty*100):0;
+    const prev=prevQty[i]||0;
+    const remaining=Math.max(0,it.delivered_qty-prev);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-size:10px">${it.desc}<br><span style="color:#bbb;font-size:9px">${it.group}</span></td>
+      <td style="text-align:center;font-size:11px">${it.contract_qty}</td>
+      <td style="text-align:center">
+        <b style="font-size:11px;color:${pc(delivPct)}">${it.delivered_qty}</b>
+        <div class="mini-bar"><div class="mini-f" style="width:${delivPct}%;background:${pc(delivPct)}"></div></div>
+      </td>
+      <td style="text-align:center;font-size:11px;color:${prev?'#6a1b9a':'#bbb'}">${prev||'—'}</td>
+      <td style="text-align:center;padding:4px 2px">
+        <input type="number" data-idx="${i}" data-desc="${it.desc.replace(/"/g,'&quot;')}"
+          min="0" max="${remaining}" value="0"
+          style="width:52px;padding:4px;border:1.5px solid #ddd;border-radius:6px;text-align:center;font-size:12px;font-weight:700"
+          placeholder="0">
+        <div style="font-size:9px;color:#e65100;margin-top:2px">متاح: ${remaining}</div>
+      </td>`;
+    tbl.appendChild(tr);
+  });
+  document.getElementById('ir-items-section').style.display='block';
 }
 
 function subUpd(){
@@ -856,9 +1057,21 @@ function subIss(){
 function subIR(){
   const no=document.getElementById('ir-no').value;
   if(!no){toast('أدخل رقم المحضر');return;}
+  if(!CUR.contract_no){toast('اختر العقد أولاً');return;}
+
+  // Collect item quantities
+  const itemInputs=document.querySelectorAll('#ir-items-tbl input[data-idx]');
+  const items=[];
+  itemInputs.forEach(inp=>{
+    const q=Number(inp.value||0);
+    if(q>0) items.push({idx:Number(inp.dataset.idx), desc:inp.dataset.desc, qty:q});
+  });
+
   const u={type:'ir',contract_no:CUR.contract_no,customer:CUR.customer,
     ir_type:document.getElementById('ir-tp').value,
-    ir_no:no,ir_vl:document.getElementById('ir-vl').value,
+    ir_no:no,
+    ir_vl:document.getElementById('ir-vl').value,
+    items:items,
     note:document.getElementById('ir-nt').value,
     by:U.name,ts:Date.now()};
   save(u); cls('m-ir'); toast('📋 تم حفظ المحضر'); go(PG);
