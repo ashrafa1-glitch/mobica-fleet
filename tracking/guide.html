@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دليل استخدام — Tracking Agent | موبيكا</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f5f7fa;color:#222;direction:rtl;font-size:14px}
+.print-btn{position:fixed;top:14px;left:14px;background:#1565c0;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.print-btn:hover{background:#1a237e}
+.cover{background:linear-gradient(135deg,#1a237e,#1565c0);color:#fff;padding:48px 32px;text-align:center}
+.cover .ico{font-size:64px;margin-bottom:16px}
+.cover h1{font-size:28px;font-weight:900;margin-bottom:8px}
+.cover h2{font-size:16px;opacity:.8;font-weight:400;margin-bottom:16px}
+.cover .url{background:rgba(255,255,255,.15);padding:10px 20px;border-radius:8px;font-size:13px;display:inline-block;margin-top:8px;letter-spacing:.5px}
+.cover .meta{margin-top:20px;font-size:12px;opacity:.6}
+.container{max-width:800px;margin:0 auto;padding:24px 16px}
+.section{background:#fff;border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #f0f2f5}
+.sec-hdr .ico{font-size:28px}
+.sec-hdr h2{font-size:18px;font-weight:800;color:#1565c0}
+.sec-hdr p{font-size:12px;color:#999;margin-top:2px}
+h3{font-size:14px;font-weight:700;color:#1a237e;margin:14px 0 8px}
+p{font-size:13px;color:#444;line-height:1.8;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+th{background:#1565c0;color:#fff;padding:9px 10px;text-align:right;font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+tr:nth-child(even) td{background:#f8f9ff}
+tr:last-child td{border:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin:2px}
+.bg{background:#e8f5e9;color:#2e7d32}
+.bb{background:#e3f2fd;color:#1565c0}
+.bo{background:#fff3e0;color:#e65100}
+.br{background:#ffebee;color:#c62828}
+.bp{background:#f3e5f5;color:#6a1b9a}
+.by{background:#fffde7;color:#f57f17}
+.steps{counter-reset:step;list-style:none;padding:0}
+.steps li{counter-increment:step;display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;font-size:13px;color:#444;align-items:flex-start}
+.steps li:last-child{border:none}
+.steps li::before{content:counter(step);background:#1565c0;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.tip{background:#e8f5e9;border-right:4px solid #2e7d32;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:12px;color:#2e7d32}
+.warn{background:#fff3e0;border-right:4px solid #e65100;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:12px;color:#e65100}
+.info{background:#e3f2fd;border-right:4px solid #1565c0;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:12px;color:#1565c0}
+.tab-card{background:#f8f9ff;border-radius:10px;padding:14px;margin-bottom:10px;border-right:4px solid #1565c0}
+.tab-card h4{font-size:13px;font-weight:700;color:#1565c0;margin-bottom:6px}
+.tab-card p{font-size:12px;color:#555;margin:0}
+.role-tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-right:6px}
+.r-admin{background:#1a237e;color:#fff}
+.r-mgr{background:#1565c0;color:#fff}
+.r-view{background:#546e7a;color:#fff}
+.r-sup{background:#2e7d32;color:#fff}
+.r-del{background:#6a1b9a;color:#fff}
+.wl-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5}
+.wl-name{min-width:120px;font-size:12px;font-weight:600}
+.wl-bar{flex:1;height:10px;background:#eee;border-radius:5px;overflow:hidden}
+.wl-fill{height:100%;border-radius:5px}
+.wl-val{min-width:60px;text-align:left;font-size:12px;font-weight:700}
+.example-box{background:#f9f5ff;border:1px solid #e1bee7;border-radius:10px;padding:14px;margin:10px 0}
+.example-box h4{color:#6a1b9a;font-size:12px;font-weight:700;margin-bottom:8px}
+.ex-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid #f0e8ff}
+.ex-row:last-child{border:none}
+.footer{background:#1a237e;color:#fff;text-align:center;padding:24px;margin-top:0;font-size:12px}
+.footer p{opacity:.7;margin-top:6px}
+@media print{
+  .print-btn{display:none}
+  body{background:#fff}
+  .section{box-shadow:none;border:1px solid #eee}
+  .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page-break{page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ طباعة / PDF</button>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="ico">📋</div>
+  <h1>دليل استخدام</h1>
+  <h2>Tracking Agent — نظام متابعة أوامر التركيب</h2>
+  <div class="url">🌐 https://ashrafa1-glitch.github.io/mobica-fleet/tracking/</div>
+  <div class="meta">موبيكا للأثاث | إدارة التركيبات | مارس 2026</div>
+</div>
+
+<div class="container">
+
+<!-- SECTION 1: LOGIN -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="ico">🔐</div>
+    <div><h2>تسجيل الدخول</h2><p>كيفية الدخول للنظام</p></div>
+  </div>
+
+  <ol class="steps">
+    <li>افتح الرابط: <b>https://ashrafa1-glitch.github.io/mobica-fleet/tracking/</b></li>
+    <li>اختار اسمك من قائمة المستخدمين</li>
+    <li>أدخل كلمة المرور الخاصة بك</li>
+    <li>اضغط <b>🔐 دخول</b></li>
+  </ol>
+
+  <h3>كلمات المرور</h3>
+  <table>
+    <tr><th>الاسم</th><th>الدور</th><th>كلمة المرور</th></tr>
+    <tr><td>أشرف قاسم</td><td><span class="role-tag r-admin">👑 إدارة</span></td><td><b>ashraf2026</b></td></tr>
+    <tr><td>محمد فتحي</td><td><span class="role-tag r-admin">👑 إدارة</span></td><td><b>ashraf2026</b></td></tr>
+    <tr><td>خالد علي</td><td><span class="role-tag r-admin">👑 إدارة</span></td><td><b>ashraf2026</b></td></tr>
+    <tr><td>محمد مختار / عمرو الورداني</td><td><span class="role-tag r-view">📊 متابعة</span></td><td><b>ashraf2026</b></td></tr>
+    <tr><td>أحمد حسن</td><td><span class="role-tag r-mgr">🔧 مجموعة A</span></td><td><b>teamA2026</b></td></tr>
+    <tr><td>سامى فؤاد</td><td><span class="role-tag r-mgr">🔧 مجموعة B</span></td><td><b>teamB2026</b></td></tr>
+    <tr><td>هشام جمال</td><td><span class="role-tag r-mgr">🔧 مجموعة D</span></td><td><b>teamD2026</b></td></tr>
+    <tr><td>حازم قاعود</td><td><span class="role-tag r-mgr">🔧 مجموعة C</span></td><td><b>teamC2026</b></td></tr>
+    <tr><td>محمد وسيم</td><td><span class="role-tag r-mgr">🔧 مجموعة</span></td><td><b>team42026</b></td></tr>
+    <tr><td>ياسر السيد</td><td><span class="role-tag r-sup">📦 توريد</span></td><td><b>yasser2026</b></td></tr>
+    <tr><td>عماد عبدالواحد</td><td><span class="role-tag r-del">📋 تسليم</span></td><td><b>emad2026</b></td></tr>
+  </table>
+
+  <div class="warn">⚠️ كلمات المرور سرية — لا تشاركها مع أحد خارج الفريق</div>
+</div>
+
+<!-- SECTION 2: TABS -->
+<div class="section page-break">
+  <div class="sec-hdr">
+    <div class="ico">📱</div>
+    <div><h2>التبويبات الرئيسية</h2><p>ما يظهر لكل مستخدم حسب دوره</p></div>
+  </div>
+
+  <div class="tab-card">
+    <h4>🏠 الرئيسية — الكل</h4>
+    <p>ملخص سريع: إجمالي الأوامر، المكتملة، المتأخرة، إجمالي الوحدات | تحذيرات التأخير | ملخص أحمال الفرق (للإدارة) | آخر التحديثات</p>
+  </div>
+
+  <div class="tab-card">
+    <h4>📊 الأحمال — <span class="role-tag r-admin">إدارة</span><span class="role-tag r-view">متابعة</span></h4>
+    <p>مقارنة الوحدات لكل فريق | وحدة/فرد | تحديد المجموعة المحمّلة | الوحدة = 20 دقيقة تركيب</p>
+  </div>
+
+  <div class="tab-card">
+    <h4>📄 العقود — الكل</h4>
+    <p>قائمة العقود النشطة مع نسبة التوريد | بنود كل عقد: المتعاقد والمورّد والباقي | إضافة مشكلة أو محضر تسليم</p>
+  </div>
+
+  <div class="tab-card">
+    <h4>🔧 التركيب — الكل</h4>
+    <p>أوامر التركيب مع الحالة والإنجاز | البنود التفصيلية بالوحدات | تحديث الحالة (مديرو المجموعات والإدارة فقط)</p>
+  </div>
+
+  <div class="tab-card" style="border-right-color:#c62828">
+    <h4>⚠️ المتأخرة — الكل</h4>
+    <p>الأوامر التي تجاوزت تاريخ الانتهاء المخطط — مرتبة حسب عدد أيام التأخير</p>
+  </div>
+
+  <div class="tab-card" style="border-right-color:#546e7a">
+    <h4>🔔 التحديثات — الكل</h4>
+    <p>سجل كامل لكل التحديثات: تغيير الحالة، المشاكل، محاضر التسليم</p>
+  </div>
+
+  <div class="tab-card" style="border-right-color:#6a1b9a">
+    <h4>📋 المحاضر — <span class="role-tag r-del">تسليم</span><span class="role-tag r-admin">إدارة</span></h4>
+    <p>إضافة ومتابعة IR / مستخلصات / تسليم نهائي — لعماد عبدالواحد والإدارة فقط</p>
+  </div>
+
+  <div class="tab-card" style="border-right-color:#2e7d32">
+    <h4>📤 رفع بيانات — <span class="role-tag r-sup">توريد</span><span class="role-tag r-admin">إدارة</span></h4>
+    <p>ياسر السيد يرفع ملف Excel من SAP يومياً لتحديث الكميات المورّدة تلقائياً</p>
+  </div>
+</div>
+
+<!-- SECTION 3: UPDATE STATUS -->
+<div class="section page-break">
+  <div class="sec-hdr">
+    <div class="ico">🔄</div>
+    <div><h2>تحديث حالة التركيب</h2><p>لمديري المجموعات — <span class="role-tag r-mgr">مجموعة A/B/C/D</span></p></div>
+  </div>
+
+  <ol class="steps">
+    <li>افتح تبويب <b>🔧 التركيب</b></li>
+    <li>اضغط على الأمر لفتح تفاصيله</li>
+    <li>اضغط زرار <b>🔄 تحديث</b></li>
+    <li>اختار الحالة المناسبة من القائمة</li>
+    <li>حرّك شريط نسبة الإنجاز من 0% إلى 100%</li>
+    <li>أضف ملاحظة اختيارية</li>
+    <li>اضغط <b>💾 حفظ</b></li>
+  </ol>
+
+  <h3>حالات التركيب</h3>
+  <table>
+    <tr><th>الحالة</th><th>المعنى</th></tr>
+    <tr><td><span class="badge bo">⏳ لم يبدأ بعد</span></td><td>الأمر مسجّل لكن التركيب لم يبدأ</td></tr>
+    <tr><td><span class="badge bb">🔵 جارى التركيب</span></td><td>الفريق شغّال على الموقع</td></tr>
+    <tr><td><span class="badge bg">✅ مكتمل 100%</span></td><td>تم الانتهاء من كل التركيب</td></tr>
+    <tr><td><span class="badge br">🔴 متوقف مؤقتاً</span></td><td>توقف بسبب مشكلة — يحتاج متابعة</td></tr>
+  </table>
+
+  <div class="tip">💡 لما بتغيّر الحالة لـ "متوقف" — استخدم زرار ⚠️ مشكلة أيضاً لتوثيق السبب</div>
+</div>
+
+<!-- SECTION 4: IR -->
+<div class="section page-break">
+  <div class="sec-hdr">
+    <div class="ico">📋</div>
+    <div><h2>محاضر التسليم</h2><p>لعماد عبدالواحد — <span class="role-tag r-del">تسليم</span></p></div>
+  </div>
+
+  <h3>أنواع المحاضر</h3>
+  <table>
+    <tr><th>النوع</th><th>متى يُستخدم</th></tr>
+    <tr><td><span class="badge bb">📋 IR</span></td><td>Inspection Report — فحص واستلام المنتجات في الموقع</td></tr>
+    <tr><td><span class="badge bp">💰 مستخلص جزئي</span></td><td>استخلاص مالي لجزء من المشروع (دور، مرحلة)</td></tr>
+    <tr><td><span class="badge bg">✅ تسليم نهائي</span></td><td>اكتمال المشروع وتسليمه رسمياً للعميل</td></tr>
+  </table>
+
+  <div class="info">📌 الكمية في المحضر ممكن تكون أقل من الكمية المورّدة — لأن العمل يتم على مراحل (دور بدور)</div>
+
+  <h3>خطوات إضافة محضر تسليم</h3>
+  <ol class="steps">
+    <li>افتح تبويب <b>📄 العقود</b></li>
+    <li>اضغط على العقد لفتح تفاصيله</li>
+    <li>اضغط زرار <b>📋 محضر</b> في أسفل العقد</li>
+    <li>ستظهر جدول البنود — راجع الكميات</li>
+    <li>أدخل الكمية في عمود <b>"هذا المحضر"</b> لكل بند</li>
+    <li>اختار نوع المحضر (IR / مستخلص / تسليم نهائي)</li>
+    <li>أدخل رقم المحضر (مثال: IR-2026-041-001)</li>
+    <li>أدخل القيمة المالية للمستخلص (اختياري)</li>
+    <li>اضغط <b>✅ حفظ المحضر</b></li>
+  </ol>
+
+  <h3>شرح أعمدة جدول البنود</h3>
+  <table>
+    <tr><th>العمود</th><th>الوصف</th></tr>
+    <tr><td><b>البند</b></td><td>اسم المنتج والمجموعة</td></tr>
+    <tr><td><b>متعاقد</b></td><td>الكمية في العقد الأصلي مع العميل</td></tr>
+    <tr><td><b>مورّد</b></td><td>الكمية الموصّلة فعلاً للموقع حتى الآن</td></tr>
+    <tr><td><b>سابق</b></td><td>ما سبق تسجيله في محاضر قديمة لنفس العقد</td></tr>
+    <tr><td><b>متاح</b></td><td>الكمية المتاحة = المورّد ناقص السابق</td></tr>
+    <tr><td><b>هذا المحضر</b></td><td>الكمية التي تسجّلها في هذا المحضر (بحد أقصى = المتاح)</td></tr>
+  </table>
+
+  <div class="example-box">
+    <h4>📌 مثال عملي — مشروع بـ 100 قطعة</h4>
+    <div class="ex-row"><span>الكمية المتعاقد عليها</span><span><b>100 قطعة</b></span></div>
+    <div class="ex-row"><span>توريد الدور الأول</span><span><b>60 قطعة</b> وصلت للموقع</span></div>
+    <div class="ex-row"><span>مستخلص جزئي #1</span><span><b>60 قطعة</b> — بعد انتهاء الدور الأول</span></div>
+    <div class="ex-row"><span>توريد الدور الثاني</span><span><b>40 قطعة</b> وصلت للموقع</span></div>
+    <div class="ex-row"><span>مستخلص جزئي #2</span><span><b>40 قطعة</b> — بعد انتهاء الدور الثاني</span></div>
+    <div class="ex-row" style="border:none"><span>تسليم نهائي</span><span><b>✅ اكتمل المشروع</b></span></div>
+  </div>
+</div>
+
+<!-- SECTION 5: ISSUES -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="ico">⚠️</div>
+    <div><h2>الإبلاغ عن مشكلة</h2><p>لكل المستخدمين</p></div>
+  </div>
+
+  <ol class="steps">
+    <li>من أي أمر أو عقد — اضغط زرار <b>⚠️ مشكلة</b></li>
+    <li>اختار نوع المشكلة من القائمة</li>
+    <li>اختار درجة الخطورة</li>
+    <li>اكتب وصفاً تفصيلياً للمشكلة</li>
+    <li>اضغط <b>📤 إرسال</b></li>
+  </ol>
+
+  <table>
+    <tr><th>نوع المشكلة</th><th>الخطورة</th></tr>
+    <tr><td>📦 نقص في التوريد</td><td rowspan="3"><span class="badge bg">🟢 بسيطة</span> متابعة عادية<br><br><span class="badge by">🟡 متوسطة</span> تحتاج إجراء<br><br><span class="badge br">🔴 عاجلة</span> تدخل فوري</td></tr>
+    <tr><td>🔴 عيب في المنتج</td></tr>
+    <tr><td>🏗️ مشكلة في الموقع</td></tr>
+    <tr><td>⏰ تأخير من العميل</td><td></td></tr>
+    <tr><td>📐 مشكلة مقاس</td><td></td></tr>
+  </table>
+</div>
+
+<!-- SECTION 6: UNITS -->
+<div class="section page-break">
+  <div class="sec-hdr">
+    <div class="ico">📊</div>
+    <div><h2>نظام وحدات القياس</h2><p>لقياس الحمل الحقيقي على كل فريق</p></div>
+  </div>
+
+  <div class="info">⏱️ الوحدة = 20 دقيقة من وقت التركيب — مأخوذة من بيانات SAP</div>
+
+  <h3>أمثلة على الوحدات</h3>
+  <table>
+    <tr><th>المنتج</th><th>وقت التركيب</th><th>الوحدات</th></tr>
+    <tr><td>كرسي مدير</td><td>2.5 دقيقة</td><td>0.1 وحدة</td></tr>
+    <tr><td>مكتب L-shape</td><td>20 دقيقة</td><td>1 وحدة</td></tr>
+    <tr><td>خلية عمل 6 أفراد</td><td>252 دقيقة</td><td>12.6 وحدة</td></tr>
+    <tr><td>خلية عمل 9 أفراد</td><td>294 دقيقة</td><td>14.7 وحدة</td></tr>
+  </table>
+
+  <h3>أحمال الفرق الحالية</h3>
+  <div style="margin:10px 0">
+    <div class="wl-row">
+      <span class="wl-name">هشام جمال (D)</span>
+      <div class="wl-bar"><div class="wl-fill" style="width:5%;background:#2e7d32"></div></div>
+      <span class="wl-val" style="color:#2e7d32">37 🟢</span>
+    </div>
+    <div class="wl-row">
+      <span class="wl-name">حازم قاعود (C)</span>
+      <div class="wl-bar"><div class="wl-fill" style="width:4%;background:#2e7d32"></div></div>
+      <span class="wl-val" style="color:#2e7d32">27 🟢</span>
+    </div>
+    <div class="wl-row">
+      <span class="wl-name">سامى فؤاد (B)</span>
+      <div class="wl-bar"><div class="wl-fill" style="width:16%;background:#e65100"></div></div>
+      <span class="wl-val" style="color:#e65100">110 🟡</span>
+    </div>
+    <div class="wl-row">
+      <span class="wl-name">محمد وسيم</span>
+      <div class="wl-bar"><div class="wl-fill" style="width:100%;background:#c62828"></div></div>
+      <span class="wl-val" style="color:#c62828">704 🔴</span>
+    </div>
+  </div>
+  <div style="font-size:11px;color:#888;margin-top:4px">وحدة / فرد | الأرقام تمثل الحمل الكلي المتبقي</div>
+
+  <div class="warn">🔴 محمد وسيم محمّل بشكل كبير (704 وحدة/فرد) — يُنصح بمراجعة توزيع الأوامر</div>
+</div>
+
+<!-- SECTION 7: QUICK REF -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="ico">⚡</div>
+    <div><h2>مرجع سريع</h2><p>الأكثر استخداماً يومياً</p></div>
+  </div>
+
+  <table>
+    <tr><th>المهمة</th><th>الخطوات</th><th>من يفعلها</th></tr>
+    <tr>
+      <td>تحديث حالة أمر</td>
+      <td>🔧 التركيب ← الأمر ← 🔄 تحديث</td>
+      <td><span class="role-tag r-mgr">مديرو المجموعات</span></td>
+    </tr>
+    <tr>
+      <td>إضافة محضر تسليم</td>
+      <td>📄 العقود ← العقد ← 📋 محضر</td>
+      <td><span class="role-tag r-del">عماد</span></td>
+    </tr>
+    <tr>
+      <td>الإبلاغ عن مشكلة</td>
+      <td>أي أمر/عقد ← ⚠️ مشكلة</td>
+      <td>الكل</td>
+    </tr>
+    <tr>
+      <td>رفع تحديث التوريد</td>
+      <td>📤 رفع بيانات ← اختار الملف</td>
+      <td><span class="role-tag r-sup">ياسر</span></td>
+    </tr>
+    <tr>
+      <td>مراجعة الأحمال</td>
+      <td>📊 الأحمال</td>
+      <td><span class="role-tag r-admin">إدارة</span></td>
+    </tr>
+    <tr>
+      <td>الأوامر المتأخرة</td>
+      <td>⚠️ المتأخرة</td>
+      <td>الكل</td>
+    </tr>
+  </table>
+</div>
+
+</div><!-- end container -->
+
+<div class="footer">
+  <div style="font-size:16px;margin-bottom:8px">📋 Tracking Agent — موبيكا للأثاث</div>
+  <p>🌐 https://ashrafa1-glitch.github.io/mobica-fleet/tracking/</p>
+  <p>للدعم الفني: أشرف قاسم — مدير تخطيط التركيبات | مارس 2026</p>
+</div>
+
+</body>
+</html>
