@@ -222,12 +222,12 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
   <div class="msub" id="mi-info"></div>
   <div class="mfg">
     <label>نوع المشكلة</label>
-    <select id="mi-tp">
+    <select id="mi-tp" onchange="onIssTypeChange()">
       <option value="نقص في التوريد">📦 نقص في التوريد</option>
-      <option value="عيب في المنتج">🔴 عيب في المنتج</option>
+      <option value="عيب في المنتج">🔴 عيب في المنتج → سيُفتح Snag تلقائياً</option>
       <option value="مشكلة في الموقع">🏗️ مشكلة في الموقع</option>
       <option value="تأخير من العميل">⏰ تأخير من العميل</option>
-      <option value="مشكلة مقاس">📐 مشكلة مقاس</option>
+      <option value="مشكلة مقاس">📐 مشكلة مقاس → سيُفتح Snag تلقائياً</option>
       <option value="أخرى">📝 أخرى</option>
     </select>
     <label>الخطورة</label>
@@ -239,6 +239,21 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
     <label>وصف المشكلة</label>
     <textarea id="mi-ds" placeholder="اشرح المشكلة بالتفصيل..."></textarea>
   </div>
+
+  <!-- Snag extra fields — يظهر فقط لو عيب في المنتج أو مشكلة مقاس -->
+  <div id="snag-extra" style="display:none;background:#fff8f8;border-radius:10px;padding:12px;margin-bottom:12px;border:1.5px solid #ffcdd2">
+    <div style="font-weight:700;color:#c62828;font-size:12px;margin-bottom:8px">🔴 تفاصيل Snag — سيُفتح تلقائياً في نظام العيوب</div>
+    <div class="mfg">
+      <label>المنتج المعيب</label>
+      <input type="text" id="sn-product" placeholder="مثال: مكتب مدير L-Shape">
+      <label>رقم العقد</label>
+      <input type="text" id="sn-contract" placeholder="مثال: 2026-041">
+      <label>الكمية المعيبة</label>
+      <input type="number" id="sn-qty" placeholder="عدد القطع" min="1" value="1">
+    </div>
+    <div style="font-size:11px;color:#c62828">📋 سيصل إشعار تلقائي لمحمد مختار لمتابعة العيب مع المصنع</div>
+  </div>
+
   <div class="mbtns">
     <button class="btn bw" onclick="subIss()">📤 إرسال</button>
     <button class="btn bgr" onclick="cls('m-iss')">إلغاء</button>
@@ -958,7 +973,17 @@ function openIss(no,cust){
   CUR={order_no:no,customer:cust};
   document.getElementById('mi-info').textContent=cust+' | '+no;
   document.getElementById('mi-ds').value='';
+  document.getElementById('mi-tp').value='نقص في التوريد';
+  document.getElementById('sn-product').value='';
+  document.getElementById('sn-contract').value='';
+  document.getElementById('sn-qty').value=1;
+  document.getElementById('snag-extra').style.display='none';
   opn('m-iss');
+}
+function onIssTypeChange(){
+  const t=document.getElementById('mi-tp').value;
+  const needSnag=t==='عيب في المنتج'||t==='مشكلة مقاس';
+  document.getElementById('snag-extra').style.display=needSnag?'block':'none';
 }
 function openIRNew(){
   openIR('','');
@@ -1048,11 +1073,48 @@ function subUpd(){
 function subIss(){
   const d=document.getElementById('mi-ds').value;
   if(!d){toast('اكتب وصف المشكلة');return;}
+  const issType=document.getElementById('mi-tp').value;
+  const needSnag=issType==='عيب في المنتج'||issType==='مشكلة مقاس';
+
   const u={type:'issue',order_no:CUR.order_no,customer:CUR.customer,
-    issue_type:document.getElementById('mi-tp').value,
+    issue_type:issType,
     severity:document.getElementById('mi-sv').value,
     note:d,by:U.name,ts:Date.now()};
-  save(u); cls('m-iss'); toast('⚠️ تم إرسال المشكلة'); go(PG);
+  save(u);
+
+  // Auto-create Snag if defect type
+  if(needSnag){
+    const product=document.getElementById('sn-product').value||'غير محدد';
+    const contract=document.getElementById('sn-contract').value||'—';
+    const qty=parseInt(document.getElementById('sn-qty').value||1);
+    const snag={
+      id:'SN-'+Date.now(),
+      status:'new',
+      customer:CUR.customer,
+      order_no:CUR.order_no,
+      contract_no:contract,
+      product:product,
+      qty:qty,
+      issue_type:issType,
+      severity:document.getElementById('mi-sv').value,
+      desc:d,
+      reported_by:U.name,
+      created_at:new Date().toISOString(),
+      source:'tracking_agent',
+      assigned_to:'محمد مختار'
+    };
+    // Save to snag storage
+    const snags=JSON.parse(localStorage.getItem('snag_v3')||'[]');
+    snags.unshift(snag);
+    localStorage.setItem('snag_v3',JSON.stringify(snags));
+
+    cls('m-iss');
+    toast('🔴 تم إرسال البلاغ + فُتح Snag #'+snag.id+' — مختار سيتابع مع المصنع');
+  } else {
+    cls('m-iss');
+    toast('⚠️ تم إرسال المشكلة');
+  }
+  go(PG);
 }
 function subIR(){
   const no=document.getElementById('ir-no').value;
