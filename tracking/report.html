@@ -190,6 +190,49 @@ footer{text-align:center;padding:24px 16px;color:var(--sub);font-size:9pt;backgr
   .sec{box-shadow:none;border:1px solid #ddd}
   @page{margin:1.5cm;size:A4}
 }
+
+/* Timeline */
+.timeline{position:relative;padding-right:24px;border-right:2px solid var(--blue-light);margin-bottom:10px}
+.tl-item{position:relative;padding-right:20px;margin-bottom:18px}
+.tl-dot{position:absolute;right:-29px;top:6px;width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px currentColor}
+.tl-dot.blue{background:var(--blue);color:var(--blue)}
+.tl-dot.green{background:var(--green);color:var(--green)}
+.tl-dot.red{background:var(--red);color:var(--red)}
+.tl-dot.orange{background:var(--orange);color:var(--orange)}
+.tl-dot.purple{background:var(--purple);color:var(--purple)}
+.tl-card{background:#f8f9fa;border-radius:10px;padding:12px 16px;border:1px solid var(--border)}
+.tl-title{font-weight:700;font-size:10.5pt;color:var(--text);margin-bottom:4px}
+.tl-body{font-size:9.5pt;color:var(--sub);line-height:1.8}
+
+/* Challenges */
+.challenge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.challenge-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;transition:.2s}
+.challenge-card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.1);transform:translateY(-2px)}
+.ch-icon{font-size:20pt;margin-bottom:6px}
+.ch-prob{font-size:9.5pt;font-weight:700;color:var(--red);margin-bottom:4px}
+.ch-arrow{color:var(--blue);font-size:14pt;font-weight:900;margin:2px 0}
+.ch-sol{font-size:9pt;color:var(--green);font-weight:600;line-height:1.6}
+
+/* Achievements */
+.achieve-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.achieve-card{border-radius:12px;padding:16px;text-align:center;border:2px solid transparent}
+.achieve-card.blue{background:var(--blue-light);border-color:var(--blue)}
+.achieve-card.green{background:var(--green-light);border-color:var(--green)}
+.achieve-card.red{background:var(--red-light);border-color:var(--red)}
+.achieve-card.orange{background:var(--orange-light);border-color:var(--orange)}
+.achieve-card.purple{background:var(--purple-light);border-color:var(--purple)}
+.ach-num{font-size:22pt;font-weight:900}
+.achieve-card.blue .ach-num{color:var(--blue)}
+.achieve-card.green .ach-num{color:var(--green)}
+.achieve-card.red .ach-num{color:var(--red)}
+.achieve-card.orange .ach-num{color:var(--orange)}
+.achieve-card.purple .ach-num{color:var(--purple)}
+.ach-lbl{font-size:8.5pt;color:var(--sub);margin-top:4px;line-height:1.5}
+
+@media(max-width:600px){
+  .challenge-grid{grid-template-columns:repeat(2,1fr)}
+  .achieve-grid{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -433,50 +476,139 @@ footer{text-align:center;padding:24px 16px;color:var(--sub);font-size:9pt;backgr
   </div>
 </div>
 
-<!-- EFFORT -->
+
+<!-- EFFORT STORY -->
 <div id="effort" class="sec">
   <div class="sec-head">
     <span class="sec-head-icon">💪</span>
-    <div><div class="sec-head-title">حجم المجهود — القصة الحقيقية</div>
-    <div class="sec-head-sub">ما الذي استغرق وقتاً وجهداً حقيقياً؟</div></div>
+    <div><div class="sec-head-title">رحلة المجهود — التفاصيل الحقيقية</div>
+    <div class="sec-head-sub">ما وراء الكود — التحديات والقرارات والإنجازات</div></div>
   </div>
   <div class="sec-body">
-    <div class="effort-grid">
-      <div class="effort-card">
-        <h4>📐 التصميم والتخطيط</h4>
-        <p>• تحليل 81 أمر تركيب حقيقي من SAP<br>• تصميم 5 أدوار متكاملة بصلاحيات محددة<br>• تحديد workflow كامل لكل عملية<br>• منظومة إشعارات ذكية (مش كل حاجة لكل حد)<br>• ربط 3 أنظمة ببعض بشكل عضوي</p>
+
+    <!-- Timeline -->
+    <div style="font-weight:700;font-size:11pt;color:var(--text);margin-bottom:14px">🗓️ خط الزمن — رحلة البناء</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot blue"></div>
+        <div class="tl-card">
+          <div class="tl-title">🏁 البداية — تحليل الواقع</div>
+          <div class="tl-body">تحليل 81 أمر تركيب حقيقي من SAP · تحديد 5 أدوار وصلاحيات · رسم الـ workflow الكامل للثلاث أنظمة</div>
+        </div>
       </div>
-      <div class="effort-card">
-        <h4>⚙️ التطوير والتنفيذ</h4>
-        <p>• +3000 سطر كود في 3 أنظمة<br>• 20+ نشرة على GitHub<br>• 4 نسخ من Apps Script<br>• حل مشاكل تقنية معقدة (Login, SAP, Sync)<br>• اختبار على أجهزة حقيقية</p>
+      <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-card">
+          <div class="tl-title">🚗 Fleet Agent — النظام الأول</div>
+          <div class="tl-body">بناء واجهة إدارة 13 سيارة · نظام طلبات الرحلات · Google Apps Script backend · نشر GitHub Pages</div>
+        </div>
       </div>
-      <div class="effort-card">
-        <h4>👥 إدارة الفريق والتدريب</h4>
-        <p>• تواصل فردي مع 11 شخص<br>• رسائل مخصصة لكل دور<br>• دليل استخدام كامل<br>• متابعة تفعيل كل مستخدم<br>• تذكيرات تلقائية للتفاعل</p>
+      <div class="tl-item">
+        <div class="tl-dot red"></div>
+        <div class="tl-card">
+          <div class="tl-title">🔧 تحدي: بق تسجيل الدخول</div>
+          <div class="tl-body">اكتشاف مشكلة JSON/base64 encoding في بيانات المستخدمين · 2 commits لإصلاح المشكلة الجذرية · <strong>الدرس: الاختبار على بيانات حقيقية مش mock data</strong></div>
+        </div>
       </div>
-      <div class="effort-card">
-        <h4>🔄 التحسين المستمر</h4>
-        <p>• مراجعة بناءً على ملاحظات أشرف<br>• إضافة ربط Tracking ↔ Snag<br>• إضافة صور للعيوب<br>• تضمين خطوة التخطيط في الـ workflow<br>• ضبط SLA لتحقيق سرعة القرار (6 ساعات)</p>
+      <div class="tl-item">
+        <div class="tl-dot blue"></div>
+        <div class="tl-card">
+          <div class="tl-title">📋 Tracking Agent — النظام الثاني</div>
+          <div class="tl-body">واجهة متابعة الأوامر · محاضر التسليم (IR) الكاملة · Apps Script v1 → v4 · 4 نشرات تصاعدية</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot orange"></div>
+        <div class="tl-card">
+          <div class="tl-title">📦 تحدي: رفع SAP الحقيقي</div>
+          <div class="tl-body">ملف SAP Excel بـ 18 عموداً بأسماء عربية وإنجليزية متغيرة · بناء SheetJS parser يتعامل مع كل الصيغ · إرسال ملخص فقط للـ Sheets لتفادي حدود الـ payload</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot purple"></div>
+        <div class="tl-card">
+          <div class="tl-title">⏰ نظام التذكيرات الذكية</div>
+          <div class="tl-body">ReminderLog Sheet · تذكير تلقائي كل أمر متأخر +3 أيام · إحصائيات المتابعة (أُرسل / استجاب / لم يستجب) · تقرير خالد علي المخصص</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot red"></div>
+        <div class="tl-card">
+          <div class="tl-title">🔴 Snag Agent — النظام الثالث</div>
+          <div class="tl-body">Workflow 8 مراحل عبر 6 إدارات · SLA محدد لكل خطوة · ربط تلقائي من Tracking Agent · إشعار محمد مختار فور البلاغ</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-card">
+          <div class="tl-title">✅ التفعيل وتدريب الفريق</div>
+          <div class="tl-body">رسائل مخصصة لـ 11 مستخدم · دليل استخدام كامل · ضبط 5 triggers تلقائية · تذكيرات مجدولة · بدء التشغيل الفعلي</div>
+        </div>
       </div>
     </div>
 
-    <div style="font-weight:700;font-size:10.5pt;margin-bottom:10px;color:var(--text)">📊 نسبة اكتمال الأنظمة</div>
-    <div class="effort-bar-row"><span class="effort-label">Tracking Agent — واجهة + Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+    <!-- Challenges solved -->
+    <div style="font-weight:700;font-size:11pt;color:var(--text);margin:24px 0 12px">🔧 تحديات حُلّت — مش كل حاجة جت بسهولة</div>
+    <div class="challenge-grid">
+      <div class="challenge-card">
+        <div class="ch-icon">🔐</div>
+        <div class="ch-prob">بـق تسجيل الدخول</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">إصلاح JSON/base64 encoding + quote escaping</div>
+      </div>
+      <div class="challenge-card">
+        <div class="ch-icon">📊</div>
+        <div class="ch-prob">SAP بأعمدة متغيرة</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">Parser ذكي يقبل عربي + إنجليزي + variants</div>
+      </div>
+      <div class="challenge-card">
+        <div class="ch-icon">⚡</div>
+        <div class="ch-prob">Payload limits في Apps Script</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">إرسال ملخص فقط — ليس البيانات الكاملة</div>
+      </div>
+      <div class="challenge-card">
+        <div class="ch-icon">📱</div>
+        <div class="ch-prob">اختلاف أجهزة الفريق</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">واجهة mobile-first تعمل على أي متصفح</div>
+      </div>
+      <div class="challenge-card">
+        <div class="ch-icon">🔗</div>
+        <div class="ch-prob">ربط 3 أنظمة ببعض</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">Event-based: Tracking يُطلق Snag تلقائياً</div>
+      </div>
+      <div class="challenge-card">
+        <div class="ch-icon">🏗️</div>
+        <div class="ch-prob">Workflow عبر 6 إدارات</div>
+        <div class="ch-arrow">↓</div>
+        <div class="ch-sol">SLA + إشعار لكل مرحلة + مسؤول محدد</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="font-weight:700;font-size:11pt;color:var(--text);margin:24px 0 12px">📊 إنجازات قابلة للقياس</div>
+    <div class="achieve-grid">
+      <div class="achieve-card blue"><div class="ach-num">+3000</div><div class="ach-lbl">سطر كود مكتوب في 3 أنظمة</div></div>
+      <div class="achieve-card green"><div class="ach-num">20+</div><div class="ach-lbl">commit موثّق على GitHub</div></div>
+      <div class="achieve-card red"><div class="ach-num">v4</div><div class="ach-lbl">Apps Script — 4 نسخ تصاعدية</div></div>
+      <div class="achieve-card orange"><div class="ach-num">11</div><div class="ach-lbl">مستخدم مدرَّب بصلاحيات مخصصة</div></div>
+      <div class="achieve-card purple"><div class="ach-num">5</div><div class="ach-lbl">triggers تلقائية يومية نشطة</div></div>
+      <div class="achieve-card blue"><div class="ach-num">6</div><div class="ach-lbl">إدارات مرتبطة في منظومة واحدة</div></div>
+    </div>
+
+    <!-- Completion bars -->
+    <div style="font-weight:700;font-size:11pt;color:var(--text);margin:24px 0 12px">📈 نسبة اكتمال الأنظمة</div>
+    <div class="effort-bar-row"><span class="effort-label">Tracking Agent — واجهة + Backend كامل</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
     <div class="effort-bar-row"><span class="effort-label">Fleet Agent — واجهة + Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:90%"></div></div><span class="effort-pct">90%</span></div>
     <div class="effort-bar-row"><span class="effort-label">Snag Agent — واجهة + Workflow</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:85%"></div></div><span class="effort-pct">85%</span></div>
     <div class="effort-bar-row"><span class="effort-label">منظومة الإشعارات الذكية</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
-    <div class="effort-bar-row"><span class="effort-label">نظام SAP Excel الحقيقي</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
-    <div class="effort-bar-row"><span class="effort-label">تقرير خالد علي المخصص</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
-
-    <div class="metrics">
-      <div class="metric-card"><div class="metric-num">+3000</div><div class="metric-lbl">سطر كود</div></div>
-      <div class="metric-card"><div class="metric-num">20+</div><div class="metric-lbl">commit على GitHub</div></div>
-      <div class="metric-card"><div class="metric-num">4</div><div class="metric-lbl">نسخ Apps Script</div></div>
-      <div class="metric-card"><div class="metric-num">6</div><div class="metric-lbl">إدارات مرتبطة</div></div>
-    </div>
+    <div class="effort-bar-row"><span class="effort-label">SAP Excel Parser حقيقي</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">نظام تتبع التذكيرات + تقرير خالد</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
   </div>
 </div>
-
 <!-- PENDING -->
 <div class="sec">
   <div class="sec-head">
