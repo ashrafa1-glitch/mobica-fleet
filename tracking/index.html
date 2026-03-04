@@ -182,7 +182,10 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
 <div id="sc-app">
   <div class="hdr">
     <div><h1 id="hdr-t">📋 Tracking Agent</h1><p id="hdr-s"></p></div>
-    <button class="btn-out" onclick="logout()">خروج</button>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button id="sync-btn" onclick="manualSync()" title="تحديث البيانات" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px">🔄</button>
+      <button class="btn-out" onclick="logout()">خروج</button>
+    </div>
   </div>
   <div class="nav" id="nav"></div>
   <div id="pg"></div>
@@ -365,7 +368,7 @@ function login(){
   document.getElementById('sc-app').style.display='block';
   document.getElementById('hdr-s').textContent=U.name+' — '+
     {admin:'إدارة',manager:'مدير مجموعة',viewer:'متابعة',supply:'توريد',delivery:'تسليم'}[U.role];
-  nav(); go('dash'); setTimeout(syncFromServer,1000); setInterval(syncFromServer,60000);
+  nav(); go('dash'); setTimeout(syncFromServer,1000); setInterval(syncFromServer,30000);
 }
 function logout(){
   U=null;
@@ -1351,23 +1354,31 @@ function save(u){
       .catch(()=>{});
   }
 }
-function syncFromServer(){
-  if(!API_URL) return;
+function manualSync(){
+  const btn=document.getElementById('sync-btn');
+  btn.textContent='⏳'; btn.disabled=true;
+  syncFromServer(()=>{
+    btn.textContent='🔄'; btn.disabled=false;
+    toast('✅ تم التحديث');
+  });
+}
+function syncFromServer(cb){
+  if(!API_URL){if(cb)cb();return;}
   fetch(API_URL+'?action=getUpdates')
     .then(r=>r.json())
     .then(d=>{
       if(d.updates&&d.updates.length){
-        // Merge server updates with local
         const localIds=new Set(UPD.map(u=>u.order_no+'_'+u.ts));
         const newUpds=d.updates.filter(u=>!localIds.has(u.order_no+'_'+u.ts));
         if(newUpds.length){
           UPD=[...UPD,...newUpds].sort((a,b)=>b.ts-a.ts);
           localStorage.setItem(SK+'_u',JSON.stringify(UPD));
           go(PG);
-          toast('🔄 '+newUpds.length+' تحديث جديد من الفريق');
+          if(!cb) toast('🔄 '+newUpds.length+' تحديث جديد من الفريق');
         }
       }
-    }).catch(()=>{});
+      if(cb) cb();
+    }).catch(()=>{if(cb)cb();});
 }
 function opn(id){document.getElementById(id).classList.add('sh')}
 function cls(id){document.getElementById(id).classList.remove('sh')}
