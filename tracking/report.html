@@ -300,26 +300,115 @@ tr:hover{background:#e3f2fd}
         <li>ربط رقم العقد لكل عيب</li>
       </ul>
 
-      <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:#444">🔄 مراحل معالجة العيب:</h4>
-      <div class="flow" style="flex-wrap:wrap">
-        <div class="flow-step" style="background:#fff3e0;color:#e65100">🆕 بلاغ جديد</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step">🔍 تحليل</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step">✅ اعتماد</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step">🏭 جودة</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step">💼 مبيعات</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step">🔨 إنتاج</div>
-        <div class="flow-arrow">←</div>
-        <div class="flow-step" style="background:#e8f5e9;color:#2e7d32">✅ مغلق</div>
+      <h4 style="font-size:13px;font-weight:700;margin-bottom:14px;color:#444">🔄 طريقة عمل Snag Agent — توزيع المسؤوليات</h4>
+
+      <!-- Responsibility Matrix -->
+      <div style="overflow-x:auto;margin-bottom:16px">
+        <table>
+          <tr>
+            <th>المرحلة</th>
+            <th>الإجراء</th>
+            <th>المسؤول</th>
+            <th>الإدارة</th>
+            <th>SLA</th>
+          </tr>
+          <tr>
+            <td>🆕 <strong>بلاغ جديد</strong></td>
+            <td>مدير المجموعة يبلّغ عيب من Tracking Agent</td>
+            <td>مدير المجموعة</td>
+            <td>إشعار فوري</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>🔍 <strong>تحليل</strong></td>
+            <td>محمد مختار يراجع العيب ويحدد سببه والمصنع المسؤول</td>
+            <td>محمد مختار</td>
+            <td>إشعار بالتحليل</td>
+            <td>4 ساعات</td>
+          </tr>
+          <tr>
+            <td>✅ <strong>اعتماد</strong></td>
+            <td>إدارة التركيبات تعتمد البلاغ وتوجّه للمصنع</td>
+            <td>أشرف / خالد / فتحي</td>
+            <td>قرار الاعتماد</td>
+            <td>8 ساعات</td>
+          </tr>
+          <tr>
+            <td>🏭 <strong>مراجعة الجودة</strong></td>
+            <td>إدارة الجودة تتحقق من العيب وتحدد نوع الإصلاح</td>
+            <td>مسؤول الجودة</td>
+            <td>تقرير الجودة</td>
+            <td>24 ساعة</td>
+          </tr>
+          <tr>
+            <td>💼 <strong>موافقة المبيعات</strong></td>
+            <td>المبيعات تعتمد تكلفة الإصلاح أو الاستبدال</td>
+            <td>مسؤول المبيعات</td>
+            <td>إشعار بالموافقة</td>
+            <td>8 ساعات</td>
+          </tr>
+          <tr>
+            <td>🔨 <strong>الإنتاج</strong></td>
+            <td>المصنع المعني ينفّذ الإصلاح أو يصنع البديل</td>
+            <td>المصنع المسؤول</td>
+            <td>تتبع التقدم</td>
+            <td>حسب الحالة</td>
+          </tr>
+          <tr>
+            <td>📦 <strong>جاهز</strong></td>
+            <td>المصنع يبلّغ اكتمال الإصلاح وجاهزية الشحن</td>
+            <td>المصنع + مختار</td>
+            <td>إشعار الجاهزية</td>
+            <td>—</td>
+          </tr>
+          <tr style="background:#e8f5e9">
+            <td>✅ <strong>مغلق</strong></td>
+            <td>التسليم للموقع، توقيع الاستلام، إغلاق البلاغ</td>
+            <td>محمد مختار</td>
+            <td>تقرير الإغلاق</td>
+            <td>—</td>
+          </tr>
+        </table>
       </div>
 
-      <h4 style="font-size:13px;font-weight:700;margin:14px 0 8px;color:#444">👤 دور محمد مختار في النظام:</h4>
+      <!-- Departments involved -->
+      <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:#444">🏢 الأطراف المشاركة في النظام</h4>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+        <div style="background:#fce4ec;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">🔧</div>
+          <div style="font-size:12px;font-weight:700;color:#c62828;margin:4px 0">إدارة التركيبات</div>
+          <div style="font-size:11px;color:#555">الإبلاغ والاعتماد والإغلاق</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">🏭</div>
+          <div style="font-size:12px;font-weight:700;color:#2e7d32;margin:4px 0">إدارة الجودة</div>
+          <div style="font-size:11px;color:#555">تحقق من العيب وتحديد الإصلاح</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">💼</div>
+          <div style="font-size:12px;font-weight:700;color:#1565c0;margin:4px 0">إدارة المبيعات</div>
+          <div style="font-size:11px;color:#555">اعتماد تكلفة الإصلاح</div>
+        </div>
+        <div style="background:#fff3e0;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">🔨</div>
+          <div style="font-size:12px;font-weight:700;color:#e65100;margin:4px 0">المصانع</div>
+          <div style="font-size:11px;color:#555">تنفيذ الإصلاح أو الاستبدال</div>
+        </div>
+        <div style="background:#f3e5f5;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">📊</div>
+          <div style="font-size:12px;font-weight:700;color:#6a1b9a;margin:4px 0">التخطيط</div>
+          <div style="font-size:11px;color:#555">متابعة المواعيد والتقارير</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:18px">🔗</div>
+          <div style="font-size:12px;font-weight:700;color:#444;margin:4px 0">محمد مختار</div>
+          <div style="font-size:11px;color:#555">حلقة الوصل بين الكل</div>
+        </div>
+      </div>
+
+      <h4 style="font-size:13px;font-weight:700;margin:0 0 8px;color:#444">👤 دور محمد مختار في النظام:</h4>
       <p style="font-size:13px;color:#555;line-height:1.8;background:#f8f9fa;border-radius:8px;padding:12px">
-        محمد مختار هو <strong>حلقة الوصل الرسمية</strong> بين إدارة التركيبات والمصانع. عند وصول أي بلاغ عيب: يتلقى إشعاراً فورياً، يتواصل مع المصنع المعني، يتابع تنفيذ الإصلاح، ويرفع تقريراً أسبوعياً للإدارة بكل العيوب المفتوحة والمحلولة.
+        محمد مختار هو <strong>حلقة الوصل الرسمية</strong> بين إدارة التركيبات والمصانع. عند وصول أي بلاغ عيب: يتلقى إشعاراً فورياً، يحلّل العيب ويحدد المصنع المسؤول، يتواصل مع إدارة الجودة والمبيعات للاعتماد، ثم يتابع تنفيذ الإصلاح مع المصنع، ويرفع تقريراً أسبوعياً للإدارة بكل العيوب المفتوحة والمحلولة.
       </p>
 
       <div style="margin-top:14px">
