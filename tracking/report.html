@@ -2,576 +2,531 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>تقرير منظومة التركيبات الذكية — موبيكا</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منظومة التركيبات الذكية — موبيكا</title>
 <style>
+:root{
+  --blue:#1565c0;--blue-light:#e3f2fd;--blue-dark:#0d47a1;
+  --green:#2e7d32;--green-light:#e8f5e9;
+  --red:#c62828;--red-light:#fce4ec;
+  --orange:#e65100;--orange-light:#fff3e0;
+  --purple:#6a1b9a;--purple-light:#f3e5f5;
+  --text:#1a1a2e;--sub:#546e7a;--border:#e0e8f0;--bg:#f0f4f8;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Arial',sans-serif;background:#fff;color:#111;direction:rtl;font-size:11pt;line-height:1.6}
-@page{margin:2cm;size:A4}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);direction:rtl;line-height:1.6}
 
-/* Cover */
-.cover{border:3px solid #1565c0;border-radius:8px;padding:50px 40px;text-align:center;margin-bottom:30px;page-break-after:always}
-.cover-icon{font-size:48px;margin-bottom:16px}
-.cover h1{font-size:22pt;font-weight:900;color:#1565c0;margin-bottom:8px}
-.cover h2{font-size:13pt;color:#555;margin-bottom:20px}
-.cover-line{width:80px;height:3px;background:#1565c0;margin:16px auto}
-.cover-badges{margin:16px 0}
-.cover-badge{display:inline-block;border:1.5px solid #1565c0;color:#1565c0;border-radius:20px;padding:4px 14px;font-size:10pt;margin:4px}
-.cover-meta{color:#555;font-size:10pt;margin-top:16px;line-height:2}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(21,101,192,0.97);backdrop-filter:blur(10px);padding:0 20px;display:flex;align-items:center;gap:6px;min-height:52px;flex-wrap:wrap;box-shadow:0 2px 16px rgba(21,101,192,0.3)}
+nav .logo{font-size:14pt;font-weight:800;color:#fff;margin-left:auto;white-space:nowrap}
+nav a{color:rgba(255,255,255,0.85);text-decoration:none;font-size:9.5pt;font-weight:600;padding:5px 12px;border-radius:20px;transition:.2s;white-space:nowrap}
+nav a:hover{background:rgba(255,255,255,0.2);color:#fff}
 
-/* Sections */
-.section{margin-bottom:24px;page-break-inside:avoid}
-.section-title{font-size:14pt;font-weight:800;color:#1565c0;margin-bottom:14px;padding:8px 12px;background:#e3f2fd;border-right:5px solid #1565c0;border-radius:4px}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 50%,#1976d2 100%);color:#fff;padding:60px 20px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-icon{font-size:52px;margin-bottom:14px;display:block}
+.hero h1{font-size:clamp(20pt,4vw,30pt);font-weight:900;margin-bottom:10px;text-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.hero h2{font-size:clamp(11pt,2vw,14pt);font-weight:400;opacity:.85;max-width:600px;margin:0 auto 28px}
+.hero-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.hero-badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;padding:6px 16px;border-radius:30px;font-size:10pt;font-weight:600;backdrop-filter:blur(4px)}
+.hero-meta{font-size:9.5pt;opacity:.7}
 
-/* Agent card */
-.agent-card{border:2px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:16px}
-.agent-header{padding:14px 18px;color:#fff;display:flex;align-items:center;gap:12px}
-.agent-header.track{background:#1565c0}
-.agent-header.fleet{background:#2e7d32}
-.agent-header.snag{background:#c62828}
-.agent-name{font-size:13pt;font-weight:700}
-.agent-sub{font-size:9pt;opacity:.9;margin-top:2px}
-.agent-body{padding:16px 18px}
+/* COUNTERS */
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:800px;margin:0 auto 0;background:rgba(255,255,255,0.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:20px}
+.counter{text-align:center}
+.counter-num{font-size:clamp(20pt,4vw,28pt);font-weight:900;color:#fff;display:block}
+.counter-lbl{font-size:8.5pt;color:rgba(255,255,255,0.8);margin-top:2px}
 
-/* Stats */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.stat-card{border:2px solid #1565c0;border-radius:8px;padding:12px;text-align:center}
-.stat-card.green{border-color:#2e7d32}
-.stat-card.red{border-color:#c62828}
-.stat-card.purple{border-color:#6a1b9a}
-.stat-num{font-size:22pt;font-weight:900;color:#1565c0}
-.stat-card.green .stat-num{color:#2e7d32}
-.stat-card.red .stat-num{color:#c62828}
-.stat-card.purple .stat-num{color:#6a1b9a}
-.stat-lbl{font-size:9pt;color:#555;margin-top:4px}
+/* CONTAINER */
+.wrap{max-width:920px;margin:0 auto;padding:30px 16px}
 
-/* Lists */
-.feat-list{list-style:none;columns:2;gap:10px;margin-bottom:12px}
-.feat-list li{font-size:10pt;padding:4px 0;border-bottom:1px dashed #eee;break-inside:avoid}
-.feat-list li::before{content:"✓ ";color:#1565c0;font-weight:700}
+/* SECTION */
+.sec{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.06);margin-bottom:24px;overflow:hidden}
+.sec-head{padding:16px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.sec-head-icon{font-size:22pt;flex-shrink:0}
+.sec-head-title{font-size:14pt;font-weight:800;color:var(--text)}
+.sec-head-sub{font-size:9.5pt;color:var(--sub);margin-top:2px}
+.sec-body{padding:22px}
 
-/* Table */
-table{width:100%;border-collapse:collapse;font-size:9.5pt;margin-bottom:12px}
-th{background:#1565c0;color:#fff;padding:8px 10px;text-align:right;font-weight:700}
-td{padding:7px 10px;border:1px solid #ddd}
-tr:nth-child(even){background:#f8f9fa}
+/* VISION TABLE */
+.vision-msg{background:linear-gradient(135deg,#e3f2fd,#e8f5e9);border-radius:12px;padding:18px;margin-bottom:18px;border-right:5px solid var(--blue)}
+.vision-msg p{font-size:11pt;color:var(--text);line-height:1.9}
+.vision-msg strong{color:var(--blue)}
 
-/* Flow */
-.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0;font-size:9.5pt}
-.flow-step{border:1.5px solid #1565c0;color:#1565c0;border-radius:6px;padding:5px 10px;font-weight:700}
-.flow-arrow{color:#1565c0;font-weight:900;font-size:14pt}
+/* ROLE CARDS */
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.role-card{border-radius:12px;padding:16px;text-align:center;border:2px solid transparent;transition:.2s}
+.role-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.role-card.track{background:var(--blue-light);border-color:var(--blue)}
+.role-card.fleet{background:var(--green-light);border-color:var(--green)}
+.role-card.snag{background:var(--red-light);border-color:var(--red)}
+.role-icon{font-size:28pt;margin-bottom:8px;display:block}
+.role-name{font-weight:700;font-size:11pt;margin-bottom:6px}
+.role-card.track .role-name{color:var(--blue)}
+.role-card.fleet .role-name{color:var(--green)}
+.role-card.snag .role-name{color:var(--red)}
+.role-desc{font-size:9pt;color:var(--sub);line-height:1.7}
 
-/* Schedule */
-.sched{margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;font-size:10pt}
-.sched-time{background:#1565c0;color:#fff;padding:3px 10px;border-radius:4px;font-weight:700;white-space:nowrap;font-size:9.5pt}
+/* PRINCIPLE BOX */
+.principle{background:linear-gradient(135deg,#fff8e1,#fffde7);border-radius:12px;padding:16px;border-right:5px solid #f9a825;margin-top:4px}
+.principle p{font-size:10.5pt;color:#555;line-height:1.9}
+.principle strong{color:#f57f17}
 
-/* Notif */
-.notif-group{background:#e3f2fd;padding:6px 10px;font-size:9.5pt;font-weight:700;color:#1565c0;margin:10px 0 6px;border-radius:4px}
-.notif-group.red{background:#fce4ec;color:#c62828}
-.notif-row{display:flex;gap:10px;font-size:9.5pt;padding:5px 8px;border-bottom:1px solid #f0f0f0}
-.notif-event{font-weight:600;min-width:200px}
+/* COMPARE TABLE */
+.compare-table table{width:100%;border-collapse:collapse;font-size:10pt}
+.compare-table th{background:var(--blue);color:#fff;padding:10px 14px;text-align:right;font-size:10pt}
+.compare-table td{padding:9px 14px;border-bottom:1px solid var(--border)}
+.compare-table tr:nth-child(even) td{background:#f8f9fa}
+.compare-table .old{color:var(--red)}
+.compare-table .new{color:var(--green);font-weight:700}
 
-/* Before/After */
-.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
-.ba-card{border:2px solid #ddd;border-radius:6px;padding:14px}
-.ba-card.before{border-color:#c62828}
-.ba-card.after{border-color:#2e7d32}
-.ba-card h4{font-size:11pt;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #ddd}
-.ba-card.before h4{color:#c62828}
-.ba-card.after h4{color:#2e7d32}
-.ba-card p{font-size:9.5pt;line-height:1.9}
+/* AGENT CARDS */
+.agent-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.agent-card{border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);border:1px solid var(--border)}
+.agent-top{padding:16px 20px;color:#fff;display:flex;align-items:center;gap:14px}
+.agent-top.track{background:linear-gradient(135deg,#1565c0,#1976d2)}
+.agent-top.fleet{background:linear-gradient(135deg,#2e7d32,#388e3c)}
+.agent-top.snag{background:linear-gradient(135deg,#c62828,#d32f2f)}
+.agent-emoji{font-size:30pt}
+.agent-title{font-size:13pt;font-weight:700}
+.agent-url{font-size:8.5pt;opacity:.8;margin-top:3px}
+.agent-content{padding:18px 20px}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:14px}
+.feat-item{background:#f8f9fa;border-radius:8px;padding:8px 12px;font-size:9.5pt;display:flex;align-items:center;gap:8px}
+.feat-item::before{content:'✓';color:var(--blue);font-weight:900;flex-shrink:0}
 
-/* Effort */
-.effort-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:9.5pt}
-.effort-bar-wrap{flex:1;margin:0 12px;background:#e0e0e0;border-radius:3px;height:7px}
-.effort-bar{height:100%;border-radius:3px;background:#1565c0}
-.effort-val{font-weight:700;color:#1565c0;min-width:35px;text-align:left}
+/* SCHEDULE */
+.sched-list{display:flex;flex-direction:column;gap:8px}
+.sched-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8f9fa;border-radius:10px;font-size:9.5pt}
+.sched-time{background:var(--blue);color:#fff;padding:4px 12px;border-radius:20px;font-weight:700;font-size:9pt;white-space:nowrap}
 
-/* Dept boxes */
-.dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.dept-box{border:1.5px solid #ddd;border-radius:6px;padding:8px;text-align:center;font-size:9pt}
-.dept-box .dept-icon{font-size:18pt}
-.dept-box .dept-name{font-weight:700;margin:4px 0;color:#1565c0;font-size:9.5pt}
+/* USERS TABLE */
+.users-table table{width:100%;border-collapse:collapse;font-size:9.5pt}
+.users-table th{background:#f0f4f8;color:var(--text);padding:9px 12px;text-align:right;font-weight:700;font-size:9.5pt}
+.users-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:8.5pt;font-weight:700}
+.badge-admin{background:var(--blue-light);color:var(--blue)}
+.badge-mgr{background:var(--green-light);color:var(--green)}
+.badge-ops{background:var(--orange-light);color:var(--orange)}
 
-/* Sign */
-.sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px}
-.sign-box{border:1.5px solid #ddd;border-radius:6px;padding:16px;text-align:center}
-.sign-name{font-size:11pt;font-weight:700}
-.sign-title{font-size:9pt;color:#888;margin-top:4px}
-.sign-line{width:120px;height:1px;background:#ccc;margin:24px auto 6px}
+/* SNAG WORKFLOW */
+.workflow-table table{width:100%;border-collapse:collapse;font-size:9.5pt}
+.workflow-table th{background:#c62828;color:#fff;padding:9px 12px;text-align:right;font-size:9pt}
+.workflow-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.workflow-table tr:nth-child(even) td{background:#fafafa}
+.workflow-table .last td{background:#e8f5e9;font-weight:700}
+.sla-chip{background:var(--blue-light);color:var(--blue);padding:2px 10px;border-radius:10px;font-weight:700;font-size:9pt;white-space:nowrap}
+.sla-total{background:var(--red-light);color:var(--red);padding:8px 16px;border-radius:10px;text-align:center;font-weight:700;font-size:10.5pt;margin-top:12px}
 
-.page-break{page-break-before:always}
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8.5pt;font-weight:700;border:1px solid}
-.badge-admin{border-color:#1565c0;color:#1565c0}
-.badge-mgr{border-color:#2e7d32;color:#2e7d32}
-.badge-ops{border-color:#e65100;color:#e65100}
+/* DEPT GRID */
+.dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.dept-card{background:#f8f9fa;border-radius:10px;padding:12px;text-align:center;border:1px solid var(--border);transition:.2s}
+.dept-card:hover{background:var(--blue-light);border-color:var(--blue)}
+.dept-card .d-icon{font-size:20pt;margin-bottom:6px}
+.dept-card .d-name{font-weight:700;font-size:9.5pt;color:var(--text);margin-bottom:2px}
+.dept-card .d-role{font-size:8.5pt;color:var(--sub)}
 
-/* Mobile Responsive */
-@media screen and (max-width: 600px){
-  body{font-size:13pt;padding:12px}
-  .cover{padding:30px 20px}
-  .cover h1{font-size:18pt}
-  .cover h2{font-size:11pt}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .stat-num{font-size:18pt}
-  .feat-list{columns:1}
-  .ba-grid{grid-template-columns:1fr}
+/* NOTIFICATIONS */
+.notif-group-title{font-size:10pt;font-weight:700;padding:8px 14px;border-radius:8px;margin-bottom:8px}
+.notif-group-title.blue{background:var(--blue-light);color:var(--blue)}
+.notif-group-title.red{background:var(--red-light);color:var(--red)}
+.notif-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.notif-item{display:flex;align-items:center;gap:10px;background:#f8f9fa;border-radius:10px;padding:10px 14px;font-size:9.5pt}
+.notif-event{font-weight:700;min-width:200px}
+.notif-arrow{color:var(--blue);font-weight:900}
+.notif-who{color:var(--sub)}
+
+/* EFFORT */
+.effort-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.effort-card{background:#f8f9fa;border-radius:12px;padding:16px;border:1px solid var(--border)}
+.effort-card h4{font-size:10.5pt;font-weight:700;color:var(--blue);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.effort-card p{font-size:9pt;color:var(--sub);line-height:2}
+.effort-bar-row{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:9.5pt;border-bottom:1px solid #f0f0f0}
+.effort-label{flex:1;color:var(--text)}
+.effort-bar-wrap{width:120px;background:#e0e0e0;border-radius:4px;height:7px}
+.effort-bar{height:100%;border-radius:4px;background:var(--blue)}
+.effort-pct{font-weight:700;color:var(--blue);min-width:36px;text-align:left;font-size:9pt}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.metric-card{background:linear-gradient(135deg,var(--blue-light),#fff);border:1px solid var(--blue);border-radius:12px;padding:14px;text-align:center}
+.metric-num{font-size:20pt;font-weight:900;color:var(--blue)}
+.metric-lbl{font-size:8.5pt;color:var(--sub);margin-top:4px}
+
+/* SIGN */
+.sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sign-card{background:#f8f9fa;border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.sign-name{font-size:11.5pt;font-weight:700;color:var(--text)}
+.sign-role{font-size:9pt;color:var(--sub);margin:4px 0 20px}
+.sign-line{width:120px;height:1.5px;background:#ccc;margin:0 auto 6px}
+.sign-hint{font-size:8.5pt;color:#bbb}
+
+/* PENDING */
+.pending-list{display:flex;flex-direction:column;gap:8px}
+.pending-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff8e1;border-radius:10px;font-size:9.5pt;border-right:4px solid #f9a825}
+.pending-tag{background:#f9a825;color:#fff;padding:2px 10px;border-radius:10px;font-size:8.5pt;font-weight:700;white-space:nowrap}
+.pending-who{color:var(--sub);font-size:8.5pt;margin-top:2px}
+
+/* FOOTER */
+footer{text-align:center;padding:24px 16px;color:var(--sub);font-size:9pt;background:#fff;margin-top:10px}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .counters{grid-template-columns:repeat(2,1fr)}
+  .role-grid{grid-template-columns:1fr}
+  .feat-grid{grid-template-columns:1fr}
+  .effort-grid{grid-template-columns:1fr}
   .sign-grid{grid-template-columns:1fr}
   .dept-grid{grid-template-columns:repeat(2,1fr)}
-  table{font-size:10pt;display:block;overflow-x:auto}
-  th,td{padding:6px 8px;min-width:80px}
-  .effort-item{flex-wrap:wrap;gap:6px}
-  .effort-bar-wrap{width:100%;margin:0}
-  .notif-row{flex-direction:column;gap:3px}
+  .metrics{grid-template-columns:repeat(2,1fr)}
   .notif-event{min-width:unset}
-  .agent-header{padding:12px 14px}
-  .agent-name{font-size:11pt}
-  .section-title{font-size:12pt;padding:8px 10px}
-  .sched{flex-wrap:wrap}
-  .cover-badge{font-size:9pt;padding:3px 10px}
-  .page-break{page-break-before:auto}
+  .agent-top{flex-wrap:wrap}
+  nav{padding:6px 12px}
+  nav a{font-size:8.5pt;padding:4px 8px}
 }
-@media screen{
-  body{max-width:900px;margin:0 auto;padding:16px}
-  .section{border:1px solid #e0e0e0;border-radius:10px;padding:20px;margin-bottom:20px}
-  .effort-bar{background:#1565c0}
-}
-
-/* Presentation / Screen Mode */
-@media screen {
-  body {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 20px 16px;
-    background: #f5f7fa;
-    font-size: 12pt;
-  }
-  .section {
-    background: #fff;
-    border-radius: 12px;
-    padding: 22px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    border: none !important;
-  }
-  .section-title {
-    font-size: 14pt;
-    background: #1565c0;
-    color: #fff;
-    border-right: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    margin: -22px -22px 18px -22px;
-    border-radius: 12px 12px 0 0;
-  }
-  .cover {
-    background: linear-gradient(135deg, #1565c0, #0d47a1);
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 50px 40px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(21,101,192,0.3);
-  }
-  .cover h1 { color: #fff; font-size: 24pt; }
-  .cover h2 { color: rgba(255,255,255,0.85); }
-  .cover-badge {
-    border-color: rgba(255,255,255,0.6);
-    color: #fff;
-    background: rgba(255,255,255,0.15);
-  }
-  .cover-meta { color: rgba(255,255,255,0.75); }
-  .cover-line { background: rgba(255,255,255,0.5); }
-  .agent-card {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border: none !important;
-  }
-  .stat-card {
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-    background: #fff;
-  }
-  .stat-card.green { background: #f1f8e9; }
-  .stat-card.red { background: #fce4ec; }
-  .stat-card.purple { background: #f3e5f5; }
-  table { border-radius: 8px; overflow: hidden; }
-  th { font-size: 10.5pt; }
-  td { font-size: 10pt; }
-  .ba-card { border-radius: 10px; }
-  .ba-card.before { background: #fff5f5; }
-  .ba-card.after { background: #f1f8e9; }
-  .sign-box { border-radius: 10px; background: #fafafa; }
-  
-  /* Smooth scroll */
-  html { scroll-behavior: smooth; }
-  
-  /* Sticky nav */
-  .nav-bar {
-    display: flex !important;
-    position: sticky;
-    top: 0;
-    background: #1565c0;
-    z-index: 999;
-    padding: 8px 16px;
-    gap: 12px;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    margin: -20px -16px 20px -16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .nav-bar a {
-    color: rgba(255,255,255,0.9);
-    text-decoration: none;
-    font-size: 9.5pt;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.15);
-    white-space: nowrap;
-  }
-  .nav-bar a:hover { background: rgba(255,255,255,0.3); }
+@media print{
+  nav,.no-print{display:none}
+  body{background:#fff}
+  .sec{box-shadow:none;border:1px solid #ddd}
+  @page{margin:1.5cm;size:A4}
 }
 </style>
 </head>
-<body><div class="nav-bar" style="display:none">
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">🏗️ موبيكا</span>
   <a href="#vision">🧠 الرؤية</a>
   <a href="#tracking">📋 Tracking</a>
   <a href="#fleet">🚗 Fleet</a>
   <a href="#snag">🔴 Snag</a>
-  <a href="#notif">🔔 الإشعارات</a>
-  <a href="#effort">💪 المجهود</a>
-  <a href="#sign">✍️ الاعتماد</a>
-</div>
+  <a href="#notif">🔔 إشعارات</a>
+  <a href="#effort">💪 مجهود</a>
+  <a href="#sign">✍️ اعتماد</a>
+</nav>
 
-<!-- COVER -->
-<div class="cover">
-  <div class="cover-icon">🏗️</div>
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-icon">🏗️</span>
   <h1>منظومة التركيبات الذكية</h1>
-  <h2>تقرير شامل — الأنظمة والإجراءات والمنهجية</h2>
-  <div class="cover-line"></div>
-  <div class="cover-badges">
-    <span class="cover-badge">Tracking Agent</span>
-    <span class="cover-badge">Fleet Agent</span>
-    <span class="cover-badge">Snag Agent</span>
+  <h2>تقرير شامل — الرؤية الاستراتيجية والأنظمة والمنهجية</h2>
+  <div class="hero-badges">
+    <span class="hero-badge">📋 Tracking Agent</span>
+    <span class="hero-badge">🚗 Fleet Agent</span>
+    <span class="hero-badge">🔴 Snag Agent</span>
   </div>
-  <div class="cover-meta">
-    إعداد: أشرف قاسم — مدير تخطيط إدارة التركيبات<br>
-    تاريخ التقرير: 4 مارس 2026<br>
-    للمراجعة والاعتماد
+  <div class="counters">
+    <div class="counter"><span class="counter-num">3</span><div class="counter-lbl">أنظمة ذكية</div></div>
+    <div class="counter"><span class="counter-num">11</span><div class="counter-lbl">مستخدم مفعّل</div></div>
+    <div class="counter"><span class="counter-num">81</span><div class="counter-lbl">أمر تركيب نشط</div></div>
+    <div class="counter"><span class="counter-num">155</span><div class="counter-lbl">فرد في الفرق</div></div>
   </div>
+  <div class="hero-meta" style="margin-top:16px">إعداد: أشرف قاسم — مدير تخطيط إدارة التركيبات &nbsp;|&nbsp; 4 مارس 2026</div>
 </div>
 
-<!-- OVERVIEW -->
-<div class="section">
-  <div class="section-title">📊 نظرة عامة</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-num">3</div><div class="stat-lbl">أنظمة ذكية مبنية</div></div>
-    <div class="stat-card green"><div class="stat-num">11</div><div class="stat-lbl">مستخدم مفعّل</div></div>
-    <div class="stat-card red"><div class="stat-num">81</div><div class="stat-lbl">أمر تركيب نشط</div></div>
-    <div class="stat-card purple"><div class="stat-num">155</div><div class="stat-lbl">فرد في الفرق</div></div>
+<div class="wrap">
+
+<!-- VISION -->
+<div id="vision" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">🧠</span>
+    <div><div class="sec-head-title">الرؤية الاستراتيجية — الفكر التنظيمي</div>
+    <div class="sec-head-sub">لماذا بنينا هذه المنظومة؟ وما الذي تمثّله فعلاً؟</div></div>
   </div>
-  <p style="font-size:10pt;color:#444">تم بناء منظومة متكاملة لإدارة التركيبات تشمل: متابعة أوامر التركيب لحظياً، إدارة الأسطول والمركبات، وتتبع عيوب المنتجات — مع إشعارات Telegram فورية لكل دور وتقارير يومية أوتوماتيكية.</p>
-</div>
+  <div class="sec-body">
 
-
-<div id="vision"></div><!-- VISION -->
-<div class="section" style="border:2px solid #1565c0">
-  <div class="section-title" style="background:#1565c0;color:#fff;border-right:none;border-radius:4px">🧠 الرؤية الاستراتيجية — الفكر التنظيمي</div>
-  
-  <div style="background:#e3f2fd;border-radius:8px;padding:16px;margin-bottom:16px;border-right:5px solid #1565c0">
-    <p style="font-size:12pt;font-weight:700;color:#1565c0;margin-bottom:8px">ما الذي نبنيه فعلاً؟</p>
-    <p style="font-size:11pt;color:#333;line-height:2">
-      نحن <strong>لا نبني أدوات</strong> — نحن نبني <strong>منظومة إدارة ذكية</strong> تحوّل العمليات اليدوية المتشعّبة إلى workflow موحّد شفّاف محكوم.
-      <br>كل Agent ليس "تطبيقاً" بل هو <strong>مسؤول رقمي</strong> يؤدي دوراً تنظيمياً محدداً في الهيكل الإداري لإدارة التركيبات.
-    </p>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
-    <div style="border:2px solid #1565c0;border-radius:8px;padding:14px;text-align:center">
-      <div style="font-size:22pt">📋</div>
-      <div style="font-weight:700;color:#1565c0;margin:6px 0;font-size:10.5pt">Tracking Agent</div>
-      <div style="font-size:9.5pt;color:#555">مدير متابعة رقمي — يرى كل الأوامر، يتابع كل فريق، يُنبّه الإدارة لحظياً</div>
+    <div class="vision-msg">
+      <p>نحن <strong>لا نبني أدوات</strong> — نحن نبني <strong>منظومة إدارة ذكية</strong> تحوّل العمليات اليدوية المتشعّبة إلى workflow موحّد شفّاف محكوم.<br>
+      كل Agent ليس "تطبيقاً" بل هو <strong>مسؤول رقمي</strong> يؤدي دوراً تنظيمياً محدداً ضمن الهيكل الإداري لإدارة التركيبات.</p>
     </div>
-    <div style="border:2px solid #2e7d32;border-radius:8px;padding:14px;text-align:center">
-      <div style="font-size:22pt">🚗</div>
-      <div style="font-weight:700;color:#2e7d32;margin:6px 0;font-size:10.5pt">Fleet Agent</div>
-      <div style="font-size:9.5pt;color:#555">مدير لوجستي رقمي — ينسّق السيارات والرحلات بدون تدخل بشري يومي</div>
-    </div>
-    <div style="border:2px solid #c62828;border-radius:8px;padding:14px;text-align:center">
-      <div style="font-size:22pt">🔴</div>
-      <div style="font-weight:700;color:#c62828;margin:6px 0;font-size:10.5pt">Snag Agent</div>
-      <div style="font-size:9.5pt;color:#555">مدير جودة رقمي — يتتبع كل عيب من الإبلاغ للإغلاق عبر 6 إدارات</div>
-    </div>
-  </div>
 
-  <div style="border:1.5px solid #ddd;border-radius:8px;padding:14px;margin-bottom:14px">
-    <p style="font-weight:700;font-size:11pt;margin-bottom:10px;color:#333">🔄 الفكر التنظيمي — من التفاعلي إلى الاستباقي</p>
-    <table>
-      <tr><th>البُعد التنظيمي</th><th>النموذج القديم</th><th>النموذج الجديد</th></tr>
-      <tr><td>المتابعة</td><td>مكالمات يومية — "إيه اللي حصل؟"</td><td>لوحة تحكم لحظية + إشعار تلقائي</td></tr>
-      <tr><td>التذكير</td><td>اتصال يدوي لكل مدير</td><td>تذكيرات تلقائية 9ص و9م</td></tr>
-      <tr><td>التقارير</td><td>إعداد يدوي يستغرق ساعات</td><td>تقرير شامل كل 8ص و3م تلقائياً</td></tr>
-      <tr><td>العيوب</td><td>تُفقد في المحادثات</td><td>Workflow موثّق عبر 6 إدارات</td></tr>
-      <tr><td>المسؤولية</td><td>غير واضحة عند المشاكل</td><td>كل مرحلة لها مسؤول ووقت محدد</td></tr>
-      <tr><td>القيادة</td><td>تتدخل لحل المشاكل</td><td>تتدخل فقط عند القرارات الاستراتيجية</td></tr>
-    </table>
-  </div>
-
-  <div style="background:#fff8e1;border-radius:8px;padding:14px;border-right:5px solid #f9a825">
-    <p style="font-weight:700;font-size:11pt;color:#f57f17;margin-bottom:8px">💡 المبدأ الجوهري</p>
-    <p style="font-size:10.5pt;color:#555;line-height:2">
-      الـ Agent لا يحلّ محلّ الإنسان — بل <strong>يحرّر الإنسان</strong> من المهام الإدارية المتكررة ليتفرّغ للقرارات التي تحتاج فعلاً عقلاً بشرياً.<br>
-      أشرف لا يُصدر تذكيرات — النظام يُصدرها. أشرف لا يجمع الأرقام — النظام يجمعها. أشرف <strong>يقرر ويوجّه ويحل</strong>.
-    </p>
-  </div>
-</div>
-
-<!-- EFFORT STORY -->
-<div class="section">
-  <div class="section-title">🏋️ حجم المجهود — القصة الحقيقية</div>
-  
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-    <div style="border:1.5px solid #ddd;border-radius:8px;padding:14px">
-      <p style="font-weight:700;color:#1565c0;margin-bottom:8px;font-size:10.5pt">📐 التصميم والتخطيط</p>
-      <p style="font-size:9.5pt;color:#555;line-height:1.9">
-        • تحليل 81 أمر تركيب حقيقي من SAP<br>
-        • تصميم 5 أدوار متكاملة (إدارة، مدير مجموعة، توريد، تسليم، متابعة)<br>
-        • تحديد workflow كامل لكل عملية<br>
-        • تصميم منظومة إشعارات ذكية (مش كل حاجة لكل حد)<br>
-        • ربط 3 أنظمة ببعض بشكل عضوي
-      </p>
-    </div>
-    <div style="border:1.5px solid #ddd;border-radius:8px;padding:14px">
-      <p style="font-weight:700;color:#1565c0;margin-bottom:8px;font-size:10.5pt">⚙️ التطوير والتنفيذ</p>
-      <p style="font-size:9.5pt;color:#555;line-height:1.9">
-        • +3000 سطر كود في 3 أنظمة<br>
-        • 20+ نشرة على GitHub<br>
-        • 4 نسخ من Apps Script<br>
-        • حل مشاكل تقنية معقدة (Login, SAP parsing, Sync)<br>
-        • اختبار على أجهزة حقيقية (موبايل Android)
-      </p>
-    </div>
-    <div style="border:1.5px solid #ddd;border-radius:8px;padding:14px">
-      <p style="font-weight:700;color:#1565c0;margin-bottom:8px;font-size:10.5pt">👥 إدارة الفريق والتدريب</p>
-      <p style="font-size:9.5pt;color:#555;line-height:1.9">
-        • تواصل فردي مع 11 شخص<br>
-        • رسائل مخصصة لكل دور<br>
-        • دليل استخدام كامل<br>
-        • متابعة تفعيل كل مستخدم<br>
-        • ضبط تذكيرات تلقائية للتفاعل
-      </p>
-    </div>
-    <div style="border:1.5px solid #ddd;border-radius:8px;padding:14px">
-      <p style="font-weight:700;color:#1565c0;margin-bottom:8px;font-size:10.5pt">🔄 التحسين المستمر</p>
-      <p style="font-size:9.5pt;color:#555;line-height:1.9">
-        • مراجعة وتعديل بناءً على ملاحظات أشرف<br>
-        • إضافة ربط Tracking ↔ Snag<br>
-        • إضافة صور للعيوب<br>
-        • تضمين خطوة التخطيط في الـ workflow<br>
-        • ضبط SLA لتحقيق سرعة القرار
-      </p>
-    </div>
-  </div>
-
-  <div style="border:2px solid #1565c0;border-radius:8px;padding:14px;text-align:center;display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
-    <div><div style="font-size:18pt;font-weight:900;color:#1565c0">+3000</div><div style="font-size:8.5pt;color:#555">سطر كود</div></div>
-    <div><div style="font-size:18pt;font-weight:900;color:#2e7d32">11</div><div style="font-size:8.5pt;color:#555">مستخدم مدرَّب</div></div>
-    <div><div style="font-size:18pt;font-weight:900;color:#c62828">20+</div><div style="font-size:8.5pt;color:#555">تحديث على GitHub</div></div>
-    <div><div style="font-size:18pt;font-weight:900;color:#6a1b9a">6</div><div style="font-size:8.5pt;color:#555">إدارات مرتبطة</div></div>
-  </div>
-</div>
-
-<div id="tracking"></div><!-- TRACKING AGENT -->
-<div class="section page-break">
-  <div class="section-title">📋 النظام الأول — Tracking Agent</div>
-  <div class="agent-card">
-    <div class="agent-header track">
-      <span style="font-size:28pt">📋</span>
-      <div>
-        <div class="agent-name">Tracking Agent — متابعة أوامر التركيب</div>
-        <div class="agent-sub">ashrafa1-glitch.github.io/mobica-fleet/tracking/</div>
+    <div class="role-grid">
+      <div class="role-card track">
+        <span class="role-icon">📋</span>
+        <div class="role-name">Tracking Agent</div>
+        <div class="role-desc">مدير متابعة رقمي — يرى كل الأوامر، يتابع كل فريق، يُنبّه الإدارة لحظياً</div>
+      </div>
+      <div class="role-card fleet">
+        <span class="role-icon">🚗</span>
+        <div class="role-name">Fleet Agent</div>
+        <div class="role-desc">مدير لوجستي رقمي — ينسّق السيارات والرحلات بدون تدخل بشري يومي</div>
+      </div>
+      <div class="role-card snag">
+        <span class="role-icon">🔴</span>
+        <div class="role-name">Snag Agent</div>
+        <div class="role-desc">مدير جودة رقمي — يتتبع كل عيب من الإبلاغ للإغلاق عبر 6 إدارات</div>
       </div>
     </div>
-    <div class="agent-body">
-      <p style="font-weight:700;margin-bottom:8px;font-size:10.5pt">⚙️ المزايا والوظائف:</p>
-      <ul class="feat-list">
-        <li>متابعة 81 أمر تركيب نشط لحظياً</li>
-        <li>رفع بيانات SAP يومياً بشكل تلقائي</li>
-        <li>تحديث حالة التركيب ونسبة الإنجاز</li>
-        <li>محاضر التسليم (IR) + مستخلصات</li>
-        <li>بلاغات المشاكل مع صور العيوب</li>
-        <li>ربط تلقائي مع Snag Agent</li>
-        <li>تحديث تلقائي كل 30 ثانية</li>
-        <li>Google Sheets backend مشترك</li>
-      </ul>
 
-      <p style="font-weight:700;margin:10px 0 6px;font-size:10.5pt">👥 المستخدمون:</p>
+    <div class="compare-table">
       <table>
-        <tr><th>المستخدم</th><th>الدور</th><th>الصلاحية</th></tr>
-        <tr><td>أشرف / فتحي / خالد</td><td><span class="badge badge-admin">إدارة</span></td><td>رؤية كاملة + تقارير</td></tr>
-        <tr><td>سامى / هشام / حازم / أحمد / وسيم</td><td><span class="badge badge-mgr">مدير مجموعة</span></td><td>تحديث أوامره + إبلاغ مشاكل</td></tr>
-        <tr><td>عماد عبدالواحد</td><td><span class="badge badge-ops">تسليم</span></td><td>محاضر التسليم والمستخلصات</td></tr>
-        <tr><td>ياسر السيد</td><td><span class="badge badge-ops">توريد</span></td><td>رفع ملف SAP اليومي</td></tr>
+        <tr><th>البُعد التنظيمي</th><th class="old">النموذج القديم</th><th class="new">النموذج الجديد</th></tr>
+        <tr><td>المتابعة</td><td class="old">مكالمات يدوية — "إيه اللي حصل؟"</td><td class="new">لوحة تحكم لحظية + إشعار تلقائي</td></tr>
+        <tr><td>التذكير</td><td class="old">اتصال يدوي لكل مدير</td><td class="new">تذكيرات تلقائية 9ص و9م يومياً</td></tr>
+        <tr><td>التقارير</td><td class="old">إعداد يدوي يستغرق ساعات</td><td class="new">تقرير شامل كل 8ص و3م تلقائياً</td></tr>
+        <tr><td>العيوب</td><td class="old">تُفقد في المحادثات</td><td class="new">Workflow موثّق عبر 6 إدارات</td></tr>
+        <tr><td>المسؤولية</td><td class="old">غير واضحة عند المشاكل</td><td class="new">كل مرحلة لها مسؤول ووقت محدد</td></tr>
+        <tr><td>دور القيادة</td><td class="old">تتدخل لحل المشاكل اليومية</td><td class="new">تتدخل فقط للقرارات الاستراتيجية</td></tr>
       </table>
+    </div>
 
-      <p style="font-weight:700;margin:10px 0 6px;font-size:10.5pt">⏰ الجدول التلقائي اليومي:</p>
-      <div class="sched"><span class="sched-time">8:30 ص</span><span>تذكير ياسر برفع ملف SAP اليومي</span></div>
-      <div class="sched"><span class="sched-time">9:00 ص</span><span>إرسال الأوامر المتأخرة +3 أيام لكل مدير مجموعة</span></div>
-      <div class="sched"><span class="sched-time">8:00 ص</span><span>تقرير الإدارة الشامل + تقرير خالد علي المفصّل بالمتأخرات والتذكيرات</span></div>
-      <div class="sched"><span class="sched-time">3:00 م</span><span>تقرير الإدارة الشامل + تقرير خالد علي المفصّل</span></div>
-      <div class="sched"><span class="sched-time">9:00 م</span><span>تذكير ثانٍ للأوامر التي لم تُحدَّث</span></div>
+    <div class="principle">
+      <p>💡 <strong>المبدأ الجوهري:</strong> الـ Agent لا يحلّ محلّ الإنسان — بل <strong>يحرّر الإنسان</strong> من المهام الإدارية المتكررة ليتفرّغ للقرارات التي تحتاج فعلاً عقلاً بشرياً. أشرف لا يُصدر تذكيرات — النظام يُصدرها. أشرف لا يجمع الأرقام — النظام يجمعها. أشرف <strong>يقرر ويوجّه ويحل</strong>.</p>
     </div>
   </div>
 </div>
 
-<div id="fleet"></div><!-- FLEET AGENT -->
-<div class="section">
-  <div class="section-title">🚗 النظام الثاني — Fleet Agent</div>
-  <div class="agent-card">
-    <div class="agent-header fleet">
-      <span style="font-size:28pt">🚗</span>
-      <div>
-        <div class="agent-name">Fleet Agent — نظام إدارة الأسطول</div>
-        <div class="agent-sub">ashrafa1-glitch.github.io/mobica-fleet/</div>
-      </div>
-    </div>
-    <div class="agent-body">
-      <ul class="feat-list">
-        <li>إدارة 13 سيارة (فانات، ميكروباص، دبل، أتوبيس)</li>
-        <li>جدولة رحلات 4 فرق (155 فرد) يومياً</li>
-        <li>تتبع حالة السائقين وتوافرهم</li>
-        <li>إشعارات فورية لمديري المجموعات</li>
-        <li>داشبورد إحصائي شامل</li>
-        <li>تسجيل حالات الأعطال والصيانة</li>
-        <li>استبدال السائقين (مدير الأسطول فقط)</li>
-        <li>ربط بـ Google Sheets</li>
-      </ul>
-      <p style="font-size:10pt;background:#e8f5e9;padding:10px;border-radius:6px;color:#2e7d32;border-right:4px solid #2e7d32">
-        <strong>الفائدة:</strong> قبل النظام تنسيق السيارات يدوياً بالهاتف يسبب تأخيرات وتعارضات. الآن كل مدير يطلب سيارته في ثوانٍ من موبايله ويصله إشعار فور الاعتماد.
-      </p>
-    </div>
+<!-- TRACKING -->
+<div id="tracking" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">📋</span>
+    <div><div class="sec-head-title">النظام الأول — Tracking Agent</div>
+    <div class="sec-head-sub">ashrafa1-glitch.github.io/mobica-fleet/tracking/</div></div>
   </div>
-</div>
-
-<div id="snag"></div><!-- SNAG AGENT -->
-<div class="section page-break">
-  <div class="section-title">🔴 النظام الثالث — Snag Agent</div>
-  <div class="agent-card">
-    <div class="agent-header snag">
-      <span style="font-size:28pt">🔴</span>
-      <div>
-        <div class="agent-name">Snag Agent — نظام إدارة العيوب</div>
-        <div class="agent-sub">ashrafa1-glitch.github.io/mobica-fleet/snag/demo.html</div>
+  <div class="sec-body">
+    <div class="agent-card">
+      <div class="agent-top track">
+        <span class="agent-emoji">📋</span>
+        <div><div class="agent-title">متابعة أوامر التركيب — لحظياً</div>
+        <div class="agent-url">81 أمر نشط | 5 أدوار | Google Sheets backend</div></div>
       </div>
-    </div>
-    <div class="agent-body">
+      <div class="agent-content">
+        <div class="feat-grid">
+          <div class="feat-item">متابعة 81 أمر تركيب نشط لحظياً</div>
+          <div class="feat-item">رفع بيانات SAP يومياً بشكل تلقائي</div>
+          <div class="feat-item">تحديث حالة التركيب ونسبة الإنجاز</div>
+          <div class="feat-item">محاضر التسليم (IR) + مستخلصات</div>
+          <div class="feat-item">بلاغات المشاكل مع صور العيوب</div>
+          <div class="feat-item">ربط تلقائي مع Snag Agent</div>
+          <div class="feat-item">مزامنة كل 30 ثانية</div>
+          <div class="feat-item">تقرير خالد علي المتأخرات يومياً</div>
+        </div>
 
-      <p style="font-weight:700;margin-bottom:10px;font-size:10.5pt">🔄 جدول توزيع المسؤوليات — طريقة العمل</p>
-      <table>
-        <tr><th>المرحلة</th><th>الإجراء</th><th>المسؤول</th><th>SLA</th></tr>
-        <tr><td>🆕 بلاغ جديد</td><td>مدير المجموعة يبلّغ العيب من Tracking Agent</td><td>مدير المجموعة</td><td>—</td></tr>
-        <tr><td>🔍 تحليل</td><td>محمد مختار يراجع العيب ويحدد المصنع المسؤول</td><td>محمد مختار</td><td><strong>1 ساعة</strong></td></tr>
-        <tr><td>✅ اعتماد</td><td>إدارة التركيبات تعتمد البلاغ</td><td>أشرف / خالد / فتحي</td><td><strong>1 ساعة</strong></td></tr>
-        <tr><td>🏭 مراجعة الجودة</td><td>الجودة تتحقق وتحدد نوع الإصلاح</td><td>مسؤول الجودة</td><td><strong>2 ساعة</strong></td></tr>
-        <tr><td>💼 موافقة المبيعات</td><td>المبيعات تعتمد تكلفة الإصلاح</td><td>مسؤول المبيعات</td><td><strong>1 ساعة</strong></td></tr>
-        <tr><td>📋 أمر الشغل</td><td>التخطيط يُصدر أمر شغل رسمي للمصنع</td><td>مسؤول التخطيط</td><td><strong>1 ساعة</strong></td></tr>
-        <tr><td>🔨 الإنتاج</td><td>المصنع ينفّذ الإصلاح أو يصنع البديل</td><td>المصنع المسؤول</td><td>حسب العيب</td></tr>
-        <tr style="background:#e8f5e9"><td>✅ مغلق</td><td>التسليم للموقع وإغلاق البلاغ</td><td>محمد مختار</td><td>—</td></tr>
-      </table>
-      <p style="font-size:9.5pt;color:#c62828;font-weight:700;text-align:center;margin:6px 0">إجمالي وقت القرارات = 6 ساعات فقط — الوقت الفعلي في الإنتاج</p>
+        <div style="font-weight:700;font-size:10.5pt;margin:14px 0 8px;color:var(--text)">👥 المستخدمون والصلاحيات</div>
+        <div class="users-table">
+          <table>
+            <tr><th>المستخدم</th><th>الدور</th><th>الصلاحية</th></tr>
+            <tr><td>أشرف / فتحي / خالد</td><td><span class="badge badge-admin">إدارة</span></td><td>رؤية كاملة + تقارير + إحصائيات</td></tr>
+            <tr><td>سامى / هشام / حازم / أحمد / وسيم</td><td><span class="badge badge-mgr">مدير مجموعة</span></td><td>تحديث أوامره + إبلاغ مشاكل</td></tr>
+            <tr><td>عماد عبدالواحد</td><td><span class="badge badge-ops">تسليم</span></td><td>محاضر التسليم والمستخلصات</td></tr>
+            <tr><td>ياسر السيد</td><td><span class="badge badge-ops">توريد</span></td><td>رفع ملف SAP اليومي</td></tr>
+          </table>
+        </div>
 
-      <p style="font-weight:700;margin:12px 0 8px;font-size:10.5pt">🏢 الأطراف المشاركة في النظام</p>
-      <div class="dept-grid">
-        <div class="dept-box"><div class="dept-icon">🔧</div><div class="dept-name">إدارة التركيبات</div><div style="font-size:8.5pt">الإبلاغ والاعتماد والإغلاق</div></div>
-        <div class="dept-box"><div class="dept-icon">🏭</div><div class="dept-name">إدارة الجودة</div><div style="font-size:8.5pt">التحقق وتحديد الإصلاح</div></div>
-        <div class="dept-box"><div class="dept-icon">💼</div><div class="dept-name">إدارة المبيعات</div><div style="font-size:8.5pt">اعتماد تكلفة الإصلاح</div></div>
-        <div class="dept-box"><div class="dept-icon">🔨</div><div class="dept-name">المصانع</div><div style="font-size:8.5pt">تنفيذ الإصلاح والاستبدال</div></div>
-        <div class="dept-box"><div class="dept-icon">📊</div><div class="dept-name">التخطيط</div><div style="font-size:8.5pt">إصدار أوامر الشغل</div></div>
-        <div class="dept-box"><div class="dept-icon">🔗</div><div class="dept-name">محمد مختار</div><div style="font-size:8.5pt">حلقة الوصل بين الكل</div></div>
+        <div style="font-weight:700;font-size:10.5pt;margin:14px 0 8px;color:var(--text)">⏰ الجدول التلقائي اليومي</div>
+        <div class="sched-list">
+          <div class="sched-item"><span class="sched-time">8:30 ص</span><span>تذكير ياسر برفع ملف SAP اليومي</span></div>
+          <div class="sched-item"><span class="sched-time">9:00 ص</span><span>إرسال الأوامر المتأخرة +3 أيام لكل مدير مجموعة</span></div>
+          <div class="sched-item"><span class="sched-time">8:00 ص</span><span>تقرير الإدارة الشامل + تقرير خالد علي المفصّل بالمتأخرات</span></div>
+          <div class="sched-item"><span class="sched-time">3:00 م</span><span>تقرير الإدارة الشامل + تقرير خالد علي المفصّل</span></div>
+          <div class="sched-item"><span class="sched-time">9:00 م</span><span>تذكير ثانٍ للأوامر التي لم تُحدَّث</span></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="notif"></div><!-- NOTIFICATIONS -->
-<div class="section">
-  <div class="section-title">🔔 منظومة الإشعارات الذكية</div>
-
-  <div class="notif-group">📋 إشعارات Tracking Agent</div>
-  <div class="notif-row"><span class="notif-event">📦 رفع ملف SAP جديد</span><span>←</span><span>الإدارة + مديرو المجموعات بأوامرهم الجديدة</span></div>
-  <div class="notif-row"><span class="notif-event">🔵 تحديث حالة أمر</span><span>←</span><span>الإدارة فوراً</span></div>
-  <div class="notif-row"><span class="notif-event">🔴 أمر متوقف</span><span>←</span><span>الإدارة + مدير المجموعة المعني</span></div>
-  <div class="notif-row"><span class="notif-event">⚠️ مشكلة عاجلة</span><span>←</span><span>الإدارة (مرتين للتأكيد)</span></div>
-  <div class="notif-row"><span class="notif-event">📋 محضر تسليم (IR)</span><span>←</span><span>الإدارة فقط — يُرفع من عماد</span></div>
-  <div class="notif-row"><span class="notif-event">⏰ أمر متأخر +3 أيام</span><span>←</span><span>مدير المجموعة المسؤول</span></div>
-  <div class="notif-row" style="margin-bottom:10px"><span class="notif-event">📊 تقرير 8ص / 3م</span><span>←</span><span>الإدارة + تقرير مفصّل لخالد علي</span></div>
-
-  <div class="notif-group red">🔴 إشعارات Snag Agent</div>
-  <div class="notif-row"><span class="notif-event">🔴 عيب في المنتج</span><span>←</span><span>الإدارة + محمد مختار للمتابعة مع المصنع</span></div>
-  <div class="notif-row"><span class="notif-event">🏭 طلب إصلاح للمصنع</span><span>←</span><span>المصنع المعني مباشرةً</span></div>
-  <div class="notif-row"><span class="notif-event">✅ إغلاق عيب</span><span>←</span><span>الإدارة + مدير المجموعة المبلِّغ</span></div>
+<!-- FLEET -->
+<div id="fleet" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">🚗</span>
+    <div><div class="sec-head-title">النظام الثاني — Fleet Agent</div>
+    <div class="sec-head-sub">ashrafa1-glitch.github.io/mobica-fleet/</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="agent-card">
+      <div class="agent-top fleet">
+        <span class="agent-emoji">🚗</span>
+        <div><div class="agent-title">إدارة الأسطول والمركبات</div>
+        <div class="agent-url">13 سيارة | 155 فرد | 4 فرق</div></div>
+      </div>
+      <div class="agent-content">
+        <div class="feat-grid">
+          <div class="feat-item">إدارة 13 سيارة بأنواعها</div>
+          <div class="feat-item">جدولة رحلات 4 فرق يومياً</div>
+          <div class="feat-item">تتبع حالة السائقين وتوافرهم</div>
+          <div class="feat-item">إشعارات فورية لمديري المجموعات</div>
+          <div class="feat-item">داشبورد إحصائي شامل</div>
+          <div class="feat-item">تسجيل الأعطال والصيانة</div>
+          <div class="feat-item">استبدال السائقين (مدير الأسطول فقط)</div>
+          <div class="feat-item">ربط بـ Google Sheets</div>
+        </div>
+        <div style="background:var(--green-light);border-right:4px solid var(--green);border-radius:10px;padding:12px 16px;font-size:10pt;color:var(--green);margin-top:4px">
+          <strong>الفائدة:</strong> قبل النظام تنسيق السيارات يدوياً بالهاتف يسبب تأخيرات وتعارضات. الآن كل مدير يطلب سيارته في ثوانٍ من موبايله ويصله إشعار فور الاعتماد.
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- BEFORE/AFTER -->
-<div class="section">
-  <div class="section-title">📈 قبل وبعد المنظومة</div>
-  <div class="ba-grid">
-    <div class="ba-card before">
-      <h4>❌ قبل المنظومة</h4>
-      <p>• متابعة أوامر التركيب يدوياً بالهاتف<br>• تأخير في معرفة حالة كل أمر<br>• بلاغات العيوب تضيع في المحادثات<br>• تنسيق السيارات يستغرق وقتاً<br>• لا رؤية موحّدة للإدارة<br>• تقارير يدوية تستهلك ساعات</p>
+<!-- SNAG -->
+<div id="snag" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">🔴</span>
+    <div><div class="sec-head-title">النظام الثالث — Snag Agent</div>
+    <div class="sec-head-sub">ashrafa1-glitch.github.io/mobica-fleet/snag/demo.html</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="agent-card">
+      <div class="agent-top snag">
+        <span class="agent-emoji">🔴</span>
+        <div><div class="agent-title">إدارة العيوب عبر 6 إدارات</div>
+        <div class="agent-url">Workflow كامل | 8 مراحل | SLA محدد لكل خطوة</div></div>
+      </div>
+      <div class="agent-content">
+
+        <div style="font-weight:700;font-size:10.5pt;margin-bottom:10px;color:var(--text)">🔄 توزيع المسؤوليات — طريقة العمل</div>
+        <div class="workflow-table">
+          <table>
+            <tr><th>المرحلة</th><th>الإجراء</th><th>المسؤول</th><th>SLA</th></tr>
+            <tr><td>🆕 بلاغ جديد</td><td>مدير المجموعة يبلّغ من Tracking Agent</td><td>مدير المجموعة</td><td>—</td></tr>
+            <tr><td>🔍 تحليل</td><td>محمد مختار يراجع ويحدد المصنع المسؤول</td><td>محمد مختار</td><td><span class="sla-chip">1 ساعة</span></td></tr>
+            <tr><td>✅ اعتماد</td><td>إدارة التركيبات تعتمد البلاغ</td><td>أشرف / خالد / فتحي</td><td><span class="sla-chip">1 ساعة</span></td></tr>
+            <tr><td>🏭 الجودة</td><td>التحقق من العيب وتحديد نوع الإصلاح</td><td>مسؤول الجودة</td><td><span class="sla-chip">2 ساعة</span></td></tr>
+            <tr><td>💼 المبيعات</td><td>اعتماد تكلفة الإصلاح أو الاستبدال</td><td>مسؤول المبيعات</td><td><span class="sla-chip">1 ساعة</span></td></tr>
+            <tr><td>📋 أمر الشغل</td><td>التخطيط يُصدر أمر شغل رسمي للمصنع</td><td>مسؤول التخطيط</td><td><span class="sla-chip">1 ساعة</span></td></tr>
+            <tr><td>🔨 الإنتاج</td><td>المصنع ينفّذ الإصلاح أو يصنع البديل</td><td>المصنع المسؤول</td><td>حسب العيب</td></tr>
+            <tr class="last"><td>✅ مغلق</td><td>التسليم للموقع وإغلاق البلاغ رسمياً</td><td>محمد مختار</td><td>—</td></tr>
+          </table>
+        </div>
+        <div class="sla-total">⏱️ إجمالي وقت القرارات = 6 ساعات فقط — الوقت الفعلي في الإنتاج</div>
+
+        <div style="font-weight:700;font-size:10.5pt;margin:16px 0 8px;color:var(--text)">🏢 الأطراف المشاركة</div>
+        <div class="dept-grid">
+          <div class="dept-card"><div class="d-icon">🔧</div><div class="d-name">إدارة التركيبات</div><div class="d-role">الإبلاغ والاعتماد والإغلاق</div></div>
+          <div class="dept-card"><div class="d-icon">🏭</div><div class="d-name">إدارة الجودة</div><div class="d-role">التحقق وتحديد الإصلاح</div></div>
+          <div class="dept-card"><div class="d-icon">💼</div><div class="d-name">إدارة المبيعات</div><div class="d-role">اعتماد تكلفة الإصلاح</div></div>
+          <div class="dept-card"><div class="d-icon">🔨</div><div class="d-name">المصانع</div><div class="d-role">تنفيذ الإصلاح والاستبدال</div></div>
+          <div class="dept-card"><div class="d-icon">📊</div><div class="d-name">التخطيط</div><div class="d-role">إصدار أوامر الشغل</div></div>
+          <div class="dept-card"><div class="d-icon">🔗</div><div class="d-name">محمد مختار</div><div class="d-role">حلقة الوصل بين الكل</div></div>
+        </div>
+      </div>
     </div>
-    <div class="ba-card after">
-      <h4>✅ بعد المنظومة</h4>
-      <p>• رؤية لحظية لكل أمر تركيب<br>• إشعار فوري عند أي تحديث<br>• كل عيب له workflow موثّق<br>• طلب سيارة في ثوانٍ من الموبايل<br>• لوحة تحكم موحّدة للإدارة<br>• تقارير أوتوماتيكية 8ص و3م</p>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notif" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">🔔</span>
+    <div><div class="sec-head-title">منظومة الإشعارات الذكية</div>
+    <div class="sec-head-sub">كل إشعار يصل للشخص المعني فقط</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="notif-group-title blue">📋 إشعارات Tracking Agent</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-event">📦 رفع ملف SAP جديد</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة + مديرو المجموعات بأوامرهم الجديدة</span></div>
+      <div class="notif-item"><span class="notif-event">🔵 تحديث حالة أمر</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة فوراً</span></div>
+      <div class="notif-item"><span class="notif-event">🔴 أمر متوقف</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة + مدير المجموعة المعني</span></div>
+      <div class="notif-item"><span class="notif-event">⚠️ مشكلة عاجلة</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة (مرتين للتأكيد)</span></div>
+      <div class="notif-item"><span class="notif-event">📋 محضر تسليم (IR)</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة فقط — يُرفع من عماد</span></div>
+      <div class="notif-item"><span class="notif-event">⏰ أمر متأخر +3 أيام</span><span class="notif-arrow">←</span><span class="notif-who">مدير المجموعة المسؤول</span></div>
+      <div class="notif-item"><span class="notif-event">📊 تقرير 8ص / 3م</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة + تقرير مفصّل لخالد علي</span></div>
+    </div>
+    <div class="notif-group-title red">🔴 إشعارات Snag Agent</div>
+    <div class="notif-list">
+      <div class="notif-item"><span class="notif-event">🔴 عيب في المنتج</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة + محمد مختار للمتابعة</span></div>
+      <div class="notif-item"><span class="notif-event">🏭 طلب إصلاح للمصنع</span><span class="notif-arrow">←</span><span class="notif-who">المصنع المعني مباشرةً</span></div>
+      <div class="notif-item"><span class="notif-event">✅ إغلاق عيب</span><span class="notif-arrow">←</span><span class="notif-who">الإدارة + مدير المجموعة المبلِّغ</span></div>
     </div>
   </div>
 </div>
 
 <!-- EFFORT -->
-<div class="section page-break">
-  <div class="section-title">💪 حجم المجهود المبذول</div>
-  <div class="effort-item"><span>واجهة Fleet Agent (HTML/CSS/JS)</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:90%"></div></div><span class="effort-val">90%</span></div>
-  <div class="effort-item"><span>واجهة Tracking Agent (HTML/CSS/JS)</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>واجهة Snag Agent (HTML/CSS/JS)</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:85%"></div></div><span class="effort-val">85%</span></div>
-  <div class="effort-item"><span>Fleet Apps Script — Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>Tracking Apps Script v4 — Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>منظومة الإشعارات الذكية</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>نظام تتبع التذكيرات (ReminderLog)</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>تقرير خالد علي المخصص</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>رفع Excel SAP حقيقي + Parsing</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
-  <div class="effort-item"><span>ربط Tracking ↔ Snag تلقائياً</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-val">100%</span></div>
+<div id="effort" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">💪</span>
+    <div><div class="sec-head-title">حجم المجهود — القصة الحقيقية</div>
+    <div class="sec-head-sub">ما الذي استغرق وقتاً وجهداً حقيقياً؟</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="effort-grid">
+      <div class="effort-card">
+        <h4>📐 التصميم والتخطيط</h4>
+        <p>• تحليل 81 أمر تركيب حقيقي من SAP<br>• تصميم 5 أدوار متكاملة بصلاحيات محددة<br>• تحديد workflow كامل لكل عملية<br>• منظومة إشعارات ذكية (مش كل حاجة لكل حد)<br>• ربط 3 أنظمة ببعض بشكل عضوي</p>
+      </div>
+      <div class="effort-card">
+        <h4>⚙️ التطوير والتنفيذ</h4>
+        <p>• +3000 سطر كود في 3 أنظمة<br>• 20+ نشرة على GitHub<br>• 4 نسخ من Apps Script<br>• حل مشاكل تقنية معقدة (Login, SAP, Sync)<br>• اختبار على أجهزة حقيقية</p>
+      </div>
+      <div class="effort-card">
+        <h4>👥 إدارة الفريق والتدريب</h4>
+        <p>• تواصل فردي مع 11 شخص<br>• رسائل مخصصة لكل دور<br>• دليل استخدام كامل<br>• متابعة تفعيل كل مستخدم<br>• تذكيرات تلقائية للتفاعل</p>
+      </div>
+      <div class="effort-card">
+        <h4>🔄 التحسين المستمر</h4>
+        <p>• مراجعة بناءً على ملاحظات أشرف<br>• إضافة ربط Tracking ↔ Snag<br>• إضافة صور للعيوب<br>• تضمين خطوة التخطيط في الـ workflow<br>• ضبط SLA لتحقيق سرعة القرار (6 ساعات)</p>
+      </div>
+    </div>
 
-  <div style="border:2px solid #1565c0;border-radius:8px;padding:14px;margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center">
-    <div><div style="font-size:18pt;font-weight:900;color:#1565c0">+3000</div><div style="font-size:9pt;color:#555">سطر كود مكتوب</div></div>
-    <div><div style="font-size:18pt;font-weight:900;color:#1565c0">20+</div><div style="font-size:9pt;color:#555">commit على GitHub</div></div>
-    <div><div style="font-size:18pt;font-weight:900;color:#1565c0">4</div><div style="font-size:9pt;color:#555">نشرات Apps Script</div></div>
+    <div style="font-weight:700;font-size:10.5pt;margin-bottom:10px;color:var(--text)">📊 نسبة اكتمال الأنظمة</div>
+    <div class="effort-bar-row"><span class="effort-label">Tracking Agent — واجهة + Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">Fleet Agent — واجهة + Backend</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:90%"></div></div><span class="effort-pct">90%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">Snag Agent — واجهة + Workflow</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:85%"></div></div><span class="effort-pct">85%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">منظومة الإشعارات الذكية</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">نظام SAP Excel الحقيقي</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+    <div class="effort-bar-row"><span class="effort-label">تقرير خالد علي المخصص</span><div class="effort-bar-wrap"><div class="effort-bar" style="width:100%"></div></div><span class="effort-pct">100%</span></div>
+
+    <div class="metrics">
+      <div class="metric-card"><div class="metric-num">+3000</div><div class="metric-lbl">سطر كود</div></div>
+      <div class="metric-card"><div class="metric-num">20+</div><div class="metric-lbl">commit على GitHub</div></div>
+      <div class="metric-card"><div class="metric-num">4</div><div class="metric-lbl">نسخ Apps Script</div></div>
+      <div class="metric-card"><div class="metric-num">6</div><div class="metric-lbl">إدارات مرتبطة</div></div>
+    </div>
   </div>
 </div>
 
 <!-- PENDING -->
-<div class="section">
-  <div class="section-title">⏳ المتبقي والخطوات القادمة</div>
-  <table>
-    <tr><th>البند</th><th>المسؤول</th><th>الحالة</th></tr>
-    <tr><td>Telegram ID لمحمد وسيم</td><td>أشرف قاسم</td><td>⏳ في الانتظار</td></tr>
-    <tr><td>IDs الجودة / المبيعات / المصانع / التخطيط</td><td>محمد مختار</td><td>⏳ تذكيرات ضُبطت</td></tr>
-    <tr><td>تفعيل Snag Agent الكامل</td><td>بعد استلام IDs</td><td>⏳ جاهز للتفعيل</td></tr>
-    <tr><td>اختبار رفع SAP حقيقي</td><td>ياسر السيد</td><td>⏳ طُلب منه اليوم</td></tr>
-  </table>
+<div class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">⏳</span>
+    <div><div class="sec-head-title">الخطوات القادمة</div>
+    <div class="sec-head-sub">ما تبقّى لإطلاق المنظومة بالكامل</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="pending-list">
+      <div class="pending-item"><span class="pending-tag">انتظار</span><div><div>Telegram ID لمحمد وسيم</div><div class="pending-who">المسؤول: أشرف قاسم</div></div></div>
+      <div class="pending-item"><span class="pending-tag">انتظار</span><div><div>IDs الجودة / المبيعات / المصانع / التخطيط</div><div class="pending-who">المسؤول: محمد مختار</div></div></div>
+      <div class="pending-item"><span class="pending-tag">جاهز</span><div><div>تفعيل Snag Agent الكامل بعد استلام IDs</div><div class="pending-who">المسؤول: هكاية — جاهز فور الاستلام</div></div></div>
+      <div class="pending-item"><span class="pending-tag">انتظار</span><div><div>اختبار رفع SAP حقيقي من ياسر السيد</div><div class="pending-who">المسؤول: ياسر السيد</div></div></div>
+    </div>
+  </div>
 </div>
 
 <!-- SIGN -->
-<div class="section">
-  <div class="section-title">✍️ الاعتماد والمراجعة</div>
-  <div class="sign-grid">
-    <div class="sign-box"><div class="sign-name">أشرف قاسم</div><div class="sign-title">مدير تخطيط التركيبات — إعداد</div><div class="sign-line"></div><div style="font-size:9pt;color:#aaa">التوقيع</div></div>
-    <div class="sign-box"><div class="sign-name">خالد علي</div><div class="sign-title">نائب مدير التركيبات — مراجعة</div><div class="sign-line"></div><div style="font-size:9pt;color:#aaa">التوقيع</div></div>
-    <div class="sign-box"><div class="sign-name">محمد فتحي</div><div class="sign-title">مدير التركيبات — اعتماد</div><div class="sign-line"></div><div style="font-size:9pt;color:#aaa">التوقيع</div></div>
+<div id="sign" class="sec">
+  <div class="sec-head">
+    <span class="sec-head-icon">✍️</span>
+    <div><div class="sec-head-title">الاعتماد والمراجعة الرسمية</div></div>
   </div>
-  <p style="font-size:8.5pt;color:#aaa;text-align:center;margin-top:16px">تم إعداد هذا التقرير بتاريخ 4 مارس 2026 | موبيكا — إدارة التركيبات</p>
+  <div class="sec-body">
+    <div class="sign-grid">
+      <div class="sign-card">
+        <div class="sign-name">أشرف قاسم</div>
+        <div class="sign-role">مدير تخطيط التركيبات<br>إعداد</div>
+        <div class="sign-line"></div>
+        <div class="sign-hint">التوقيع</div>
+      </div>
+      <div class="sign-card">
+        <div class="sign-name">خالد علي</div>
+        <div class="sign-role">نائب مدير التركيبات<br>مراجعة</div>
+        <div class="sign-line"></div>
+        <div class="sign-hint">التوقيع</div>
+      </div>
+      <div class="sign-card">
+        <div class="sign-name">محمد فتحي</div>
+        <div class="sign-role">مدير التركيبات<br>اعتماد</div>
+        <div class="sign-line"></div>
+        <div class="sign-hint">التوقيع</div>
+      </div>
+    </div>
+  </div>
 </div>
+
+</div><!-- end wrap -->
+
+<footer>تم إعداد هذا التقرير بتاريخ 4 مارس 2026 &nbsp;|&nbsp; موبيكا — إدارة التركيبات &nbsp;|&nbsp; أشرف قاسم — مدير تخطيط التركيبات</footer>
 
 </body>
 </html>
