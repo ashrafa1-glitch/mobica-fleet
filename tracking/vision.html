@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>رؤية إدارة التركيبات 2026 — موبيكا</title>
+<style>
+:root{
+  --blue:#1565c0;--blue-d:#0d47a1;--blue-l:#e3f2fd;
+  --green:#2e7d32;--green-l:#e8f5e9;
+  --red:#c62828;--red-l:#fce4ec;
+  --orange:#e65100;--orange-l:#fff3e0;
+  --gold:#f9a825;--gold-l:#fffde7;
+  --purple:#6a1b9a;--purple-l:#f3e5f5;
+  --text:#1a1a2e;--sub:#546e7a;--border:#e0e8f0;--bg:#f0f4f8
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);direction:rtl;line-height:1.7}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(13,71,161,0.97);padding:0 16px;display:flex;align-items:center;gap:6px;min-height:48px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+nav .logo{font-size:12pt;font-weight:800;color:#fff;margin-left:auto;white-space:nowrap}
+nav a{color:rgba(255,255,255,0.85);text-decoration:none;font-size:8.5pt;font-weight:600;padding:4px 10px;border-radius:16px;transition:.2s;white-space:nowrap}
+nav a:hover{background:rgba(255,255,255,0.2)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d47a1 0%,#1565c0 40%,#283593 100%);color:#fff;padding:56px 20px 44px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'2026';position:absolute;left:-20px;bottom:-30px;font-size:160pt;font-weight:900;color:rgba(255,255,255,0.04);line-height:1}
+.hero-badge-top{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:5px 16px;border-radius:20px;font-size:9.5pt;font-weight:600;margin-bottom:16px}
+.hero h1{font-size:clamp(18pt,4vw,28pt);font-weight:900;margin-bottom:8px}
+.hero .tagline{font-size:clamp(11pt,2vw,14pt);opacity:.85;max-width:580px;margin:0 auto 24px;line-height:1.7}
+.hero-quote{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:12px;padding:14px 20px;max-width:600px;margin:0 auto;font-size:10.5pt;line-height:1.8;font-style:italic}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px}
+.sec{background:#fff;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,0.06);margin-bottom:20px;overflow:hidden}
+.sec-head{padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.sec-icon{font-size:20pt;flex-shrink:0}
+.sec-title{font-size:13pt;font-weight:800;color:var(--text)}
+.sec-sub{font-size:9pt;color:var(--sub);margin-top:2px}
+.sec-body{padding:20px}
+
+/* CONTRAST */
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.contrast-card{border-radius:12px;padding:16px;border:2px solid transparent}
+.contrast-card.before{background:var(--red-l);border-color:var(--red)}
+.contrast-card.after{background:var(--green-l);border-color:var(--green)}
+.contrast-card h4{font-size:11pt;font-weight:800;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid}
+.contrast-card.before h4{color:var(--red);border-color:var(--red)}
+.contrast-card.after h4{color:var(--green);border-color:var(--green)}
+.contrast-card p{font-size:9.5pt;line-height:2.1;color:var(--sub)}
+
+/* PILLARS */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pillar{border-radius:12px;padding:16px;text-align:center;border:2px solid transparent;transition:.2s}
+.pillar:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,0.1)}
+.pillar.p1{background:var(--blue-l);border-color:var(--blue)}
+.pillar.p2{background:var(--green-l);border-color:var(--green)}
+.pillar.p3{background:var(--orange-l);border-color:var(--orange)}
+.pillar.p4{background:var(--purple-l);border-color:var(--purple)}
+.pillar.p5{background:var(--gold-l);border-color:var(--gold)}
+.pillar.p6{background:var(--red-l);border-color:var(--red)}
+.pillar-icon{font-size:26pt;margin-bottom:8px}
+.pillar-title{font-size:10.5pt;font-weight:700;margin-bottom:4px}
+.pillar.p1 .pillar-title{color:var(--blue)}
+.pillar.p2 .pillar-title{color:var(--green)}
+.pillar.p3 .pillar-title{color:var(--orange)}
+.pillar.p4 .pillar-title{color:var(--purple)}
+.pillar.p5 .pillar-title{color:#f57f17}
+.pillar.p6 .pillar-title{color:var(--red)}
+.pillar-desc{font-size:8.5pt;color:var(--sub);line-height:1.6}
+
+/* ROADMAP */
+.roadmap{display:flex;flex-direction:column;gap:0}
+.rm-item{display:flex;gap:16px;margin-bottom:0;position:relative}
+.rm-line{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0}
+.rm-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10pt;color:#fff;flex-shrink:0;z-index:1}
+.rm-connector{width:3px;flex:1;min-height:20px;margin:0 auto}
+.rm-content{padding-bottom:24px;flex:1}
+.rm-phase{font-size:8.5pt;font-weight:700;margin-bottom:2px}
+.rm-title{font-size:11pt;font-weight:800;color:var(--text);margin-bottom:6px}
+.rm-items{display:flex;flex-direction:column;gap:4px}
+.rm-item-row{font-size:9.5pt;color:var(--sub);padding:4px 10px;background:#f8f9fa;border-radius:6px;border-right:3px solid}
+
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi-card{border-radius:12px;padding:14px;text-align:center;border:2px solid var(--border)}
+.kpi-now{font-size:9pt;color:var(--red);font-weight:600;margin-bottom:4px}
+.kpi-arrow{font-size:16pt;color:var(--blue);margin:4px 0}
+.kpi-target{font-size:14pt;font-weight:900;color:var(--green)}
+.kpi-label{font-size:8.5pt;color:var(--sub);margin-top:4px;line-height:1.5}
+
+/* ENABLERS */
+.enabler-list{display:flex;flex-direction:column;gap:8px}
+.enabler{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:#f8f9fa;border-radius:10px;border-right:4px solid var(--blue)}
+.enabler-icon{font-size:16pt;flex-shrink:0}
+.enabler-title{font-weight:700;font-size:10pt;color:var(--text);margin-bottom:2px}
+.enabler-desc{font-size:9pt;color:var(--sub);line-height:1.6}
+
+/* STATEMENT */
+.statement{background:linear-gradient(135deg,var(--blue-d),var(--blue));color:#fff;border-radius:14px;padding:24px;text-align:center;margin:4px 0}
+.statement h3{font-size:13pt;font-weight:900;margin-bottom:10px}
+.statement p{font-size:10.5pt;opacity:.9;line-height:1.9;max-width:600px;margin:0 auto}
+
+footer{text-align:center;padding:20px;color:var(--sub);font-size:9pt}
+@media(max-width:600px){
+  .contrast,.pillars,.kpi-grid{grid-template-columns:1fr}
+  .pillars{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🏗️ رؤية التركيبات 2026</span>
+  <a href="#now">الواقع</a>
+  <a href="#vision">الرؤية</a>
+  <a href="#pillars">الركائز</a>
+  <a href="#roadmap">الخارطة</a>
+  <a href="#kpis">المؤشرات</a>
+  <a href="#enablers">الممكّنات</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge-top">موبيكا — إدارة التركيبات</div>
+  <h1>من إطفاء الحرائق إلى إدارة المشروعات</h1>
+  <p class="tagline">رؤية استراتيجية لتحويل إدارة التركيبات من نموذج ردود الفعل إلى نموذج التخطيط الاستباقي المدروس</p>
+  <div class="hero-quote">
+    "البريد بالتوريد والتركيب تاني يوم — بنروح نركّب بدون خطة، بدون فرصة للمناورة، دايماً بنطفّي حرائق"<br>
+    <span style="opacity:.7;font-size:9pt;font-style:normal">— الواقع الذي نريد تغييره | أشرف قاسم</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- NOW vs VISION -->
+<div id="now" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">⚖️</span>
+    <div><div class="sec-title">الواقع الحالي vs الرؤية المستهدفة</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="contrast">
+      <div class="contrast-card before">
+        <h4>❌ النموذج الحالي — ردود الأفعال</h4>
+        <p>
+          • بريد من البائع: "التسليم والتركيب بكره"<br>
+          • ذهاب للموقع بدون خطة مسبقة<br>
+          • لا فرصة للمناورة أو التحسين<br>
+          • سحب أفراد من موقع لموقع بشكل مفاجئ<br>
+          • ضغط مستمر وإطفاء حرائق يومي<br>
+          • لا جدول زمني واضح للبدء والانتهاء<br>
+          • الطاقة البشرية غير محسوبة في التوزيع
+        </p>
+      </div>
+      <div class="contrast-card after">
+        <h4>✅ النموذج المستهدف — إدارة مشروعات</h4>
+        <p>
+          • خطة نصف شهرية معتمدة ومعروفة مسبقاً<br>
+          • جدول زمني لكل موقع (بداية + نهاية)<br>
+          • توزيع الفرق بناءً على الطاقة الفعلية<br>
+          • مناورة مدروسة عند التغييرات<br>
+          • تنسيق استباقي مع التسليمات والإنتاج<br>
+          • مؤشرات أداء واضحة تُقاس يومياً<br>
+          • قرارات مبنية على بيانات — لا خمين
+        </p>
+      </div>
+    </div>
+
+    <div class="statement">
+      <h3>🎯 الهدف المركزي</h3>
+      <p>تحويل إدارة التركيبات من <strong>"إدارة أزمات يومية"</strong> إلى <strong>"إدارة مشروعات استباقية"</strong> — حيث كل موقع له خطة، كل فريق له جدول، وكل قرار مبني على بيانات حقيقية</p>
+    </div>
+  </div>
+</div>
+
+<!-- PILLARS -->
+<div id="pillars" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">🏛️</span>
+    <div><div class="sec-title">الركائز الست للرؤية</div>
+    <div class="sec-sub">المحاور الاستراتيجية للتحول</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="pillars">
+      <div class="pillar p1">
+        <div class="pillar-icon">📅</div>
+        <div class="pillar-title">التخطيط الاستباقي</div>
+        <div class="pillar-desc">خطة نصف شهرية معتمدة — نعرف شغلنا قبل ما يجي إلينا</div>
+      </div>
+      <div class="pillar p2">
+        <div class="pillar-icon">⚖️</div>
+        <div class="pillar-title">توازن الطاقة البشرية</div>
+        <div class="pillar-desc">توزيع الأوامر بناءً على عدد الأفراد الفعلي في كل فريق</div>
+      </div>
+      <div class="pillar p3">
+        <div class="pillar-icon">🔗</div>
+        <div class="pillar-title">ربط الإنتاج بالتركيب</div>
+        <div class="pillar-desc">نعرف البضاعة جاهزة امتى — قبل ما تتسلّم للموقع</div>
+      </div>
+      <div class="pillar p4">
+        <div class="pillar-icon">📊</div>
+        <div class="pillar-title">رؤية بيانية لحظية</div>
+        <div class="pillar-desc">كل مدير يشوف أوامره وحالتها في لحظة — بدون اتصالات</div>
+      </div>
+      <div class="pillar p5">
+        <div class="pillar-icon">⚡</div>
+        <div class="pillar-title">سرعة معالجة العيوب</div>
+        <div class="pillar-desc">من الإبلاغ للإصلاح في 6 ساعات قرار — الوقت في الإنتاج</div>
+      </div>
+      <div class="pillar p6">
+        <div class="pillar-icon">📈</div>
+        <div class="pillar-title">قياس الأداء المستمر</div>
+        <div class="pillar-desc">KPIs يومية لكل فريق وكل موقع — تقارير تلقائية 8ص و3م</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div id="roadmap" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">🗺️</span>
+    <div><div class="sec-title">خارطة الطريق — 12 شهر</div>
+    <div class="sec-sub">من أين نبدأ وإلى أين نصل</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="roadmap">
+
+      <div class="rm-item">
+        <div class="rm-line">
+          <div class="rm-dot" style="background:var(--blue)">1</div>
+          <div class="rm-connector" style="background:linear-gradient(var(--blue),var(--green))"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-phase" style="color:var(--blue)">الشهر 1-2 — الأساس</div>
+          <div class="rm-title">رقمنة العمليات الأساسية</div>
+          <div class="rm-items">
+            <div class="rm-item-row" style="border-color:var(--blue)">✅ Tracking Agent مفعّل (81 أمر تحت المتابعة)</div>
+            <div class="rm-item-row" style="border-color:var(--blue)">✅ Fleet Agent مفعّل (13 سيارة)</div>
+            <div class="rm-item-row" style="border-color:var(--blue)">✅ إشعارات تلقائية لكل الفريق</div>
+            <div class="rm-item-row" style="border-color:var(--blue)">✅ تقارير إدارية 8ص و3م</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-line">
+          <div class="rm-dot" style="background:var(--green)">2</div>
+          <div class="rm-connector" style="background:linear-gradient(var(--green),var(--orange))"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-phase" style="color:var(--green)">الشهر 3-4 — الربط</div>
+          <div class="rm-title">ربط التسليمات بالتركيب</div>
+          <div class="rm-items">
+            <div class="rm-item-row" style="border-color:var(--green)">🔨 Delivery Agent — تنسيق التسليمات</div>
+            <div class="rm-item-row" style="border-color:var(--green)">🔨 Snag Agent — معالجة العيوب (6 إدارات)</div>
+            <div class="rm-item-row" style="border-color:var(--green)">🔨 ربط الأنظمة الأربعة ببعض</div>
+            <div class="rm-item-row" style="border-color:var(--green)">🔨 خطة نصف شهرية مربوطة بالإنتاج</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-line">
+          <div class="rm-dot" style="background:var(--orange)">3</div>
+          <div class="rm-connector" style="background:linear-gradient(var(--orange),var(--purple))"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-phase" style="color:var(--orange)">الشهر 5-8 — التخطيط</div>
+          <div class="rm-title">نموذج إدارة المشروعات</div>
+          <div class="rm-items">
+            <div class="rm-item-row" style="border-color:var(--orange)">📋 خطة تركيبات شهرية محسوبة على الطاقة البشرية</div>
+            <div class="rm-item-row" style="border-color:var(--orange)">📋 جدول زمني لكل موقع (بداية + نهاية)</div>
+            <div class="rm-item-row" style="border-color:var(--orange)">📋 توزيع ذكي للفرق — لا سحب عشوائي</div>
+            <div class="rm-item-row" style="border-color:var(--orange)">📋 نظام تنبيه انحراف عن الخطة</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rm-item">
+        <div class="rm-line">
+          <div class="rm-dot" style="background:var(--purple)">4</div>
+          <div class="rm-connector" style="background:transparent"></div>
+        </div>
+        <div class="rm-content">
+          <div class="rm-phase" style="color:var(--purple)">الشهر 9-12 — النضج</div>
+          <div class="rm-title">إدارة مشروعات متكاملة</div>
+          <div class="rm-items">
+            <div class="rm-item-row" style="border-color:var(--purple)">🚀 KPI Dashboard لحظي للإدارة</div>
+            <div class="rm-item-row" style="border-color:var(--purple)">🚀 تقارير أداء الفرق والأفراد</div>
+            <div class="rm-item-row" style="border-color:var(--purple)">🚀 ربط مع SAP مباشرة</div>
+            <div class="rm-item-row" style="border-color:var(--purple)">🚀 نموذج قابل للتكرار في مشاريع جديدة</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div id="kpis" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">📊</span>
+    <div><div class="sec-title">مؤشرات النجاح — نقيس التحول</div>
+    <div class="sec-sub">من أين نحن إلى أين نريد الوصول</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: تلقائي / غير محسوب</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">+80%</div>
+        <div class="kpi-label">أوامر منتهية في موعدها المحدد</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: صفر إشعار مسبق</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">48 ساعة</div>
+        <div class="kpi-label">إشعار الفريق قبل التسليم</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: تليفون يدوي</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">صفر</div>
+        <div class="kpi-label">اتصالات يدوية للتنسيق</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: أيام</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">6 ساعات</div>
+        <div class="kpi-label">وقت معالجة بلاغات العيوب</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: غير محسوبة</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">100%</div>
+        <div class="kpi-label">الأوامر في نظام متابعة رقمي</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-now">الآن: ردود أفعال</div>
+        <div class="kpi-arrow">↓</div>
+        <div class="kpi-target">نصف شهري</div>
+        <div class="kpi-label">خطة تركيبات مسبقة ومعتمدة</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENABLERS -->
+<div id="enablers" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">⚡</span>
+    <div><div class="sec-title">الممكّنات — الأدوات اللي هتحقق الرؤية</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="enabler-list">
+      <div class="enabler">
+        <div class="enabler-icon">📋</div>
+        <div>
+          <div class="enabler-title">Tracking Agent ✅ مفعّل</div>
+          <div class="enabler-desc">رؤية لحظية لـ 81 أمر تركيب — تحديثات الفرق — تقارير يومية — إشعارات التأخير</div>
+        </div>
+      </div>
+      <div class="enabler">
+        <div class="enabler-icon">🚗</div>
+        <div>
+          <div class="enabler-title">Fleet Agent ✅ مفعّل</div>
+          <div class="enabler-desc">جدولة 13 سيارة لـ 155 فرد — طلب السيارة في ثوانٍ — إشعار فوري للمدير</div>
+        </div>
+      </div>
+      <div class="enabler">
+        <div class="enabler-icon">🔴</div>
+        <div>
+          <div class="enabler-title">Snag Agent 🔨 قيد التفعيل</div>
+          <div class="enabler-desc">معالجة العيوب عبر 6 إدارات — SLA 6 ساعات — ربط تلقائي من Tracking</div>
+        </div>
+      </div>
+      <div class="enabler">
+        <div class="enabler-icon">📦</div>
+        <div>
+          <div class="enabler-title">Delivery Agent 📐 تحت التخطيط</div>
+          <div class="enabler-desc">قسيمة الصرف من SAP → إشعار الفرق قبل 48 ساعة → تنسيق التسليم والتركيب</div>
+        </div>
+      </div>
+      <div class="enabler" style="border-color:var(--gold)">
+        <div class="enabler-icon">📊</div>
+        <div>
+          <div class="enabler-title">Planning Agent 🎯 الهدف النهائي</div>
+          <div class="enabler-desc">خطة تركيبات نصف شهرية محسوبة على الطاقة البشرية — توزيع ذكي — جدول لكل موقع</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL STATEMENT -->
+<div class="sec">
+  <div class="sec-body">
+    <div class="statement">
+      <h3>🏆 الرسالة الاستراتيجية</h3>
+      <p>
+        إدارة التركيبات لا تعمل في فراغ — هي الحلقة التي تربط بين إنتاج المصانع وتسليم العميل.<br>
+        كل تأخير في التركيب يعني تأخيراً في الاستحقاق وخسارة في ثقة العميل.<br><br>
+        <strong>رؤيتنا:</strong> إدارة تركيبات تخطّط قبل أن تتحرك، وتقيس قبل أن تقرر، وتتعلم من كل مشروع لتحسّن التالي.<br>
+        <strong>هدفنا:</strong> أن تكون إدارة التركيبات في موبيكا نموذجاً يُحتذى به داخل المجموعة.
+      </p>
+    </div>
+  </div>
+</div>
+
+</div>
+<footer>إعداد: أشرف قاسم — مدير تخطيط إدارة التركيبات | موبيكا | مارس 2026</footer>
+</body>
+</html>
