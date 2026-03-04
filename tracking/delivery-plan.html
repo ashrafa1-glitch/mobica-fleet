@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خطة Delivery Agent — موبيكا</title>
+<style>
+:root{--blue:#1565c0;--blue-light:#e3f2fd;--green:#2e7d32;--green-light:#e8f5e9;--orange:#e65100;--orange-light:#fff3e0;--red:#c62828;--red-light:#fce4ec;--purple:#6a1b9a;--purple-light:#f3e5f5;--text:#1a1a2e;--sub:#546e7a;--border:#e0e8f0;--bg:#f0f4f8}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);direction:rtl;line-height:1.7}
+nav{position:sticky;top:0;z-index:100;background:rgba(21,101,192,0.97);padding:0 20px;display:flex;align-items:center;gap:8px;min-height:50px;flex-wrap:wrap;box-shadow:0 2px 16px rgba(21,101,192,0.3)}
+nav .logo{font-size:13pt;font-weight:800;color:#fff;margin-left:auto}
+nav a{color:rgba(255,255,255,0.85);text-decoration:none;font-size:9pt;font-weight:600;padding:4px 12px;border-radius:20px;transition:.2s}
+nav a:hover{background:rgba(255,255,255,0.2)}
+
+.hero{background:linear-gradient(135deg,#0d47a1,#1976d2);color:#fff;padding:50px 20px 40px;text-align:center}
+.hero-icon{font-size:48px;margin-bottom:12px}
+.hero h1{font-size:clamp(18pt,4vw,26pt);font-weight:900;margin-bottom:8px}
+.hero h2{font-size:11pt;opacity:.85;margin-bottom:24px}
+.hero-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.hero-badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:5px 14px;border-radius:20px;font-size:9.5pt;font-weight:600}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px}
+.sec{background:#fff;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,0.06);margin-bottom:20px;overflow:hidden}
+.sec-head{padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.sec-icon{font-size:20pt}
+.sec-title{font-size:13pt;font-weight:800;color:var(--text)}
+.sec-sub{font-size:9pt;color:var(--sub);margin-top:2px}
+.sec-body{padding:20px}
+
+/* FLOW */
+.flow-full{display:flex;flex-direction:column;gap:0;position:relative;padding-right:20px;border-right:3px solid var(--blue-light);margin:8px 0}
+.flow-step-item{display:flex;gap:14px;margin-bottom:16px;position:relative}
+.flow-step-item::before{content:'';position:absolute;right:-23px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--blue)}
+.flow-num{background:var(--blue);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10pt;flex-shrink:0;margin-top:2px}
+.flow-content{}
+.flow-title{font-weight:700;font-size:10.5pt;color:var(--text)}
+.flow-desc{font-size:9.5pt;color:var(--sub);margin-top:2px;line-height:1.7}
+.flow-step-item.orange .flow-num{background:var(--orange)}
+.flow-step-item.orange::before{background:var(--orange)}
+.flow-step-item.green .flow-num{background:var(--green)}
+.flow-step-item.green::before{background:var(--green)}
+.flow-step-item.red .flow-num{background:var(--red)}
+.flow-step-item.red::before{background:var(--red)}
+.flow-step-item.purple .flow-num{background:var(--purple)}
+.flow-step-item.purple::before{background:var(--purple)}
+
+/* NOTIF */
+.notif-card{border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px;border:1px solid var(--border)}
+.notif-card.blue{background:var(--blue-light);border-color:var(--blue)}
+.notif-card.green{background:var(--green-light);border-color:var(--green)}
+.notif-card.orange{background:var(--orange-light);border-color:var(--orange)}
+.notif-card.purple{background:var(--purple-light);border-color:var(--purple)}
+.notif-icon{font-size:18pt;flex-shrink:0}
+.notif-who{font-weight:700;font-size:10pt}
+.notif-card.blue .notif-who{color:var(--blue)}
+.notif-card.green .notif-who{color:var(--green)}
+.notif-card.orange .notif-who{color:var(--orange)}
+.notif-card.purple .notif-who{color:var(--purple)}
+.notif-msg{font-size:9.5pt;color:var(--sub);margin-top:3px;line-height:1.6}
+
+/* ROLES */
+.roles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.role-card{border:1.5px solid var(--border);border-radius:10px;padding:14px}
+.role-card h4{font-size:10pt;font-weight:700;color:var(--blue);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.role-card p{font-size:9.5pt;color:var(--sub);line-height:1.8}
+
+/* PHASES */
+.phase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.phase-card{border-radius:10px;padding:14px;border:2px solid transparent}
+.phase-card.p1{background:var(--blue-light);border-color:var(--blue)}
+.phase-card.p2{background:var(--green-light);border-color:var(--green)}
+.phase-card.p3{background:var(--orange-light);border-color:var(--orange)}
+.phase-card.p4{background:var(--purple-light);border-color:var(--purple)}
+.phase-num{font-size:8.5pt;font-weight:700;margin-bottom:4px}
+.phase-card.p1 .phase-num{color:var(--blue)}
+.phase-card.p2 .phase-num{color:var(--green)}
+.phase-card.p3 .phase-num{color:var(--orange)}
+.phase-card.p4 .phase-num{color:var(--purple)}
+.phase-title{font-size:11pt;font-weight:800;color:var(--text);margin-bottom:6px}
+.phase-items{font-size:9pt;color:var(--sub);line-height:2}
+
+/* TODO */
+.todo-list{display:flex;flex-direction:column;gap:8px}
+.todo-item{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--border)}
+.todo-item.ashraf{background:#e3f2fd;border-color:var(--blue)}
+.todo-item.system{background:#e8f5e9;border-color:var(--green)}
+.todo-tag{padding:2px 10px;border-radius:10px;font-size:8.5pt;font-weight:700;white-space:nowrap;flex-shrink:0}
+.todo-item.ashraf .todo-tag{background:var(--blue);color:#fff}
+.todo-item.system .todo-tag{background:var(--green);color:#fff}
+.todo-text{font-size:9.5pt;color:var(--text);line-height:1.6}
+
+/* LINK BOX */
+.link-box{background:linear-gradient(135deg,var(--blue-light),#fff);border:2px solid var(--blue);border-radius:12px;padding:16px;text-align:center}
+.link-box p{font-size:9.5pt;color:var(--sub);margin-bottom:8px}
+.link-box a{font-size:11pt;font-weight:700;color:var(--blue);text-decoration:none}
+
+footer{text-align:center;padding:20px;color:var(--sub);font-size:9pt}
+
+@media(max-width:600px){
+  .roles-grid,.phase-grid{grid-template-columns:1fr}
+  nav a{font-size:8pt;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">📦 Delivery Agent</span>
+  <a href="#problem">المشكلة</a>
+  <a href="#flow">الـ Flow</a>
+  <a href="#notif">الإشعارات</a>
+  <a href="#roles">الأدوار</a>
+  <a href="#phases">التنفيذ</a>
+  <a href="#todo">المطلوب</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-icon">📦</div>
+  <h1>Delivery Agent — منظومة التسليمات</h1>
+  <h2>ربط الإنتاج بالموقع — قبل التسليم مش بعده</h2>
+  <div class="hero-badges">
+    <span class="hero-badge">🏭 6 مصانع</span>
+    <span class="hero-badge">📋 قسيمة صرف SAP</span>
+    <span class="hero-badge">🚛 تنسيق التسليم</span>
+    <span class="hero-badge">🔗 مربوط بـ Tracking + Fleet</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- PROBLEM -->
+<div id="problem" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">⚠️</span>
+    <div><div class="sec-title">المشكلة الحالية</div>
+    <div class="sec-sub">ليه محتاجين الـ Agent ده؟</div></div>
+  </div>
+  <div class="sec-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:var(--red-light);border-right:4px solid var(--red);border-radius:10px;padding:14px">
+        <div style="font-weight:700;color:var(--red);margin-bottom:8px;font-size:10.5pt">❌ الواقع الحالي</div>
+        <p style="font-size:9.5pt;color:var(--sub);line-height:2">
+          • الفريق مش عارف البضاعة هتوصل امتى<br>
+          • ياسر بيعمل أمر SAP بعد التسليم (ردّ فعل)<br>
+          • تنسيق بالتليفون يدوياً كل مرة<br>
+          • فريق يوصل الموقع والبضاعة مش جاهزة<br>
+          • تأخيرات بسبب عدم التنسيق المسبق
+        </p>
+      </div>
+      <div style="background:var(--green-light);border-right:4px solid var(--green);border-radius:10px;padding:14px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:8px;font-size:10.5pt">✅ مع Delivery Agent</div>
+        <p style="font-size:9.5pt;color:var(--sub);line-height:2">
+          • مدير المجموعة يعرف قبل يومين<br>
+          • ياسر يستلم إشعار "جهّز SAP"<br>
+          • تنسيق تلقائي عبر Telegram<br>
+          • الفريق جاهز قبل ما البضاعة توصل<br>
+          • صفر تأخير بسبب عدم التنسيق
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div id="flow" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">🔄</span>
+    <div><div class="sec-title">الـ Flow الكامل — من الإنتاج للموقع</div>
+    <div class="sec-sub">كيف يعمل النظام خطوة بخطوة</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="flow-full">
+      <div class="flow-step-item">
+        <div class="flow-num">1</div>
+        <div class="flow-content">
+          <div class="flow-title">🏭 المصانع تُنتج الأجزاء</div>
+          <div class="flow-desc">مصنع الخشب + مصنع المعدن + باقي المصانع كل يعمل الجزء بتاعه (شاسية + فرصة + إلخ)</div>
+        </div>
+      </div>
+      <div class="flow-step-item">
+        <div class="flow-num">2</div>
+        <div class="flow-content">
+          <div class="flow-title">✅ الأجزاء تكتمل → مخازن الإنتاج التام</div>
+          <div class="flow-desc">لما كل أجزاء المنتج تكتمل → يدخل مخازن الإنتاج التام كمنتج نهائي جاهز</div>
+        </div>
+      </div>
+      <div class="flow-step-item orange">
+        <div class="flow-num">3</div>
+        <div class="flow-content">
+          <div class="flow-title">📋 إدارة التسليمات تعمل قسيمة صرف (SAP)</div>
+          <div class="flow-desc">قسيمة الصرف = الإذن الرسمي لصرف المنتج من المخزن للتسليم للموقع</div>
+        </div>
+      </div>
+      <div class="flow-step-item orange">
+        <div class="flow-num">4</div>
+        <div class="flow-content">
+          <div class="flow-title">⬆️ رفع قسيمة الصرف في Delivery Agent</div>
+          <div class="flow-desc">Export من SAP → Excel → رفع في النظام → يُطلق الإشعارات تلقائياً</div>
+        </div>
+      </div>
+      <div class="flow-step-item green">
+        <div class="flow-num">5</div>
+        <div class="flow-content">
+          <div class="flow-title">🔔 إشعارات تلقائية لكل المعنيين</div>
+          <div class="flow-desc">مدير المجموعة + عماد + ياسر + أشرف — كل واحد يستلم اللي يخصّه</div>
+        </div>
+      </div>
+      <div class="flow-step-item green">
+        <div class="flow-num">6</div>
+        <div class="flow-content">
+          <div class="flow-title">🚛 التسليم للموقع في الموعد</div>
+          <div class="flow-desc">الفريق جاهز، السيارة محجوزة (Fleet Agent)، عماد مستعد للاستلام</div>
+        </div>
+      </div>
+      <div class="flow-step-item purple">
+        <div class="flow-num">7</div>
+        <div class="flow-content">
+          <div class="flow-title">📦 عماد يؤكد الاستلام</div>
+          <div class="flow-desc">تسجيل الاستلام في النظام → تحديث تلقائي في Tracking Agent</div>
+        </div>
+      </div>
+      <div class="flow-step-item purple">
+        <div class="flow-num">8</div>
+        <div class="flow-content">
+          <div class="flow-title">📋 ياسر ينشئ أمر SAP</div>
+          <div class="flow-desc">بعد التأكيد → ياسر يعمل أمر التركيب في SAP → Tracking Agent يبدأ المتابعة</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notif" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">🔔</span>
+    <div><div class="sec-title">الإشعارات التلقائية</div>
+    <div class="sec-sub">كل شخص يستلم اللي يخصّه فقط</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="notif-card blue">
+      <div class="notif-icon">👷</div>
+      <div>
+        <div class="notif-who">مدير المجموعة (قبل يومين)</div>
+        <div class="notif-msg">📦 بضاعة العميل [X] جاهزة للتسليم<br>📍 الموقع: [العنوان] | 📅 موعد التسليم: [التاريخ]<br>جهّز فريقك وكن جاهزاً لاستلام البضاعة</div>
+      </div>
+    </div>
+    <div class="notif-card green">
+      <div class="notif-icon">🚛</div>
+      <div>
+        <div class="notif-who">عماد عبدالواحد (يوم التسليم)</div>
+        <div class="notif-msg">📦 تسليم اليوم: [اسم العميل]<br>📍 [الموقع] | الكمية: [X وحدة]<br>يرجى تأكيد الاستلام في النظام فور الوصول</div>
+      </div>
+    </div>
+    <div class="notif-card orange">
+      <div class="notif-icon">📋</div>
+      <div>
+        <div class="notif-who">ياسر السيد (بعد تأكيد الاستلام)</div>
+        <div class="notif-msg">✅ تم تسليم [اسم العميل] بنجاح<br>يرجى إنشاء أمر التركيب في SAP الآن<br>رقم القسيمة: [XXX]</div>
+      </div>
+    </div>
+    <div class="notif-card purple">
+      <div class="notif-icon">📊</div>
+      <div>
+        <div class="notif-who">أشرف / خالد / فتحي (تقرير يومي)</div>
+        <div class="notif-msg">📦 تسليمات اليوم: [X] عميل<br>✅ تم التسليم: [X] | ⏳ في الطريق: [X] | ⚠️ متأخر: [X]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROLES -->
+<div id="roles" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">👥</span>
+    <div><div class="sec-title">الأدوار والمسؤوليات</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="roles-grid">
+      <div class="role-card">
+        <h4>📋 إدارة التسليمات</h4>
+        <p>• يرفع قسيمة الصرف (Export من SAP)<br>• يحدّث حالة التسليم<br>• يؤكد صرف البضاعة من المخزن</p>
+      </div>
+      <div class="role-card">
+        <h4>🚛 عماد عبدالواحد</h4>
+        <p>• يستلم إشعار يوم التسليم<br>• يؤكد الاستلام في الموقع<br>• يُبلّغ عن أي مشكلة في التسليم</p>
+      </div>
+      <div class="role-card">
+        <h4>👷 مديرو المجموعات</h4>
+        <p>• يستلمون إشعار قبل يومين<br>• يجهّزون الفريق وموقع الاستلام<br>• يؤكدون الجاهزية</p>
+      </div>
+      <div class="role-card">
+        <h4>📦 ياسر السيد</h4>
+        <p>• يستلم إشعار "أنشئ أمر SAP"<br>• ينشئ أمر التركيب بعد تأكيد الاستلام<br>• Tracking Agent يبدأ تلقائياً</p>
+      </div>
+      <div class="role-card">
+        <h4>📊 أشرف قاسم</h4>
+        <p>• رؤية شاملة لكل التسليمات<br>• تنبيهات التأخير<br>• تقرير يومي 8ص و3م</p>
+      </div>
+      <div class="role-card">
+        <h4>🔗 الربط مع الأنظمة</h4>
+        <p>• ← Tracking Agent (بعد تأكيد الاستلام)<br>• ← Fleet Agent (طلب سيارة للتسليم)<br>• ← Snag Agent (لو في عيب عند التسليم)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASES -->
+<div id="phases" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">🗓️</span>
+    <div><div class="sec-title">خطة التنفيذ — 4 مراحل</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="phase-grid">
+      <div class="phase-card p1">
+        <div class="phase-num">الأسبوع الأول</div>
+        <div class="phase-title">📐 البنية الأساسية</div>
+        <div class="phase-items">
+          • واجهة رفع قسيمة الصرف<br>
+          • قراءة Excel من SAP<br>
+          • Google Sheets backend<br>
+          • تسجيل الدخول بالأدوار
+        </div>
+      </div>
+      <div class="phase-card p2">
+        <div class="phase-num">الأسبوع الثاني</div>
+        <div class="phase-title">🔔 الإشعارات</div>
+        <div class="phase-items">
+          • إشعار مدير المجموعة قبل يومين<br>
+          • إشعار عماد يوم التسليم<br>
+          • إشعار ياسر بعد الاستلام<br>
+          • تقرير إدارة يومي
+        </div>
+      </div>
+      <div class="phase-card p3">
+        <div class="phase-num">الأسبوع الثالث</div>
+        <div class="phase-title">🔗 الربط مع الأنظمة</div>
+        <div class="phase-items">
+          • ربط مع Tracking Agent<br>
+          • ربط مع Fleet Agent<br>
+          • ربط مع Snag Agent<br>
+          • تحديث تلقائي عند الاستلام
+        </div>
+      </div>
+      <div class="phase-card p4">
+        <div class="phase-num">الأسبوع الرابع</div>
+        <div class="phase-title">✅ التفعيل والتدريب</div>
+        <div class="phase-items">
+          • تدريب إدارة التسليمات<br>
+          • تفعيل مع الفريق كامل<br>
+          • مراجعة بعد أول أسبوع<br>
+          • تعديلات نهائية
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TODO -->
+<div id="todo" class="sec">
+  <div class="sec-head">
+    <span class="sec-icon">✅</span>
+    <div><div class="sec-title">المطلوب للبدء</div>
+    <div class="sec-sub">توزيع المهام</div></div>
+  </div>
+  <div class="sec-body">
+    <div class="todo-list">
+      <div class="todo-item ashraf">
+        <span class="todo-tag">أشرف</span>
+        <div class="todo-text">اسم المسؤول في إدارة التسليمات + رقم التليفون + Telegram ID</div>
+      </div>
+      <div class="todo-item ashraf">
+        <span class="todo-tag">أشرف</span>
+        <div class="todo-text">نموذج قسيمة صرف Export من SAP (ملف Excel واحد كمثال)</div>
+      </div>
+      <div class="todo-item ashraf">
+        <span class="todo-tag">أشرف</span>
+        <div class="todo-text">الفرق اللي بيتوصّلها — هل كل الفرق (A,B,C,D) ولا فرق معينة؟</div>
+      </div>
+      <div class="todo-item system">
+        <span class="todo-tag">هكاية</span>
+        <div class="todo-text">بناء الواجهة الكاملة + Apps Script + إشعارات Telegram</div>
+      </div>
+      <div class="todo-item system">
+        <span class="todo-tag">هكاية</span>
+        <div class="todo-text">ربط Delivery Agent مع Tracking + Fleet + Snag</div>
+      </div>
+      <div class="todo-item system">
+        <span class="todo-tag">هكاية</span>
+        <div class="todo-text">نشر على GitHub Pages + تدريب الفريق</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-body">
+    <div class="link-box">
+      <p>تقرير المنظومة الكاملة</p>
+      <a href="https://ashrafa1-glitch.github.io/mobica-fleet/tracking/report.html">👉 ashrafa1-glitch.github.io/mobica-fleet/tracking/report.html</a>
+    </div>
+  </div>
+</div>
+
+</div>
+<footer>إعداد: أشرف قاسم — مدير تخطيط التركيبات | موبيكا | مارس 2026</footer>
+</body>
+</html>
