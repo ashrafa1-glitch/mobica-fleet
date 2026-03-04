@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Delivery Agent — موبيكا</title>
+<style>
+:root{
+  --blue:#1565c0;--blue-d:#0d47a1;--blue-l:#e3f2fd;
+  --green:#2e7d32;--green-l:#e8f5e9;
+  --orange:#e65100;--orange-l:#fff3e0;
+  --red:#c62828;--red-l:#fce4ec;
+  --gold:#f9a825;--gold-l:#fffde7;
+  --text:#1a1a2e;--sub:#546e7a;--border:#e0e8f0;--bg:#f0f4f8;
+  --white:#ffffff;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.07)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);direction:rtl;min-height:100vh}
+button{cursor:pointer;border:none;font-family:inherit;font-size:inherit}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--blue-d),var(--blue))}
+.login-card{background:#fff;border-radius:20px;padding:36px 30px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+.login-logo{font-size:40px;margin-bottom:12px}
+.login-title{font-size:14pt;font-weight:800;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:9.5pt;color:var(--sub);margin-bottom:24px}
+.login-card select,.login-card input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:10.5pt;font-family:inherit;direction:rtl;margin-bottom:12px;outline:none;transition:.2s}
+.login-card select:focus,.login-card input:focus{border-color:var(--blue)}
+.login-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border-radius:10px;font-size:11pt;font-weight:700;margin-top:4px}
+.login-btn:hover{opacity:.9}
+.login-err{color:var(--red);font-size:9pt;margin-top:8px;display:none}
+
+/* APP */
+#app{display:none}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,var(--blue-d),var(--blue));color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(21,101,192,0.3)}
+.topbar-logo{font-size:18pt}
+.topbar-title{font-size:12pt;font-weight:800;flex:1}
+.topbar-user{font-size:9pt;opacity:.8;text-align:left}
+.logout-btn{background:rgba(255,255,255,0.15);color:#fff;padding:5px 12px;border-radius:20px;font-size:9pt;font-weight:600}
+
+/* TABS */
+.tabs{display:flex;gap:0;background:#fff;border-bottom:2px solid var(--border);overflow-x:auto;padding:0 16px;position:sticky;top:56px;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.tab{padding:11px 16px;font-size:9.5pt;font-weight:600;color:var(--sub);border-bottom:3px solid transparent;white-space:nowrap;background:none;transition:.2s}
+.tab.active{color:var(--blue);border-color:var(--blue)}
+
+/* MAIN */
+.main{max-width:860px;margin:0 auto;padding:16px}
+
+/* SUMMARY CARDS */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.sum-card{background:#fff;border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow);border-top:3px solid}
+.sum-card.blue{border-color:var(--blue)}
+.sum-card.green{border-color:var(--green)}
+.sum-card.orange{border-color:var(--orange)}
+.sum-card.red{border-color:var(--red)}
+.sum-num{font-size:22pt;font-weight:900}
+.sum-card.blue .sum-num{color:var(--blue)}
+.sum-card.green .sum-num{color:var(--green)}
+.sum-card.orange .sum-num{color:var(--orange)}
+.sum-card.red .sum-num{color:var(--red)}
+.sum-lbl{font-size:8.5pt;color:var(--sub);margin-top:3px}
+
+/* SECTION */
+.section{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.section-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.section-head-title{font-weight:700;font-size:11pt;display:flex;align-items:center;gap:8px}
+.section-body{padding:14px 16px}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2.5px dashed var(--blue);border-radius:var(--radius);padding:30px;text-align:center;background:var(--blue-l);cursor:pointer;transition:.2s;margin-bottom:14px}
+.upload-zone:hover{background:#d0e8ff}
+.upload-zone.dragover{background:#bbdefb;border-color:var(--blue-d)}
+.upload-icon{font-size:32pt;margin-bottom:8px}
+.upload-title{font-size:11pt;font-weight:700;color:var(--blue);margin-bottom:4px}
+.upload-sub{font-size:9pt;color:var(--sub)}
+#fileInput{display:none}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:9.5pt}
+th{background:#f0f4f8;padding:9px 12px;text-align:right;font-weight:700;color:var(--text);white-space:nowrap;font-size:9pt}
+td{padding:9px 12px;border-bottom:1px solid var(--border)}
+tr:hover td{background:#fafbff}
+
+/* STATUS BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:8.5pt;font-weight:700;white-space:nowrap}
+.badge-warehouse{background:var(--blue-l);color:var(--blue)}
+.badge-transit{background:var(--orange-l);color:var(--orange)}
+.badge-delivered{background:var(--green-l);color:var(--green)}
+.badge-late{background:var(--red-l);color:var(--red)}
+.badge-pending{background:#f5f5f5;color:#666}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+.form-group label{font-size:9pt;font-weight:700;color:var(--sub);display:block;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:10pt;font-family:inherit;direction:rtl;outline:none;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue)}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:8px;font-size:10pt;font-weight:700;transition:.2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-d)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{opacity:.85}
+.btn-warning{background:var(--orange);color:#fff}
+.btn-sm{padding:5px 12px;font-size:8.5pt}
+.btn-outline{background:transparent;border:1.5px solid var(--blue);color:var(--blue)}
+
+/* TIMELINE */
+.timeline-item{display:flex;gap:12px;margin-bottom:12px}
+.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13pt;flex-shrink:0}
+.tl-dot.done{background:var(--green-l)}
+.tl-dot.active{background:var(--orange-l)}
+.tl-dot.pending{background:#f5f5f5}
+.tl-content{flex:1;padding-top:4px}
+.tl-title{font-size:10pt;font-weight:700;color:var(--text)}
+.tl-sub{font-size:8.5pt;color:var(--sub);margin-top:2px}
+
+/* NOTIF PREVIEW */
+.notif-preview{border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:9.5pt;border:1px solid var(--border)}
+.notif-preview.blue{background:var(--blue-l);border-color:var(--blue)}
+.notif-preview.green{background:var(--green-l);border-color:var(--green)}
+.notif-preview.orange{background:var(--orange-l);border-color:var(--orange)}
+.notif-who{font-weight:700;font-size:9pt;margin-bottom:4px}
+.notif-preview.blue .notif-who{color:var(--blue)}
+.notif-preview.green .notif-who{color:var(--green)}
+.notif-preview.orange .notif-who{color:var(--orange)}
+
+/* EMPTY */
+.empty{text-align:center;padding:30px;color:var(--sub)}
+.empty-icon{font-size:32pt;margin-bottom:8px}
+.empty p{font-size:10pt}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:10pt;z-index:999;transition:.3s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.15);max-height:90vh;overflow-y:auto}
+.modal-title{font-size:12pt;font-weight:800;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+
+@media(max-width:540px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row,.form-row.triple{grid-template-columns:1fr}
+  .topbar-title{font-size:10.5pt}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">📦</div>
+    <div class="login-title">Delivery Agent</div>
+    <div class="login-sub">منظومة تتبع التسليمات — موبيكا</div>
+    <select id="loginUser">
+      <option value="">اختر المستخدم</option>
+      <option value="ashraf|admin">أشرف قاسم — مدير التخطيط</option>
+      <option value="khaled|admin">خالد علي — إدارة</option>
+      <option value="fathy|admin">محمد فتحي — مدير التركيبات</option>
+      <option value="delivery|delivery">إدارة التسليمات</option>
+      <option value="emad|receiver">عماد عبدالواحد — تسليم</option>
+      <option value="yasser|supply">ياسر السيد — توريد</option>
+      <option value="teamA|manager">أحمد حسن — مجموعة A</option>
+      <option value="teamB|manager">سامى فؤاد — مجموعة B</option>
+      <option value="teamC|manager">حازم قاعود — مجموعة C</option>
+      <option value="teamD|manager">هشام جمال — مجموعة D</option>
+    </select>
+    <input type="password" id="loginPass" placeholder="كلمة المرور">
+    <button class="login-btn" onclick="doLogin()">دخول</button>
+    <div class="login-err" id="loginErr">كلمة المرور غلط</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-logo">📦</span>
+    <span class="topbar-title">Delivery Agent — التسليمات</span>
+    <span class="topbar-user" id="topbarUser"></span>
+    <button class="logout-btn" onclick="logout()">خروج</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard',this)">📊 الداشبورد</button>
+    <button class="tab" onclick="showTab('upload',this)">⬆️ رفع قسيمة</button>
+    <button class="tab" onclick="showTab('deliveries',this)">🚛 التسليمات</button>
+    <button class="tab" onclick="showTab('calendar',this)">📅 الجدول</button>
+    <button class="tab admin-only" onclick="showTab('notifications',this)">🔔 الإشعارات</button>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard">
+      <div class="summary-grid">
+        <div class="sum-card blue"><div class="sum-num" id="cnt-total">0</div><div class="sum-lbl">إجمالي التسليمات</div></div>
+        <div class="sum-card orange"><div class="sum-num" id="cnt-transit">0</div><div class="sum-lbl">في الطريق</div></div>
+        <div class="sum-card green"><div class="sum-num" id="cnt-done">0</div><div class="sum-lbl">تم التسليم</div></div>
+        <div class="sum-card red"><div class="sum-num" id="cnt-late">0</div><div class="sum-lbl">متأخر</div></div>
+      </div>
+
+      <!-- TODAY -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">🚛 تسليمات اليوم</span>
+          <span id="todayDate" style="font-size:9pt;color:var(--sub)"></span>
+        </div>
+        <div class="section-body" id="todayDeliveries">
+          <div class="empty"><div class="empty-icon">📦</div><p>لا توجد تسليمات مجدولة اليوم</p></div>
+        </div>
+      </div>
+
+      <!-- UPCOMING -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">📅 التسليمات القادمة (7 أيام)</span>
+        </div>
+        <div class="section-body" id="upcomingDeliveries">
+          <div class="empty"><div class="empty-icon">📋</div><p>ارفع قسيمة الصرف لعرض التسليمات</p></div>
+        </div>
+      </div>
+
+      <!-- LATE -->
+      <div class="section" id="lateSection" style="display:none">
+        <div class="section-head" style="background:var(--red-l)">
+          <span class="section-head-title" style="color:var(--red)">⚠️ تسليمات متأخرة</span>
+        </div>
+        <div class="section-body" id="lateDeliveries"></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="tab-upload" style="display:none">
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">⬆️ رفع قسيمة الصرف من SAP</span>
+        </div>
+        <div class="section-body">
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
+            ondragover="event.preventDefault();this.classList.add('dragover')"
+            ondragleave="this.classList.remove('dragover')"
+            ondrop="handleDrop(event)">
+            <div class="upload-icon">📂</div>
+            <div class="upload-title">اضغط لاختيار ملف أو اسحب هنا</div>
+            <div class="upload-sub">Export قسيمة الصرف من SAP — ملف Excel (.xlsx / .xls)</div>
+          </div>
+          <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])">
+
+          <div id="uploadPreview" style="display:none">
+            <div style="background:var(--green-l);border:1.5px solid var(--green);border-radius:10px;padding:14px;margin-bottom:12px">
+              <div style="font-weight:700;color:var(--green);margin-bottom:4px">✅ تم قراءة الملف</div>
+              <div id="uploadStats" style="font-size:9.5pt;color:var(--sub)"></div>
+            </div>
+            <div class="tbl-wrap">
+              <table id="previewTable">
+                <thead id="previewHead"></thead>
+                <tbody id="previewBody"></tbody>
+              </table>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px">
+              <button class="btn btn-primary" onclick="confirmUpload()">✅ تأكيد الرفع وإرسال الإشعارات</button>
+              <button class="btn btn-outline" onclick="cancelUpload()">إلغاء</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUAL ENTRY -->
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">✏️ إضافة تسليم يدوياً</span>
+        </div>
+        <div class="section-body">
+          <div class="form-row">
+            <div class="form-group"><label>اسم العميل</label><input id="m-client" placeholder="اسم العميل"></div>
+            <div class="form-group"><label>رقم أمر التركيب</label><input id="m-order" placeholder="XXXXXXXX"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>الموقع / العنوان</label><input id="m-site" placeholder="عنوان الموقع"></div>
+            <div class="form-group"><label>الفريق المسؤول</label>
+              <select id="m-team">
+                <option value="">اختر الفريق</option>
+                <option value="A">مجموعة A — أحمد حسن</option>
+                <option value="B">مجموعة B — سامى فؤاد</option>
+                <option value="C">مجموعة C — حازم قاعود</option>
+                <option value="D">مجموعة D — هشام جمال</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row triple">
+            <div class="form-group"><label>تاريخ التسليم</label><input type="date" id="m-date"></div>
+            <div class="form-group"><label>الكمية (وحدة)</label><input type="number" id="m-qty" placeholder="0"></div>
+            <div class="form-group"><label>المصنع المورّد</label>
+              <select id="m-factory">
+                <option value="">اختر المصنع</option>
+                <option value="metal">معدن (أحمد رجائي)</option>
+                <option value="wood">خشب طبيعي (حسن)</option>
+                <option value="steel">ستيل (محمد زكي)</option>
+                <option value="melamine">ميلامين (محمود فتحي)</option>
+                <option value="upholstery">تنجيد (عبدالله)</option>
+                <option value="aluminum">ألومنيوم (إبراهيم)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addManual()">➕ إضافة التسليم</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVERIES -->
+    <div id="tab-deliveries" style="display:none">
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">🚛 جميع التسليمات</span>
+          <div style="display:flex;gap:8px">
+            <select id="filterStatus" onchange="renderDeliveries()" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:9pt">
+              <option value="">الكل</option>
+              <option value="warehouse">في المخزن</option>
+              <option value="transit">في الطريق</option>
+              <option value="delivered">تم التسليم</option>
+              <option value="late">متأخر</option>
+            </select>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>العميل</th>
+                  <th>الموقع</th>
+                  <th>الفريق</th>
+                  <th>تاريخ التسليم</th>
+                  <th>الكمية</th>
+                  <th>الحالة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="deliveriesBody">
+                <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--sub)">لا توجد تسليمات بعد — ارفع قسيمة الصرف</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div id="tab-calendar" style="display:none">
+      <div class="section">
+        <div class="section-head">
+          <span class="section-head-title">📅 جدول التسليمات النصف شهري</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-sm btn-outline" onclick="prevMonth()">◀</button>
+            <span id="calMonthLabel" style="font-weight:700;font-size:10pt"></span>
+            <button class="btn btn-sm btn-outline" onclick="nextMonth()">▶</button>
+          </div>
+        </div>
+        <div class="section-body">
+          <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:9pt"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="tab-notifications" style="display:none">
+      <div class="section">
+        <div class="section-head"><span class="section-head-title">🔔 معاينة الإشعارات</span></div>
+        <div class="section-body">
+          <p style="font-size:9.5pt;color:var(--sub);margin-bottom:14px">هكذا ستصل الإشعارات تلقائياً عند رفع قسيمة الصرف:</p>
+
+          <div class="notif-preview blue">
+            <div class="notif-who">👷 مدير المجموعة (قبل يومين)</div>
+            <div>📦 بضاعة العميل [اسم العميل] جاهزة للتسليم<br>📍 الموقع: [العنوان]<br>📅 موعد التسليم: [التاريخ]<br>🏭 المصنع: [المصنع المورّد]<br><br>يرجى تجهيز الفريق والتأكيد 👍</div>
+          </div>
+
+          <div class="notif-preview green">
+            <div class="notif-who">🚛 عماد عبدالواحد (يوم التسليم)</div>
+            <div>📦 تسليم اليوم — [اسم العميل]<br>📍 الموقع: [العنوان]<br>📦 الكمية: [X] وحدة<br><br>يرجى تأكيد الاستلام في النظام فور الوصول ✅</div>
+          </div>
+
+          <div class="notif-preview orange">
+            <div class="notif-who">📋 ياسر السيد (بعد تأكيد الاستلام)</div>
+            <div>✅ تم استلام بضاعة [اسم العميل] في الموقع<br>يرجى إنشاء أمر التركيب في SAP الآن<br>رقم القسيمة: [رقم القسيمة]</div>
+          </div>
+
+          <div class="notif-preview blue" style="background:var(--blue-l);border-color:var(--blue-d)">
+            <div class="notif-who" style="color:var(--blue-d)">📊 أشرف / خالد / فتحي (تقرير يومي 8ص)</div>
+            <div>📦 تسليمات اليوم: [X] عميل<br>✅ تم التسليم: [X] | 🚛 في الطريق: [X] | ⚠️ متأخر: [X]<br>📋 بانتظار SAP: [X]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-head-title">📤 إرسال إشعار يدوي</span></div>
+        <div class="section-body">
+          <div class="form-row">
+            <div class="form-group"><label>المستلم</label>
+              <select id="notif-to">
+                <option value="all-managers">كل مديرو المجموعات</option>
+                <option value="emad">عماد عبدالواحد</option>
+                <option value="yasser">ياسر السيد</option>
+                <option value="admins">الإدارة (أشرف / خالد / فتحي)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>نوع الإشعار</label>
+              <select id="notif-type">
+                <option value="ready">📦 بضاعة جاهزة للتسليم</option>
+                <option value="today">🚛 تسليم اليوم</option>
+                <option value="confirm">✅ تأكيد استلام</option>
+                <option value="sap">📋 إنشاء أمر SAP</option>
+                <option value="late">⚠️ تأخير تسليم</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:10px"><label>ملاحظة إضافية</label><textarea id="notif-note" rows="2" placeholder="أي تفاصيل إضافية..."></textarea></div>
+          <button class="btn btn-primary" onclick="sendManualNotif()">📤 إرسال الإشعار</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<div class="toast" id="toast"></div>
+
+<!-- UPDATE MODAL -->
+<div class="modal-overlay" id="updateModal">
+  <div class="modal">
+    <div class="modal-title">🔄 تحديث حالة التسليم</div>
+    <input type="hidden" id="upd-id">
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الحالة الجديدة</label>
+      <select id="upd-status">
+        <option value="warehouse">🏭 في المخزن</option>
+        <option value="transit">🚛 في الطريق للموقع</option>
+        <option value="delivered">✅ تم التسليم</option>
+        <option value="late">⚠️ متأخر</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>ملاحظة</label>
+      <textarea id="upd-note" rows="2" placeholder="أي ملاحظة..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveUpdate()">✅ حفظ</button>
+      <button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK = 'delivery_v1';
+const BOT = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
+const TEAM_IDS = {
+  A:'8583850058', B:'1453588787', C:'979158814', D:'5555531128'
+};
+const ADMIN_IDS = ['7055250567','8562342656','8017935026'];
+const EMAD_ID = '8296695318';
+const YASSER_ID = '8353455749';
+
+const PW = {
+  'ashraf|admin':'ashraf2026','khaled|admin':'ashraf2026','fathy|admin':'ashraf2026',
+  'delivery|delivery':'delivery2026','emad|receiver':'emad2026',
+  'yasser|supply':'yasser2026',
+  'teamA|manager':'teamA2026','teamB|manager':'teamB2026',
+  'teamC|manager':'teamC2026','teamD|manager':'teamD2026'
+};
+
+let U = null;
+let deliveries = JSON.parse(localStorage.getItem(SK+'_deliveries') || '[]');
+let calDate = new Date();
+
+// ── AUTH ──
+function doLogin(){
+  const u=document.getElementById('loginUser').value;
+  const p=document.getElementById('loginPass').value;
+  if(!u){showErr('اختر المستخدم');return}
+  if(PW[u]===p){
+    const [uid,role]=u.split('|');
+    U={uid,role,label:document.getElementById('loginUser').selectedOptions[0].text};
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('topbarUser').textContent=U.label;
+    if(U.role!=='admin'&&U.role!=='delivery'){
+      document.querySelectorAll('.admin-only').forEach(e=>e.style.display='none');
+    }
+    document.getElementById('todayDate').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    renderDashboard();
+    renderCalendar();
+  } else {showErr('كلمة المرور غلط')}
+}
+function showErr(m){const e=document.getElementById('loginErr');e.textContent=m;e.style.display='block'}
+function logout(){U=null;document.getElementById('loginScreen').style.display='flex';document.getElementById('app').style.display='none'}
+document.getElementById('loginPass').addEventListener('keypress',e=>{if(e.key==='Enter')doLogin()});
+
+// ── TABS ──
+function showTab(id,btn){
+  document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+id).style.display='block';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='deliveries')renderDeliveries();
+  if(id==='calendar')renderCalendar();
+}
+
+// ── TOAST ──
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.className='toast',2500);
+}
+
+// ── FILE UPLOAD ──
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const f=e.dataTransfer.files[0];
+  if(f)handleFile(f);
+}
+function handleFile(file){
+  if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['xlsx','xls','csv'].includes(ext)){toast('يرجى رفع ملف Excel أو CSV','error');return}
+  document.getElementById('uploadZone').innerHTML=`<div class="upload-icon">⏳</div><div class="upload-title">جاري قراءة الملف...</div>`;
+  
+  if(ext==='csv'){
+    const reader=new FileReader();
+    reader.onload=e=>parseCSV(e.target.result,file.name);
+    reader.readAsText(file,'utf-8');
+  } else {
+    loadSheetJS(()=>{
+      const reader=new FileReader();
+      reader.onload=e=>{
+        const wb=XLSX.read(e.target.result,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        showPreview(data,file.name);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+}
+function loadSheetJS(cb){
+  if(window.XLSX){cb();return}
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload=cb;document.head.appendChild(s);
+}
+function parseCSV(text,fname){
+  const rows=text.split('\n').map(r=>r.split(','));
+  showPreview(rows,fname);
+}
+function showPreview(rows,fname){
+  if(rows.length<2){toast('الملف فارغ','error');resetUploadZone();return}
+  const head=rows[0];
+  const body=rows.slice(1,6);
+  document.getElementById('uploadZone').style.display='none';
+  document.getElementById('uploadStats').innerHTML=`اسم الملف: <strong>${fname}</strong> | إجمالي الصفوف: <strong>${rows.length-1}</strong>`;
+  const th='<tr>'+head.map(h=>`<th>${h||'—'}</th>`).join('')+'</tr>';
+  const tb=body.map(r=>'<tr>'+r.map(c=>`<td>${c||'—'}</td>`).join('')+'</tr>').join('');
+  document.getElementById('previewHead').innerHTML=th;
+  document.getElementById('previewBody').innerHTML=tb;
+  document.getElementById('previewTable').dataset.fullRows=JSON.stringify(rows);
+  document.getElementById('uploadPreview').style.display='block';
+}
+function cancelUpload(){
+  document.getElementById('uploadPreview').style.display='none';
+  resetUploadZone();
+}
+function resetUploadZone(){
+  const z=document.getElementById('uploadZone');
+  z.style.display='block';
+  z.innerHTML=`<div class="upload-icon">📂</div><div class="upload-title">اضغط لاختيار ملف أو اسحب هنا</div><div class="upload-sub">Export قسيمة الصرف من SAP — ملف Excel (.xlsx / .xls)</div>`;
+}
+function confirmUpload(){
+  const rows=JSON.parse(document.getElementById('previewTable').dataset.fullRows||'[]');
+  const head=rows[0].map(h=>String(h).trim().toLowerCase());
+  let added=0;
+  rows.slice(1).forEach(row=>{
+    if(!row.some(c=>c))return;
+    const d={
+      id:'D'+Date.now()+Math.random().toString(36).slice(2,6),
+      client: getCellVal(row,head,['اسم العميل','customer','client name','عميل']),
+      order:  getCellVal(row,head,['رقم الامر','order no','installation order','أمر التركيب']),
+      site:   getCellVal(row,head,['الموقع','site','address','عنوان']),
+      date:   getCellVal(row,head,['تاريخ التسليم','delivery date','planned date','تاريخ']),
+      qty:    getCellVal(row,head,['الكمية','qty','quantity','كمية']),
+      factory:getCellVal(row,head,['المصنع','factory','plant','مصنع']),
+      team:   getCellVal(row,head,['الفريق','team','group','مجموعة']),
+      status:'warehouse',
+      uploadedAt:new Date().toISOString(),
+      uploadedBy:U?.label||''
+    };
+    if(d.client){deliveries.push(d);added++}
+  });
+  save();
+  toast(`✅ تم رفع ${added} تسليم`);
+  cancelUpload();
+  renderDashboard();
+  renderDeliveries();
+  sendUploadNotifs(added);
+}
+function getCellVal(row,head,keys){
+  for(const k of keys){const i=head.indexOf(k);if(i>=0&&row[i])return String(row[i]).trim()}
+  return row[0]||'';
+}
+function sendUploadNotifs(count){
+  const msg=`📦 تم رفع خطة تسليمات جديدة\n\nعدد التسليمات: ${count}\nتاريخ الرفع: ${new Date().toLocaleDateString('ar-EG')}\n\nيرجى مراجعة النظام للاطلاع على التسليمات الخاصة بكم 👉`;
+  ADMIN_IDS.forEach(id=>sendTG(id,msg));
+}
+
+// ── MANUAL ADD ──
+function addManual(){
+  const client=document.getElementById('m-client').value;
+  const date=document.getElementById('m-date').value;
+  if(!client||!date){toast('يرجى ملء العميل والتاريخ','error');return}
+  const d={
+    id:'D'+Date.now(),
+    client,
+    order:document.getElementById('m-order').value,
+    site:document.getElementById('m-site').value,
+    team:document.getElementById('m-team').value,
+    date,
+    qty:document.getElementById('m-qty').value,
+    factory:document.getElementById('m-factory').value,
+    status:'warehouse',
+    uploadedAt:new Date().toISOString(),
+    uploadedBy:U?.label||''
+  };
+  deliveries.push(d);save();
+  toast('✅ تم إضافة التسليم');
+  renderDashboard();
+  ['m-client','m-order','m-site','m-qty'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── RENDER ──
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  const next7=new Date(Date.now()+7*864e5).toISOString().slice(0,10);
+  const todayD=deliveries.filter(d=>d.date===today);
+  const upcoming=deliveries.filter(d=>d.date>today&&d.date<=next7);
+  const late=deliveries.filter(d=>d.status==='late'||(d.date<today&&d.status!=='delivered'));
+
+  document.getElementById('cnt-total').textContent=deliveries.length;
+  document.getElementById('cnt-transit').textContent=deliveries.filter(d=>d.status==='transit').length;
+  document.getElementById('cnt-done').textContent=deliveries.filter(d=>d.status==='delivered').length;
+  document.getElementById('cnt-late').textContent=late.length;
+
+  const todayEl=document.getElementById('todayDeliveries');
+  todayEl.innerHTML=todayD.length?todayD.map(d=>deliveryRow(d)).join(''):'<div class="empty"><div class="empty-icon">✅</div><p>لا توجد تسليمات اليوم</p></div>';
+
+  const upEl=document.getElementById('upcomingDeliveries');
+  upEl.innerHTML=upcoming.length?upcoming.map(d=>deliveryRow(d)).join(''):'<div class="empty"><div class="empty-icon">📋</div><p>لا توجد تسليمات خلال 7 أيام</p></div>';
+
+  const lateEl=document.getElementById('lateDeliveries');
+  if(late.length){
+    document.getElementById('lateSection').style.display='block';
+    lateEl.innerHTML=late.map(d=>deliveryRow(d)).join('');
+  } else document.getElementById('lateSection').style.display='none';
+}
+
+function deliveryRow(d){
+  const statusMap={
+    warehouse:'<span class="badge badge-warehouse">🏭 في المخزن</span>',
+    transit:'<span class="badge badge-transit">🚛 في الطريق</span>',
+    delivered:'<span class="badge badge-delivered">✅ تم التسليم</span>',
+    late:'<span class="badge badge-late">⚠️ متأخر</span>'
+  };
+  return `<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="flex:1;min-width:120px">
+      <div style="font-weight:700;font-size:10pt">${d.client||'—'}</div>
+      <div style="font-size:8.5pt;color:var(--sub)">${d.site||''} ${d.team?'| فريق '+d.team:''}</div>
+    </div>
+    <div style="font-size:9pt;color:var(--sub)">${d.date||''}</div>
+    <div>${statusMap[d.status]||''}</div>
+    <button class="btn btn-sm btn-outline" onclick="openUpdate('${d.id}')">تحديث</button>
+  </div>`;
+}
+
+function renderDeliveries(){
+  const f=document.getElementById('filterStatus')?.value||'';
+  const data=f?deliveries.filter(d=>d.status===f):deliveries;
+  const statusLabel={warehouse:'🏭 في المخزن',transit:'🚛 في الطريق',delivered:'✅ تم التسليم',late:'⚠️ متأخر'};
+  const body=data.map(d=>`<tr>
+    <td style="font-weight:700">${d.client||'—'}</td>
+    <td style="font-size:9pt;color:var(--sub)">${d.site||'—'}</td>
+    <td>${d.team?'مجموعة '+d.team:'—'}</td>
+    <td>${d.date||'—'}</td>
+    <td>${d.qty||'—'}</td>
+    <td>${statusLabel[d.status]||d.status}</td>
+    <td><button class="btn btn-sm btn-outline" onclick="openUpdate('${d.id}')">تحديث</button></td>
+  </tr>`).join('');
+  document.getElementById('deliveriesBody').innerHTML=body||'<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--sub)">لا توجد تسليمات</td></tr>';
+}
+
+// ── CALENDAR ──
+function renderCalendar(){
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  document.getElementById('calMonthLabel').textContent=calDate.toLocaleDateString('ar-EG',{month:'long',year:'numeric'});
+  const grid=document.getElementById('calGrid');
+  const days=['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+  const first=new Date(y,m,1).getDay();
+  const total=new Date(y,m+1,0).getDate();
+  let html=days.map(d=>`<div style="text-align:center;font-size:8pt;font-weight:700;color:var(--sub);padding:4px">${d}</div>`).join('');
+  for(let i=0;i<first;i++)html+=`<div></div>`;
+  for(let d=1;d<=total;d++){
+    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const count=deliveries.filter(del=>del.date===dateStr).length;
+    const isToday=dateStr===new Date().toISOString().slice(0,10);
+    html+=`<div style="min-height:50px;border:1px solid var(--border);border-radius:8px;padding:4px;
+      ${isToday?'background:var(--blue-l);border-color:var(--blue)':'background:#fff'}
+      font-size:9pt;cursor:${count?'pointer':'default'}" onclick="${count?`filterCalDay('${dateStr}')`:''}" title="${count?count+' تسليمات':''}">
+      <div style="font-weight:${isToday?'900':'600'};color:${isToday?'var(--blue)':'var(--text)'};">${d}</div>
+      ${count?`<div style="background:var(--blue);color:#fff;border-radius:10px;font-size:8pt;text-align:center;margin-top:2px;padding:1px">${count}</div>`:''}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+function prevMonth(){calDate.setMonth(calDate.getMonth()-1);renderCalendar()}
+function nextMonth(){calDate.setMonth(calDate.getMonth()+1);renderCalendar()}
+function filterCalDay(date){
+  showTab('deliveries',document.querySelectorAll('.tab')[2]);
+  document.getElementById('filterStatus').value='';
+  renderDeliveries();
+}
+
+// ── UPDATE MODAL ──
+function openUpdate(id){
+  const d=deliveries.find(x=>x.id===id);
+  if(!d)return;
+  document.getElementById('upd-id').value=id;
+  document.getElementById('upd-status').value=d.status;
+  document.getElementById('upd-note').value='';
+  document.getElementById('updateModal').classList.add('open');
+}
+function closeModal(){document.getElementById('updateModal').classList.remove('open')}
+function saveUpdate(){
+  const id=document.getElementById('upd-id').value;
+  const status=document.getElementById('upd-status').value;
+  const note=document.getElementById('upd-note').value;
+  const d=deliveries.find(x=>x.id===id);
+  if(!d)return;
+  const old=d.status;
+  d.status=status;
+  d.lastUpdate=new Date().toISOString();
+  d.lastNote=note;
+  save();
+  toast('✅ تم التحديث');
+  closeModal();
+  renderDashboard();renderDeliveries();
+  // Auto notify on status change
+  if(status==='delivered'&&old!=='delivered'){
+    sendTG(YASSER_ID,`✅ تم استلام بضاعة "${d.client}" في الموقع\nيرجى إنشاء أمر التركيب في SAP الآن\nرقم القسيمة: ${d.order||'—'}`);
+    ADMIN_IDS.forEach(id=>sendTG(id,`✅ تم تسليم "${d.client}" | ${d.date}\n📍 ${d.site||''}`));
+  }
+  if(status==='transit'&&old!=='transit'){
+    const teamId=TEAM_IDS[d.team];
+    if(teamId)sendTG(teamId,`🚛 البضاعة في الطريق إليكم!\nالعميل: ${d.client}\n📍 الموقع: ${d.site||''}\nاستعدوا للاستلام ✅`);
+  }
+}
+
+// ── MANUAL NOTIF ──
+function sendManualNotif(){
+  const to=document.getElementById('notif-to').value;
+  const type=document.getElementById('notif-type').value;
+  const note=document.getElementById('notif-note').value;
+  const labels={ready:'📦 بضاعة جاهزة للتسليم',today:'🚛 تسليم اليوم',confirm:'✅ تأكيد استلام',sap:'📋 إنشاء أمر SAP',late:'⚠️ تأخير تسليم'};
+  const msg=`${labels[type]}\n${note?'\n'+note:''}`;
+  if(to==='all-managers')Object.values(TEAM_IDS).forEach(id=>sendTG(id,msg));
+  else if(to==='emad')sendTG(EMAD_ID,msg);
+  else if(to==='yasser')sendTG(YASSER_ID,msg);
+  else if(to==='admins')ADMIN_IDS.forEach(id=>sendTG(id,msg));
+  toast('✅ تم إرسال الإشعار');
+  document.getElementById('notif-note').value='';
+}
+
+// ── TELEGRAM ──
+function sendTG(chatId,text){
+  fetch(`https://api.telegram.org/bot${BOT}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chatId,text})}).catch(()=>{});
+}
+
+// ── STORAGE ──
+function save(){localStorage.setItem(SK+'_deliveries',JSON.stringify(deliveries))}
+</script>
+</body>
+</html>
