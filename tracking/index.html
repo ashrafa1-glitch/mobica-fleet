@@ -957,19 +957,154 @@ function renderImport(){
 
 function importExcel(input){
   const file=input.files[0]; if(!file) return;
-  document.getElementById('import-result').innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">⏳ جارى معالجة الملف...</div>`;
-  // في النسخة الحقيقية هنا هيتعمل parse للـ Excel
-  setTimeout(()=>{
-    document.getElementById('import-result').innerHTML=`
+  const res=document.getElementById('import-result');
+  res.innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">⏳ جارى قراءة الملف...</div>`;
+
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      // Parse Excel using SheetJS (loaded from CDN)
+      if(typeof XLSX==='undefined'){
+        // Load SheetJS dynamically
+        const s=document.createElement('script');
+        s.src='https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+        s.onload=()=>processExcel(e.target.result, file.name, res);
+        document.head.appendChild(s);
+      } else {
+        processExcel(e.target.result, file.name, res);
+      }
+    } catch(err){
+      res.innerHTML=`<div style="color:#c62828;padding:12px">❌ خطأ: ${err.message}</div>`;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function processExcel(arrayBuffer, fileName, resEl){
+  try{
+    const wb   = XLSX.read(arrayBuffer, {type:'array', cellDates:true});
+    const ws   = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+
+    if(!rows.length){
+      resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ الملف فارغ</div>`;
+      return;
+    }
+
+    // Map SAP columns → internal format
+    const COL = {
+      order:    ['Installation Order','Installation order','أمر التركيب'],
+      customer: ['Customer Name','Customer','العميل'],
+      address:  ['Installation Address','Address','العنوان'],
+      phone:    ['Telephone','Phone','الهاتف'],
+      group:    ['Installation Group','Group','المجموعة'],
+      status:   ['Overall Status','Status','الحالة'],
+      delivery: ['Delivery Status','حالة التوريد'],
+      planned:  ['Planed finish date','Planned finish date','التاريخ المخطط'],
+      material: ['Material Desc.','Material Description','الصنف'],
+      mainGrp:  ['Main Group Name','المجموعة الرئيسية'],
+      qty:      ['Order Qty','Quantity','الكمية'],
+      instTime: ['Installation Time','وقت التركيب'],
+    };
+
+    function getVal(row, keys){
+      for(const k of keys){
+        if(row[k]!==undefined && row[k]!=='') return row[k];
+      }
+      return '';
+    }
+
+    // Group rows by Installation Order
+    const ordersMap={};
+    rows.forEach(row=>{
+      const no = String(getVal(row, COL.order)||'').trim();
+      if(!no) return;
+      if(!ordersMap[no]){
+        ordersMap[no]={
+          order_no:    no,
+          customer:    String(getVal(row, COL.customer)),
+          address:     String(getVal(row, COL.address)),
+          phone:       String(getVal(row, COL.phone)),
+          team_code:   String(getVal(row, COL.group)),
+          status:      String(getVal(row, COL.status)),
+          delivery:    String(getVal(row, COL.delivery)),
+          planned:     String(getVal(row, COL.planned)),
+          main_group:  String(getVal(row, COL.mainGrp)),
+          items:[],
+          total_units: 0,
+          upload_by:   U.name,
+          upload_ts:   Date.now(),
+          file_name:   fileName
+        };
+      }
+      const instTime = parseFloat(getVal(row, COL.instTime))||0;
+      const units    = Math.round(instTime/20*10)/10; // 1 unit = 20 min
+      ordersMap[no].items.push({
+        material: String(getVal(row, COL.material)),
+        qty:      parseFloat(getVal(row, COL.qty))||0,
+        instTime: instTime,
+        units:    units
+      });
+      ordersMap[no].total_units += units;
+    });
+
+    const orders = Object.values(ordersMap);
+    const newOrders   = orders.filter(o=>!ORDERS.find(ex=>ex.order_no===o.order_no));
+    const updOrders   = orders.filter(o=> ORDERS.find(ex=>ex.order_no===o.order_no));
+
+    // Save to localStorage
+    localStorage.setItem(SK+'_sap_orders', JSON.stringify(orders));
+    localStorage.setItem(SK+'_sap_upload_ts', Date.now());
+
+    // Sync to Google Sheets (send summary only — no heavy base64)
+    if(API_URL){
+      const summary={
+        action:       'addSAPUpload',
+        total_orders: orders.length,
+        new_orders:   newOrders.length,
+        upd_orders:   updOrders.length,
+        file_name:    fileName,
+        by:           U.name,
+        ts:           Date.now(),
+        orders_sample: orders.slice(0,5).map(o=>({
+          order_no: o.order_no,
+          customer: o.customer,
+          team_code:o.team_code,
+          status:   o.status,
+          delivery: o.delivery,
+          units:    o.total_units
+        }))
+      };
+      fetch(API_URL+'?action=addSAPUpload&payload='+encodeURIComponent(JSON.stringify(summary)))
+        .catch(()=>{});
+    }
+
+    // Show result
+    resEl.innerHTML=`
       <div class="card" style="margin-top:14px;border-right:4px solid #2e7d32;padding:14px">
-        <div style="font-weight:700;color:#2e7d32;margin-bottom:8px">✅ تم رفع الملف بنجاح</div>
+        <div style="font-weight:700;color:#2e7d32;margin-bottom:10px">✅ تم رفع ملف SAP بنجاح</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="card" style="padding:8px;text-align:center;background:#e8f5e9">
+            <div style="font-size:20px;font-weight:700;color:#2e7d32">${orders.length}</div>
+            <div style="font-size:11px">إجمالي الأوامر</div>
+          </div>
+          <div class="card" style="padding:8px;text-align:center;background:#e3f2fd">
+            <div style="font-size:20px;font-weight:700;color:#1565c0">${newOrders.length}</div>
+            <div style="font-size:11px">أوامر جديدة</div>
+          </div>
+        </div>
         <div style="font-size:12px;color:#555">
-          📦 تم تحديث البيانات<br>
-          🔔 تم إرسال إشعار لمديري المجموعات<br>
-          <i style="color:#888">* في النسخة الكاملة سيتم المقارنة التلقائية مع SAP</i>
+          📅 الملف: ${fileName}<br>
+          🔔 تم إرسال إشعار للإدارة<br>
+          ${newOrders.length?'🆕 أوامر جديدة: '+newOrders.slice(0,3).map(o=>o.order_no).join(', ')+(newOrders.length>3?' ...':''):''}
         </div>
       </div>`;
-  },1500);
+
+    toast(`✅ ${orders.length} أمر | ${newOrders.length} جديد`);
+
+  } catch(err){
+    resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ خطأ في قراءة الملف: ${err.message}</div>`;
+  }
 }
 
 // ═══════════════════════════════════════════
