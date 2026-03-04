@@ -251,7 +251,18 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
       <label>الكمية المعيبة</label>
       <input type="number" id="sn-qty" placeholder="عدد القطع" min="1" value="1">
     </div>
-    <div style="font-size:11px;color:#c62828">📋 سيصل إشعار تلقائي لمحمد مختار لمتابعة العيب مع المصنع</div>
+    <!-- Photo upload -->
+    <div style="margin-top:4px">
+      <label style="font-size:11px;font-weight:700;color:#666;display:block;margin-bottom:6px">📸 صور العيب (اختياري)</label>
+      <label for="sn-photos" style="display:flex;align-items:center;gap:8px;background:#fff;border:2px dashed #ffcdd2;border-radius:8px;padding:10px;cursor:pointer;justify-content:center">
+        <span style="font-size:22px">📷</span>
+        <span style="font-size:12px;color:#c62828;font-weight:600">اضغط لإضافة صور</span>
+      </label>
+      <input type="file" id="sn-photos" accept="image/*" multiple onchange="onPhotosSelected(this)" style="display:none">
+      <div id="sn-thumbs" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
+      <div id="sn-photo-count" style="font-size:10px;color:#888;margin-top:4px"></div>
+    </div>
+    <div style="font-size:11px;color:#c62828;margin-top:8px">📋 سيصل إشعار تلقائي لمحمد مختار لمتابعة العيب مع المصنع</div>
   </div>
 
   <div class="mbtns">
@@ -771,12 +782,15 @@ function renderUpdatesFeed(){
 function updCard(u){
   const cls=u.type==='issue'?'iss':u.type==='ir'?'ir2':u.status==='Completed'?'del':'';
   const ico=u.type==='issue'?'⚠️':u.type==='ir'?'📋':u.type==='delivery'?'📦':'🔄';
+  const photosBadge=u.photo_count?`<span class="b br">📸 ${u.photo_count} صورة</span>`:'';
+  const snagBadge=u.snag_id?`<span class="b bp">🔗 Snag ${u.snag_id}</span>`:'';
   return `<div class="ui ${cls}">
     <b>${ico} ${u.contract_no||u.order_no}</b> — ${u.customer||''}
     <br>${u.type==='status'?'الحالة: <b>'+u.status+'</b>'+(u.pct?' ('+u.pct+'%)':''):
          u.type==='issue'?'مشكلة: <b>'+u.issue_type+'</b>':
          u.type==='ir'?u.ir_type+' | رقم: <b>'+u.ir_no+'</b>':'توريد: '+u.delivery_status}
     ${u.note?`<br><i style="color:#888">${u.note}</i>`:''}
+    ${photosBadge||snagBadge?`<br><span style="display:inline-flex;gap:4px;flex-wrap:wrap;margin-top:4px">${photosBadge}${snagBadge}</span>`:''}
     <div class="um">👤 ${u.by} | ${new Date(u.ts).toLocaleString('ar-EG')}</div>
   </div>`;
 }
@@ -969,6 +983,7 @@ function openUpd(no,cust,status,pct){
   document.getElementById('mu-note').value='';
   opn('m-upd');
 }
+let _photos=[];
 function openIss(no,cust){
   CUR={order_no:no,customer:cust};
   document.getElementById('mi-info').textContent=cust+' | '+no;
@@ -977,13 +992,55 @@ function openIss(no,cust){
   document.getElementById('sn-product').value='';
   document.getElementById('sn-contract').value='';
   document.getElementById('sn-qty').value=1;
+  document.getElementById('sn-thumbs').innerHTML='';
+  document.getElementById('sn-photo-count').textContent='';
   document.getElementById('snag-extra').style.display='none';
+  _photos=[];
   opn('m-iss');
 }
 function onIssTypeChange(){
   const t=document.getElementById('mi-tp').value;
   const needSnag=t==='عيب في المنتج'||t==='مشكلة مقاس';
   document.getElementById('snag-extra').style.display=needSnag?'block':'none';
+}
+function onPhotosSelected(input){
+  const files=Array.from(input.files);
+  if(!files.length) return;
+  const thumbs=document.getElementById('sn-thumbs');
+  const count=document.getElementById('sn-photo-count');
+  _photos=[];
+  thumbs.innerHTML='';
+  let loaded=0;
+  files.forEach((file,i)=>{
+    if(file.size>5*1024*1024){toast('صورة كبيرة — الحد 5MB لكل صورة');return;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      _photos.push({name:file.name,data:e.target.result,size:file.size});
+      // Thumbnail
+      const img=document.createElement('div');
+      img.style.cssText='position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:2px solid #ffcdd2;flex-shrink:0';
+      img.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">
+        <div onclick="removePhoto(${i})" style="position:absolute;top:2px;right:2px;background:#c62828;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:700">×</div>`;
+      thumbs.appendChild(img);
+      loaded++;
+      count.textContent=`${loaded} صورة مضافة`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function removePhoto(idx){
+  _photos.splice(idx,1);
+  document.getElementById('sn-photo-count').textContent=`${_photos.length} صورة`;
+  // Re-render thumbs
+  const thumbs=document.getElementById('sn-thumbs');
+  thumbs.innerHTML='';
+  _photos.forEach((p,i)=>{
+    const img=document.createElement('div');
+    img.style.cssText='position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:2px solid #ffcdd2;flex-shrink:0';
+    img.innerHTML=`<img src="${p.data}" style="width:100%;height:100%;object-fit:cover">
+      <div onclick="removePhoto(${i})" style="position:absolute;top:2px;right:2px;background:#c62828;color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:700">×</div>`;
+    thumbs.appendChild(img);
+  });
 }
 function openIRNew(){
   openIR('','');
@@ -1103,13 +1160,20 @@ function subIss(){
       source:'tracking_agent',
       assigned_to:'محمد مختار'
     };
+    // Attach photos
+    snag.photos=_photos.map(p=>({name:p.name,data:p.data}));
+    snag.photo_count=_photos.length;
     // Save to snag storage
     const snags=JSON.parse(localStorage.getItem('snag_v3')||'[]');
     snags.unshift(snag);
     localStorage.setItem('snag_v3',JSON.stringify(snags));
 
+    // Also save photos ref in tracking update
+    u.snag_id=snag.id;
+    u.photo_count=_photos.length;
     cls('m-iss');
-    toast('🔴 تم إرسال البلاغ + فُتح Snag #'+snag.id+' — مختار سيتابع مع المصنع');
+    const photoMsg=_photos.length?` + ${_photos.length} صورة`:'';
+    toast('🔴 تم إرسال البلاغ'+photoMsg+' + فُتح Snag — مختار سيتابع مع المصنع');
   } else {
     cls('m-iss');
     toast('⚠️ تم إرسال المشكلة');
