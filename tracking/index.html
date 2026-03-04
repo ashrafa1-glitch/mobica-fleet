@@ -329,6 +329,7 @@ const CONTRACTS=JSON.parse(atob("W3siY29udHJhY3Rfbm8iOiIyMDI2LTA0MSIsImN1c3RvbWV
 const TEAM_BASE=JSON.parse(atob("eyJQMSI6eyJuYW1lIjoiXHUwNjMzXHUwNjI3XHUwNjQ1XHUwNjQ5IFx1MDY0MVx1MDYyNFx1MDYyN1x1MDYyZiIsIm1lbWJlcnMiOjUzLCJvcmRlcnMiOjMxLCJ0b3RhbF9xdHkiOjQ0MDYsInRvdGFsX3VuaXRzIjo1ODI0LCJ1bml0c19wZXJfcGVyc29uIjoxMDkuOX0sIjEwOTk2MiI6eyJuYW1lIjoiXHUwNjQ3XHUwNjM0XHUwNjI3XHUwNjQ1IFx1MDYyY1x1MDY0NVx1MDYyN1x1MDY0NCIsIm1lbWJlcnMiOjQ4LCJvcmRlcnMiOjMyLCJ0b3RhbF9xdHkiOjM1MjAsInRvdGFsX3VuaXRzIjoxNzk0LCJ1bml0c19wZXJfcGVyc29uIjozNy40fSwiUDQiOnsibmFtZSI6Ilx1MDYyZFx1MDYyN1x1MDYzMlx1MDY0NSBcdTA2NDJcdTA2MjdcdTA2MzlcdTA2NDhcdTA2MmYiLCJtZW1iZXJzIjozMCwib3JkZXJzIjo5LCJ0b3RhbF9xdHkiOjc0MiwidG90YWxfdW5pdHMiOjgyMiwidW5pdHNfcGVyX3BlcnNvbiI6MjcuNH0sIkE0Ijp7Im5hbWUiOiJcdTA2NDVcdTA2MmRcdTA2NDVcdTA2MmYgXHUwNjQ4XHUwNjMzXHUwNjRhXHUwNjQ1IiwibWVtYmVycyI6MTYsIm9yZGVycyI6OSwidG90YWxfcXR5Ijo2NjAyLCJ0b3RhbF91bml0cyI6MTEyNTgsInVuaXRzX3Blcl9wZXJzb24iOjcwMy42fX0="));
 const UNIT_MIN  = 20;
 const SK = 'track_v3';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyfiC9JNqzUp1k_NjpQsvDNrJuJ8_sykg6WYHYluO4EG0fCdeVEaDh6kjail4v4mAX9/exec';
 
 const PW = {
   'ashraf|admin':'ashraf2026','fathy|admin':'ashraf2026',
@@ -364,7 +365,7 @@ function login(){
   document.getElementById('sc-app').style.display='block';
   document.getElementById('hdr-s').textContent=U.name+' — '+
     {admin:'إدارة',manager:'مدير مجموعة',viewer:'متابعة',supply:'توريد',delivery:'تسليم'}[U.role];
-  nav(); go('dash');
+  nav(); go('dash'); setTimeout(syncFromServer,1000); setInterval(syncFromServer,60000);
 }
 function logout(){
   U=null;
@@ -1203,7 +1204,36 @@ function subIR(){
   save(u); cls('m-ir'); toast('📋 تم حفظ المحضر'); go(PG);
 }
 
-function save(u){UPD.unshift(u);localStorage.setItem(SK+'_u',JSON.stringify(UPD));}
+function save(u){
+  UPD.unshift(u);
+  localStorage.setItem(SK+'_u',JSON.stringify(UPD));
+  // Sync to Google Sheets
+  if(API_URL){
+    const body=Object.assign({},u);
+    delete body.items; // don't send heavy items array
+    delete body.photos; // don't send base64 photos
+    fetch(API_URL+'?action=addUpdate&payload='+encodeURIComponent(JSON.stringify(body)))
+      .catch(()=>{});
+  }
+}
+function syncFromServer(){
+  if(!API_URL) return;
+  fetch(API_URL+'?action=getUpdates')
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.updates&&d.updates.length){
+        // Merge server updates with local
+        const localIds=new Set(UPD.map(u=>u.order_no+'_'+u.ts));
+        const newUpds=d.updates.filter(u=>!localIds.has(u.order_no+'_'+u.ts));
+        if(newUpds.length){
+          UPD=[...UPD,...newUpds].sort((a,b)=>b.ts-a.ts);
+          localStorage.setItem(SK+'_u',JSON.stringify(UPD));
+          go(PG);
+          toast('🔄 '+newUpds.length+' تحديث جديد من الفريق');
+        }
+      }
+    }).catch(()=>{});
+}
 function opn(id){document.getElementById(id).classList.add('sh')}
 function cls(id){document.getElementById(id).classList.remove('sh')}
 function tog(id){document.getElementById(id)?.classList.toggle('sh')}
