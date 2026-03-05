@@ -409,10 +409,16 @@ const TEAM_INFO = {
 const ADMIN_IDS = ['7055250567','8562342656','8017935026'];
 
 const PW = {
-  'ashraf|admin':   'ashraf2026',
-  'فتحي|admin':     'ashraf2026',
-  'خالد|admin':     'ashraf2026',
-  'planning|planner':'plan2026',
+  // إدارة — يشوفوا كل حاجة
+  'ashraf|admin':    'ashraf2026',
+  'فتحي|admin':      'ashraf2026',
+  'خالد|admin':      'ashraf2026',
+  // مديرو المجموعات — كل واحد يشوف خطته بس
+  'P1|manager':      'teamB2026',   // سامى فؤاد
+  '109962|manager':  'teamD2026',   // هشام جمال
+  'P4|manager':      'teamC2026',   // حازم قاعود
+  'ahmed|manager':   'teamA2026',   // أحمد حسن
+  'A4|manager':      'team42026',   // محمد وسيم
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -428,16 +434,28 @@ let PLANS = JSON.parse(localStorage.getItem(SK+'_plans') || '[]');
 function doLogin() {
   const user = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value.trim();
-  const key  = user+'|admin';
-  const key2 = user+'|planner';
-  let role = null;
-  if (PW[key] === pass)  role = 'admin';
-  if (PW[key2] === pass) role = 'planner';
+  let role = null, teamCode = null;
+
+  if (PW[user+'|admin']   === pass) { role = 'admin'; }
+  if (PW[user+'|manager'] === pass) { role = 'manager'; teamCode = user; }
+  if (PW[user+'|planner'] === pass) { role = 'planner'; }
+
   if (!role) { document.getElementById('loginErr').style.display='block'; return; }
-  U = { name: user, role };
+
+  const teamInfo = teamCode ? TEAM_INFO[teamCode] : null;
+  U = { name: teamInfo ? teamInfo.name : user, role, teamCode };
+  localStorage.setItem(SK+'_session', JSON.stringify(U));
+
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
-  document.getElementById('headerUser').textContent = user + (role==='admin'?' 👑':'');
+  document.getElementById('headerUser').textContent =
+    U.name + (role==='admin'?' 👑': role==='manager'?' 🔧':'');
+
+  // مديرو المجموعات — إخفاء تبويبات الإدارة
+  if (role === 'manager') {
+    document.querySelectorAll('.tab')[3].style.display = 'none'; // إخفاء ➕ خطة جديدة
+    document.querySelectorAll('.tab')[4].style.display = 'none'; // إخفاء 📂 رفع ملف
+  }
   loadFromServer();
 }
 
@@ -508,17 +526,28 @@ function getDemoOrders() {
 // ═══════════════════════════════════════════════════════════
 function renderDashboard() {
   const now = Date.now();
+  const isManager = U?.role === 'manager';
+  const myPlans = isManager ? PLANS.filter(p => p.team_code === U.teamCode) : PLANS;
+
   const delayed = ORDERS.filter(o => {
     if (['Completed','TECO','CLSD'].includes(o.status)) return false;
+    if (isManager && o.team_code !== U.teamCode) return false;
     return now - (o.ts||0) > 3*86400000;
   });
-  const planned = PLANS.filter(p => p.status === 'approved');
-  const unplanned = ORDERS.filter(o => !PLANS.find(p => p.order_no === o.order_no));
+  const planned   = myPlans.filter(p => p.status === 'approved');
+  const unplanned = isManager
+    ? myPlans.filter(p => p.status === 'pending')
+    : ORDERS.filter(o => !PLANS.find(p => p.order_no === o.order_no));
 
-  document.getElementById('statTotal').textContent = ORDERS.length;
+  document.getElementById('statTotal').textContent     = isManager ? myPlans.length : ORDERS.length;
   document.getElementById('statUnplanned').textContent = unplanned.length;
-  document.getElementById('statApproved').textContent = planned.length;
-  document.getElementById('statDelayed').textContent = delayed.length;
+  document.getElementById('statApproved').textContent  = planned.length;
+  document.getElementById('statDelayed').textContent   = delayed.length;
+  // تغيير تسميات للمدير
+  if (isManager) {
+    document.querySelector('#tab-dashboard .stat-card:first-child .stat-label').textContent = 'خططك الإجمالية';
+    document.querySelector('#tab-dashboard .stat-card:nth-child(2) .stat-label').textContent = 'في انتظار الاعتماد';
+  }
 
   // Team capacity
   const capEl = document.getElementById('teamCapacity');
@@ -629,11 +658,18 @@ function fmtStatus(s) {
 // ═══════════════════════════════════════════════════════════
 function renderPlans() {
   const el = document.getElementById('plansList');
-  if (!PLANS.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>لا توجد خطط بعد<br><small>ابدأ بإنشاء خطة من تبويب ➕ خطة جديدة</small></div>';
+  // مدير المجموعة يشوف خطته بس
+  let myPlans = U?.role === 'manager'
+    ? PLANS.filter(p => p.team_code === U.teamCode)
+    : PLANS;
+
+  if (!myPlans.length) {
+    el.innerHTML = U?.role === 'manager'
+      ? '<div class="empty"><div class="empty-icon">📅</div>لا توجد خطط لفريقك حتى الآن<br><small>الإدارة ستُرسل لك خطتك قريباً</small></div>'
+      : '<div class="empty"><div class="empty-icon">📋</div>لا توجد خطط بعد<br><small>ابدأ بإنشاء خطة من تبويب ➕ خطة جديدة</small></div>';
     return;
   }
-  el.innerHTML = PLANS.slice().reverse().map(p => {
+  el.innerHTML = myPlans.slice().reverse().map(p => {
     const team = TEAM_INFO[p.team_code];
     const statusCls = p.status==='approved'?'status-approved':p.status==='rejected'?'status-rejected':'status-pending';
     const statusLbl = p.status==='approved'?'✅ معتمدة':p.status==='rejected'?'❌ مرفوضة':'⏳ في الانتظار';
@@ -656,11 +692,15 @@ function renderPlans() {
           ${p.note?`📝 ${p.note}<br>`:''}
           👤 أنشأها: ${p.by||'—'} | ${p.created_at||'—'}
         </div>
-        ${p.status==='pending' && U?.role==='admin' ? `
-          <div class="btn-row" style="margin-top:10px">
+        <div class="btn-row" style="margin-top:10px">
+          ${p.status==='pending' && U?.role==='admin' ? `
             <button class="btn btn-sm btn-success" onclick="approvePlan('${p.id}')">✅ اعتماد</button>
-            <button class="btn btn-sm btn-danger" onclick="rejectPlan('${p.id}')">❌ رفض</button>
-          </div>` : ''}
+            <button class="btn btn-sm btn-danger" onclick="rejectPlan('${p.id}')">❌ رفض</button>` : ''}
+          ${p.status==='approved' && U?.role==='manager' ? `
+            <button class="btn btn-sm btn-outline" onclick="requestModification('${p.id}')">✏️ طلب تعديل</button>` : ''}
+          ${p.status==='approved' && U?.role==='admin' ? `
+            <span style="font-size:.75rem;color:var(--green)">✅ معتمدة</span>` : ''}
+        </div>
       </div>`;
   }).join('');
 }
@@ -816,6 +856,38 @@ function rejectPlan(id) {
   localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
   renderPlans();
   showToast('❌ تم رفض الخطة');
+}
+
+function requestModification(id) {
+  const plan = PLANS.find(p => p.id === id);
+  if (!plan) return;
+  const reason = prompt('📝 اكتب سبب طلب التعديل:\n(سيُرسل للإدارة للمراجعة)');
+  if (!reason) return;
+
+  // سجّل الطلب
+  if (!plan.mod_requests) plan.mod_requests = [];
+  plan.mod_requests.push({
+    by:     U.name,
+    reason,
+    ts:     new Date().toLocaleDateString('ar-EG'),
+    status: 'pending'
+  });
+  localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
+
+  // إرسال لأشرف والإدارة
+  const team = TEAM_INFO[plan.team_code];
+  const msg =
+    `✏️ <b>طلب تعديل خطة</b>\n\n`+
+    `👤 مقدّم الطلب: ${U.name}\n`+
+    `📋 الأمر: ${plan.order_no} — ${plan.customer||'—'}\n`+
+    `📅 تاريخ التسليم: ${plan.delivery_date||'—'}\n\n`+
+    `📝 <b>السبب:</b>\n${reason}\n\n`+
+    `⚡ يرجى المراجعة والرد\n`+
+    `🔗 https://ashrafa1-glitch.github.io/mobica-fleet/planning/`;
+  ADMIN_IDS.forEach(adminId => sendTelegram(adminId, msg));
+
+  showToast('✅ تم إرسال طلب التعديل للإدارة');
+  renderPlans();
 }
 
 function clearForm() {
