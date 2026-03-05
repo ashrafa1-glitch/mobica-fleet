@@ -175,6 +175,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a1a2e;di
     <div class="tab" onclick="switchTab('orders')">📋 الأوامر</div>
     <div class="tab" onclick="switchTab('plans')">✅ الخطط</div>
     <div class="tab" onclick="switchTab('newplan')">➕ خطة جديدة</div>
+    <div class="tab" onclick="switchTab('upload')">📂 رفع ملف</div>
   </div>
 
   <!-- TAB: DASHBOARD -->
@@ -313,6 +314,65 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a1a2e;di
   </div>
 </div>
 
+  <!-- TAB: UPLOAD -->
+  <div class="tab-content" id="tab-upload">
+    <div class="card">
+      <div class="section-title">📂 رفع ملف خطة التسليمات (Excel)</div>
+      <p style="font-size:.82rem;color:#666;margin-bottom:14px">ارفع ملف Excel يحتوي على خطة التسليمات — النظام هيقرأه تلقائياً ويحوّله لخطط تركيب</p>
+
+      <!-- Upload Zone -->
+      <div id="uploadZone" onclick="document.getElementById('xlFile').click()"
+        style="border:2.5px dashed #9c27b0;border-radius:12px;padding:30px;text-align:center;cursor:pointer;background:#fdf4ff;margin-bottom:14px;transition:.2s"
+        ondragover="event.preventDefault();this.style.background='#f3e5f5'"
+        ondragleave="this.style.background='#fdf4ff'"
+        ondrop="handleDrop(event)">
+        <div style="font-size:2rem;margin-bottom:8px">📊</div>
+        <div style="font-weight:700;color:var(--purple)">اضغط لاختيار ملف Excel</div>
+        <div style="font-size:.75rem;color:#888;margin-top:4px">أو اسحب الملف هنا | xlsx, xls, csv</div>
+      </div>
+      <input type="file" id="xlFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFile(this.files[0])">
+
+      <!-- Column Mapping -->
+      <div id="mappingSection" style="display:none">
+        <div class="section-title" style="margin-top:16px">🗂️ ربط الأعمدة</div>
+        <p style="font-size:.78rem;color:#666;margin-bottom:10px">حدد أي عمود من الملف يقابل كل حقل:</p>
+        <div id="colMapping" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+        <button class="btn btn-primary" onclick="parseAndPreview()">🔍 معاينة البيانات</button>
+      </div>
+
+      <!-- Preview Table -->
+      <div id="previewSection" style="display:none;margin-top:16px">
+        <div class="section-title">👁️ معاينة البيانات</div>
+        <div style="overflow-x:auto;margin-bottom:14px">
+          <table id="previewTable" style="width:100%;border-collapse:collapse;font-size:.78rem">
+            <thead id="previewHead"></thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:10px;font-size:.82rem;margin-bottom:12px">
+          ✅ <span id="previewCount">0</span> صف جاهز للاستيراد
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-success" onclick="importPlans()">📥 استيراد كخطط</button>
+          <button class="btn btn-outline" onclick="resetUpload()">🔄 رفع ملف آخر</button>
+        </div>
+      </div>
+
+      <!-- Template Download -->
+      <div style="margin-top:16px;padding:12px;background:#f5f5f5;border-radius:8px;font-size:.82rem">
+        <div style="font-weight:700;margin-bottom:6px">📋 الأعمدة المطلوبة في الملف:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;color:#555">
+          <div>• رقم الأمر (Installation Order)</div>
+          <div>• اسم العميل (Customer)</div>
+          <div>• الموقع (Address)</div>
+          <div>• عدد الوحدات (Order Qty)</div>
+          <div>• تاريخ التسليم (Planned finish date)</div>
+          <div>• الفريق (Installation Group)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <!-- MODAL: PLAN DETAIL -->
 <div class="modal-overlay" id="planModal">
   <div class="modal">
@@ -392,7 +452,7 @@ function doLogout() {
 // ═══════════════════════════════════════════════════════════
 function switchTab(id) {
   document.querySelectorAll('.tab').forEach((t,i) => {
-    const ids = ['dashboard','orders','plans','newplan'];
+    const ids = ['dashboard','orders','plans','newplan','upload'];
     t.classList.toggle('active', ids[i]===id);
   });
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -827,6 +887,221 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXCEL UPLOAD
+// ═══════════════════════════════════════════════════════════
+let XL_HEADERS = [];
+let XL_ROWS    = [];
+
+// Column aliases (Arabic + English variants)
+const COL_ALIASES = {
+  order_no:      ['Installation Order','رقم الأمر','Order No','order_no','أمر التركيب','رقم امر'],
+  customer:      ['Customer Name','اسم العميل','Customer','العميل','customer'],
+  location:      ['Installation Address','الموقع','Address','العنوان','location','الموقع/المشروع'],
+  units:         ['Order Qty','الكمية','Units','عدد الوحدات','Qty','الوحدات','qty'],
+  delivery_date: ['Planed finish date','Planned finish date','تاريخ التسليم','Delivery Date','delivery_date','تاريخ الانتهاء'],
+  team_code:     ['Installation Group','الفريق','Team','Group','team_code','مجموعة التركيب','المجموعة'],
+};
+
+function loadSheetJS(cb) {
+  if (window.XLSX) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload = cb;
+  document.head.appendChild(s);
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').style.background = '#fdf4ff';
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+}
+
+function handleFile(file) {
+  if (!file) return;
+  document.getElementById('uploadZone').innerHTML =
+    `<div style="font-size:1.5rem">📊</div><div style="font-weight:700;color:var(--purple)">${file.name}</div><div style="font-size:.75rem;color:#888">جارى القراءة...</div>`;
+
+  loadSheetJS(() => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const wb = XLSX.read(e.target.result, {type:'array',cellDates:true});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(ws, {header:1,defval:''});
+        if (!data.length) { showToast('⚠️ الملف فارغ'); return; }
+
+        XL_HEADERS = data[0].map(h => String(h).trim());
+        XL_ROWS    = data.slice(1).filter(r => r.some(c => c !== ''));
+
+        document.getElementById('uploadZone').innerHTML =
+          `<div style="font-size:1.5rem">✅</div><div style="font-weight:700;color:var(--green)">${file.name}</div><div style="font-size:.75rem;color:#888">${XL_ROWS.length} صف | ${XL_HEADERS.length} عمود</div>`;
+
+        buildMappingUI();
+      } catch(err) { showToast('❌ خطأ في قراءة الملف: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function buildMappingUI() {
+  const mapDiv = document.getElementById('colMapping');
+  const fields = [
+    {key:'order_no',label:'رقم الأمر *'},
+    {key:'customer',label:'اسم العميل *'},
+    {key:'location',label:'الموقع'},
+    {key:'units',label:'عدد الوحدات *'},
+    {key:'delivery_date',label:'تاريخ التسليم *'},
+    {key:'team_code',label:'الفريق'},
+  ];
+
+  mapDiv.innerHTML = fields.map(f => {
+    // auto-detect best match
+    let bestIdx = '';
+    for (const alias of (COL_ALIASES[f.key] || [])) {
+      const idx = XL_HEADERS.findIndex(h => h.toLowerCase().includes(alias.toLowerCase()) || alias.toLowerCase().includes(h.toLowerCase()));
+      if (idx >= 0) { bestIdx = idx; break; }
+    }
+    const opts = XL_HEADERS.map((h,i) => `<option value="${i}" ${i==bestIdx?'selected':''}>${h}</option>`).join('');
+    return `<div class="form-group">
+      <label>${f.label}</label>
+      <select id="map_${f.key}" style="width:100%;padding:6px;border:1.5px solid #ddd;border-radius:7px;font-size:.78rem;font-family:inherit">
+        <option value="">— تجاهل —</option>${opts}
+      </select>
+    </div>`;
+  }).join('');
+
+  document.getElementById('mappingSection').style.display = 'block';
+  document.getElementById('previewSection').style.display = 'none';
+}
+
+function getColVal(row, key) {
+  const sel = document.getElementById('map_'+key);
+  if (!sel || sel.value === '') return '';
+  return String(row[parseInt(sel.value)] || '').trim();
+}
+
+function parseAndPreview() {
+  const parsed = [];
+  XL_ROWS.forEach(row => {
+    const order_no = getColVal(row,'order_no');
+    if (!order_no) return;
+    const units    = parseInt(getColVal(row,'units')) || 0;
+    const rawDate  = getColVal(row,'delivery_date');
+    let delivery_date = '';
+    if (rawDate) {
+      const d = new Date(rawDate);
+      if (!isNaN(d)) delivery_date = d.toISOString().split('T')[0];
+      else delivery_date = rawDate;
+    }
+    const teamRaw  = getColVal(row,'team_code');
+    // map team name to code
+    const teamCode = mapTeamCode(teamRaw);
+    const team     = TEAM_INFO[teamCode];
+    const dailyCap = team ? team.size * DAILY_RATE : DAILY_RATE;
+    const days     = units ? Math.ceil(units / dailyCap) : '—';
+
+    parsed.push({
+      order_no,
+      customer:      getColVal(row,'customer'),
+      location:      getColVal(row,'location'),
+      units,
+      delivery_date,
+      team_code:     teamCode,
+      team_name:     team ? team.name : teamRaw || '—',
+      days,
+    });
+  });
+
+  // build preview table
+  const head = document.getElementById('previewHead');
+  const body = document.getElementById('previewBody');
+  const cols = ['رقم الأمر','العميل','الموقع','الوحدات','تاريخ التسليم','الفريق','المدة (يوم)'];
+  head.innerHTML = '<tr>'+cols.map(c=>`<th style="background:#6a1b9a;color:#fff;padding:6px 8px;text-align:right;font-size:.75rem">${c}</th>`).join('')+'</tr>';
+  body.innerHTML = parsed.map(p => `<tr style="border-bottom:1px solid #eee">
+    <td style="padding:5px 8px;font-size:.75rem;font-weight:700;color:var(--purple)">${p.order_no}</td>
+    <td style="padding:5px 8px;font-size:.75rem">${p.customer||'—'}</td>
+    <td style="padding:5px 8px;font-size:.75rem">${p.location||'—'}</td>
+    <td style="padding:5px 8px;font-size:.75rem;text-align:center">${p.units||'—'}</td>
+    <td style="padding:5px 8px;font-size:.75rem">${p.delivery_date||'—'}</td>
+    <td style="padding:5px 8px;font-size:.75rem">${p.team_name}</td>
+    <td style="padding:5px 8px;font-size:.75rem;text-align:center;font-weight:700;color:var(--orange)">${p.days}</td>
+  </tr>`).join('');
+
+  document.getElementById('previewCount').textContent = parsed.length;
+  document.getElementById('previewSection').style.display = 'block';
+  window._parsedRows = parsed;
+}
+
+function mapTeamCode(raw) {
+  if (!raw) return '';
+  const r = raw.toString().trim();
+  // direct match
+  if (TEAM_INFO[r]) return r;
+  // match by name
+  for (const [code, t] of Object.entries(TEAM_INFO)) {
+    if (r.includes(t.name) || r.includes(t.code) || t.name.includes(r)) return code;
+  }
+  return r;
+}
+
+function importPlans() {
+  const rows = window._parsedRows || [];
+  if (!rows.length) { showToast('⚠️ لا توجد بيانات للاستيراد'); return; }
+
+  let imported = 0;
+  rows.forEach(p => {
+    if (!p.order_no) return;
+    if (PLANS.find(x => x.order_no === p.order_no && x.status !== 'rejected')) return; // skip duplicates
+
+    const team     = TEAM_INFO[p.team_code];
+    const dailyCap = team ? team.size * DAILY_RATE : DAILY_RATE;
+    const days     = p.units ? Math.ceil(p.units / dailyCap) : 0;
+    const delivery = p.delivery_date;
+
+    PLANS.push({
+      id:            'PX' + Date.now() + imported,
+      order_no:      p.order_no,
+      customer:      p.customer,
+      location:      p.location,
+      units:         p.units,
+      team_code:     p.team_code,
+      delivery_date: delivery,
+      days,
+      drawings_date: delivery ? addDays(delivery,-10) : '—',
+      site_visit:    delivery ? addDays(delivery,-5)  : '—',
+      end_date:      delivery && days ? addDays(delivery,days) : '—',
+      priority:      'normal',
+      status:        'pending',
+      by:            U?.name || 'رفع ملف',
+      created_at:    new Date().toLocaleDateString('ar-EG'),
+    });
+    imported++;
+  });
+
+  localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
+  showToast(`✅ تم استيراد ${imported} خطة — في انتظار الاعتماد`);
+
+  // notify admins
+  const msg = `📂 <b>استيراد خطط جديدة</b>\n\nتم رفع ${imported} خطة تركيب تنتظر اعتمادك\n\n🔗 https://ashrafa1-glitch.github.io/mobica-fleet/planning/`;
+  ADMIN_IDS.forEach(id => sendTelegram(id, msg));
+
+  resetUpload();
+  switchTab('plans');
+}
+
+function resetUpload() {
+  XL_HEADERS = []; XL_ROWS = []; window._parsedRows = [];
+  document.getElementById('uploadZone').innerHTML =
+    `<div style="font-size:2rem;margin-bottom:8px">📊</div>
+     <div style="font-weight:700;color:var(--purple)">اضغط لاختيار ملف Excel</div>
+     <div style="font-size:.75rem;color:#888;margin-top:4px">أو اسحب الملف هنا | xlsx, xls, csv</div>`;
+  document.getElementById('xlFile').value = '';
+  document.getElementById('mappingSection').style.display = 'none';
+  document.getElementById('previewSection').style.display = 'none';
 }
 
 // ═══════════════════════════════════════════════════════════
