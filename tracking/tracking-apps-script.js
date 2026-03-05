@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════
-// MOBICA TRACKING AGENT — Google Apps Script v5.0
+// MOBICA TRACKING AGENT — Google Apps Script v5.2
 // إشعارات ذكية + تقارير يومية + تتبع تذكيرات المتأخرات
 // ═══════════════════════════════════════════════════════════
 
@@ -303,7 +303,7 @@ function sendDailyReport(time) {
   for (let i = 1; i < updates.length; i++) {
     const row = {};
     headers.forEach((h, j) => row[h] = updates[i][j]);
-    const ts = row.ts ? new Date(row.ts).getTime() : 0;
+    const ts = row.ts ? Number(row.ts) : 0;
     if (now - ts <= day24) recent.push(row);
   }
 
@@ -573,7 +573,7 @@ function sendKhaledReport(time) {
     headers.forEach((h,j) => row[h] = data[i][j]);
     if (row.type !== 'status') continue;
     const k = row.order_no;
-    if (!lastStatus[k] || new Date(row.ts) > new Date(lastStatus[k].ts))
+    if (!lastStatus[k] || Number(row.ts||0) > Number(lastStatus[k].ts||0))
       lastStatus[k] = row;
   }
 
@@ -583,7 +583,7 @@ function sendKhaledReport(time) {
 
   Object.values(lastStatus).forEach(row => {
     if (row.status === 'Completed') return;
-    const lastUpd = row.ts ? new Date(row.ts).getTime() : 0;
+    const lastUpd = row.ts ? Number(row.ts) : 0;
     const delayMs = now - lastUpd;
     if (delayMs < threshold) return;
     const tc = row.team_code || 'unknown';
@@ -686,7 +686,7 @@ function sendDelayedReminders() {
     headers.forEach((h,j) => row[h] = data[i][j]);
     if (row.type !== 'status') continue;
     const k = row.order_no;
-    if (!lastStatus[k] || new Date(row.ts) > new Date(lastStatus[k].ts)) {
+    if (!lastStatus[k] || Number(row.ts||0) > Number(lastStatus[k].ts||0)) {
       lastStatus[k] = row;
     }
   }
@@ -697,7 +697,7 @@ function sendDelayedReminders() {
 
   Object.values(lastStatus).forEach(row => {
     if (row.status === 'Completed') return;
-    const lastUpd = row.ts ? new Date(row.ts).getTime() : 0;
+    const lastUpd = row.ts ? Number(row.ts) : 0;
     if (now - lastUpd < threshold3d) return; // محدّث حديثاً
     const tc = row.team_code || 'unknown';
     if (!delayedByTeam[tc]) delayedByTeam[tc] = [];
