@@ -316,6 +316,42 @@ function sendDailyReport(time) {
   const defects       = issues.filter(r => r.issue_type === 'عيب في المنتج' || r.issue_type === 'مشكلة مقاس');
   const irUpds        = recent.filter(r => r.type === 'ir');
 
+  // ── حساب المتأخرات ─────────────────────────────────────
+  const threshold3d = 3 * 24 * 60 * 60 * 1000;
+  const lastStatusMap = {};
+  for (let i = 1; i < updates.length; i++) {
+    const row = {};
+    headers.forEach((h,j) => row[h] = updates[i][j]);
+    if (row.type !== 'status') continue;
+    const k = row.order_no;
+    const rowTs = row.ts ? Number(row.ts) : 0;
+    const curTs = lastStatusMap[k] ? Number(lastStatusMap[k].ts)||0 : 0;
+    if (!lastStatusMap[k] || rowTs > curTs) lastStatusMap[k] = row;
+  }
+  const delayedOrders = [];
+  Object.values(lastStatusMap).forEach(row => {
+    if (row.status === 'Completed' || row.status === 'TECO' || row.status === 'CLSD') return;
+    const lastTs = row.ts ? Number(row.ts) : 0;
+    const delayMs = now - lastTs;
+    if (delayMs < threshold3d) return;
+    const delayDays = Math.floor(delayMs / (24*60*60*1000));
+    delayedOrders.push({ ...row, delayDays });
+  });
+  delayedOrders.sort((a,b) => b.delayDays - a.delayDays);
+
+  // ── بناء قسم المتأخرات ─────────────────────────────────
+  let delayedSection = '';
+  if (delayedOrders.length) {
+    delayedSection =
+      `─────────────────────\n`+
+      `🚨 *المتأخرات (+3 أيام): ${delayedOrders.length} أمر*\n`+
+      delayedOrders.slice(0,10).map(r =>
+        `  • ${r.order_no} | ${r.customer||'—'} | *${r.delayDays} يوم* | ${TEAM_MANAGERS[r.team_code]?TEAM_MANAGERS[r.team_code].name:r.team_code||'—'}`
+      ).join('\n') +
+      (delayedOrders.length > 10 ? `\n  ... و${delayedOrders.length-10} أمر آخر` : '') +
+      '\n';
+  }
+
   // ── تقرير الإدارة ─────────────────────────────────────
   const adminReport =
     `📊 *تقرير إدارة التركيبات — ${time}*\n`+
@@ -328,8 +364,9 @@ function sendDailyReport(time) {
     `⚠️ مشاكل: *${issues.length}*${urgentIssues.length?' ('+urgentIssues.length+' عاجلة 🚨)':''}\n`+
     `🔴 عيوب منتجات: *${defects.length}*\n`+
     `📋 محاضر تسليم: *${irUpds.length}*\n`+
+    delayedSection +
     `─────────────────────\n`+
-    `${stopped.length?'⚠️ *أوامر متوقفة تحتاج متابعة:*\n'+stopped.map(r=>`  • ${r.order_no} — ${r.customer} (${r.note||'—'})`).join('\n')+'\n':''}` +
+    `${stopped.length?'⚠️ *أوامر متوقفة:*\n'+stopped.map(r=>`  • ${r.order_no} — ${r.customer} (${r.note||'—'})`).join('\n')+'\n':''}` +
     `${urgentIssues.length?'🚨 *مشاكل عاجلة:*\n'+urgentIssues.map(r=>`  • ${r.order_no} — ${r.issue_type}: ${r.note}`).join('\n')+'\n':''}` +
     `👁️ *للتفاصيل:* https://ashrafa1-glitch.github.io/mobica-fleet/tracking/`;
 
