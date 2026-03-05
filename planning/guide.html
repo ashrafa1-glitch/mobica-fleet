@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل Planning Agent — إدارة التركيبات</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f8f5ff;color:#1a1a2e;direction:rtl;line-height:1.7}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#4a148c,#1565c0);color:#fff;padding:48px 24px;text-align:center}
+.hero-icon{font-size:4rem;margin-bottom:12px}
+.hero h1{font-size:1.8rem;font-weight:800;margin-bottom:8px}
+.hero p{font-size:1rem;opacity:.85;max-width:500px;margin:0 auto 20px}
+.hero-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.2);padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600}
+
+/* ── NAV ── */
+.nav{background:#fff;border-bottom:2px solid #e8e0f0;padding:0 16px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.nav a{padding:14px 16px;color:#666;text-decoration:none;font-size:.82rem;font-weight:600;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s}
+.nav a:hover{color:#6a1b9a;border-bottom-color:#6a1b9a}
+
+/* ── CONTAINER ── */
+.container{max-width:780px;margin:0 auto;padding:24px 16px}
+
+/* ── SECTION ── */
+.section{margin-bottom:36px}
+.section-title{font-size:1.2rem;font-weight:800;color:#4a148c;margin-bottom:16px;padding-bottom:8px;border-bottom:3px solid #e8e0f0;display:flex;align-items:center;gap:8px}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 3px 12px rgba(106,27,154,.1)}
+.card-title{font-weight:700;color:#4a148c;margin-bottom:8px;font-size:.95rem}
+
+/* ── VALUE CARDS ── */
+.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.value-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.07);border-top:4px solid}
+.vc-purple{border-top-color:#6a1b9a}
+.vc-blue{border-top-color:#1565c0}
+.vc-green{border-top-color:#2e7d32}
+.vc-orange{border-top-color:#e65100}
+.value-card .icon{font-size:1.8rem;margin-bottom:8px}
+.value-card h3{font-size:.9rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.value-card p{font-size:.78rem;color:#666}
+
+/* ── COMPARISON TABLE ── */
+.compare-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.compare-table th{background:#4a148c;color:#fff;padding:10px 14px;text-align:right}
+.compare-table td{padding:10px 14px;border-bottom:1px solid #f0e8ff}
+.compare-table tr:nth-child(even){background:#faf5ff}
+.before{color:#c62828}
+.after{color:#2e7d32;font-weight:700}
+
+/* ── WORKFLOW ── */
+.workflow{display:flex;flex-direction:column;gap:0}
+.wf-step{display:flex;gap:12px;padding:14px 0;border-bottom:1px dashed #e0d0f0}
+.wf-step:last-child{border-bottom:none}
+.wf-num{background:#4a148c;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;margin-top:2px}
+.wf-content h4{font-weight:700;color:#1a1a2e;font-size:.9rem;margin-bottom:4px}
+.wf-content p{font-size:.82rem;color:#555}
+.wf-content .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;margin-right:4px}
+.tag-who{background:#f3e5f5;color:#6a1b9a}
+.tag-when{background:#e3f2fd;color:#1565c0}
+.tag-result{background:#e8f5e9;color:#2e7d32}
+
+/* ── USER GUIDE STEPS ── */
+.guide-step{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-right:4px solid #4a148c}
+.guide-step h4{color:#4a148c;font-weight:700;margin-bottom:8px;font-size:.9rem}
+.guide-step ol,.guide-step ul{padding-right:20px;font-size:.83rem;color:#444}
+.guide-step li{margin-bottom:6px}
+
+/* ── LOGIN TABLE ── */
+.login-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.login-table th{background:#4a148c;color:#fff;padding:9px 12px;text-align:right}
+.login-table td{padding:9px 12px;border-bottom:1px solid #f0e8ff}
+.login-table tr:nth-child(even){background:#faf5ff}
+code{background:#f3e5f5;color:#4a148c;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:.85em}
+
+/* ── FORMULA BOX ── */
+.formula{background:linear-gradient(135deg,#4a148c,#1565c0);color:#fff;border-radius:12px;padding:16px 20px;margin-bottom:14px;text-align:center}
+.formula .eq{font-size:1.1rem;font-weight:700;margin:8px 0}
+.formula .sub{font-size:.78rem;opacity:.8}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed #e0d0f0}
+.tl-item:last-child{border-bottom:none}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center}
+.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-line{width:2px;background:#e0d0f0;flex:1;margin:4px auto}
+.tl-purple{background:#4a148c}
+.tl-blue{background:#1565c0}
+.tl-green{background:#2e7d32}
+.tl-orange{background:#e65100}
+.tl-content h4{font-size:.88rem;font-weight:700;color:#1a1a2e}
+.tl-content p{font-size:.78rem;color:#666}
+.tl-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;margin-top:3px}
+.tl-t-purple{background:#f3e5f5;color:#4a148c}
+.tl-t-green{background:#e8f5e9;color:#2e7d32}
+
+/* ── ROLES ── */
+.role-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,.06);display:flex;gap:12px;align-items:flex-start}
+.role-icon{font-size:1.8rem;flex-shrink:0}
+.role-name{font-weight:700;color:#4a148c;font-size:.9rem}
+.role-desc{font-size:.8rem;color:#555;margin-top:3px}
+.role-perms{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.perm{padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;background:#f3e5f5;color:#4a148c}
+
+/* ── NOTE BOX ── */
+.note{background:#fff8e1;border-right:4px solid #f57f17;border-radius:8px;padding:12px 14px;font-size:.82rem;color:#555;margin-bottom:12px}
+.note strong{color:#e65100}
+
+/* ── FOOTER ── */
+.footer{background:#1a1a2e;color:#fff;text-align:center;padding:24px;font-size:.82rem;margin-top:40px}
+.footer a{color:#ce93d8;text-decoration:none}
+
+@media(max-width:500px){
+  .value-grid{grid-template-columns:1fr}
+  .hero h1{font-size:1.4rem}
+}
+
+@media print{
+  .nav{display:none}
+  .hero{padding:24px}
+  body{background:#fff}
+  .card,.guide-step,.role-card{box-shadow:none;border:1px solid #eee}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div class="hero-icon">📅</div>
+  <h1>Planning Agent</h1>
+  <p>نظام تخطيط وجدولة أعمال التركيبات — من الارتجال إلى إدارة المشروعات</p>
+  <div class="hero-badges">
+    <span class="badge">🏢 موبيكا للأثاث</span>
+    <span class="badge">📅 إصدار 1.2</span>
+    <span class="badge">👥 5 فرق — 183 فني</span>
+    <span class="badge">مارس 2026</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="#why">🎯 لماذا؟</a>
+  <a href="#value">💡 القيمة</a>
+  <a href="#workflow">⚙️ كيف يعمل</a>
+  <a href="#guide">📖 دليل الاستخدام</a>
+  <a href="#roles">👥 الصلاحيات</a>
+  <a href="#formula">🧮 المعادلة</a>
+  <a href="#login">🔑 بيانات الدخول</a>
+</div>
+
+<div class="container">
+
+  <!-- ── لماذا Planning Agent ── -->
+  <div class="section" id="why">
+    <div class="section-title">🎯 لماذا Planning Agent؟</div>
+
+    <div class="card">
+      <p style="font-size:.9rem;color:#333;line-height:1.9">
+        إدارة التركيبات في موبيكا تعمل حالياً بنظام <strong style="color:#c62828">ردّ الفعل</strong> —
+        أمر يأتي → نبحث عن فريق → نبعت → نتابع. لا يوجد تخطيط مسبق، لا توزيع موضوعي،
+        ولا رؤية واضحة للأسبوعين القادمين.
+        <br><br>
+        <strong style="color:#4a148c">Planning Agent</strong> هو التحول من هذا النموذج إلى
+        <strong style="color:#2e7d32">إدارة مشروعات حقيقية</strong> —
+        كل أمر له فريق، له جدول، له ميعاد رسومات هندسية، له زيارة موقع، وله تاريخ تسليم محدد
+        <strong>قبل وقوعه بـ 10 أيام</strong>.
+      </p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>الوضع الحالي ❌</th><th>مع Planning Agent ✅</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="before">توزيع الفرق يدوي وعشوائي</td><td class="after">توزيع بناءً على الطاقة والموقع</td></tr>
+        <tr><td class="before">لا أحد يعرف ما القادم الأسبوع</td><td class="after">خطة واضحة لـ 30 يوم قادم</td></tr>
+        <tr><td class="before">الفريق يعرف بالأمر يوم التسليم</td><td class="after">الفريق يستعد قبل 10 أيام</td></tr>
+        <tr><td class="before">رسومات هندسية متأخرة</td><td class="after">ميعاد رسومات محسوب تلقائياً T-10</td></tr>
+        <tr><td class="before">زيارة الموقع مفاجئة</td><td class="after">زيارة موقع مجدولة T-5</td></tr>
+        <tr><td class="before">فريق مثقل وآخر فاضي</td><td class="after">توزيع متوازن بالطاقة الفعلية</td></tr>
+        <tr><td class="before">لا يوجد مناقشة مع مديري المجموعات</td><td class="after">كل مدير يرى خطته ويناقشها</td></tr>
+        <tr><td class="before">الإدارة تعرف المشاكل بعد وقوعها</td><td class="after">تنبيهات وإشعارات استباقية</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── القيمة المضافة ── -->
+  <div class="section" id="value">
+    <div class="section-title">💡 القيمة المضافة</div>
+
+    <div class="value-grid">
+      <div class="value-card vc-purple">
+        <div class="icon">⏱️</div>
+        <h3>توفير الوقت</h3>
+        <p>تخطيط أمر يدوياً يأخذ 20-30 دقيقة — النظام يحسبه في ثوانٍ</p>
+      </div>
+      <div class="value-card vc-blue">
+        <div class="icon">⚖️</div>
+        <h3>توازن الفرق</h3>
+        <p>لا فريق يتحمل أكثر من طاقته — الحمل موزّع بالعدد الفعلي</p>
+      </div>
+      <div class="value-card vc-green">
+        <div class="icon">📐</div>
+        <h3>جاهزية مسبقة</h3>
+        <p>رسومات وزيارات موقع مجدولة — صفر مفاجآت يوم التسليم</p>
+      </div>
+      <div class="value-card vc-orange">
+        <div class="icon">🤝</div>
+        <h3>مشاركة الفريق</h3>
+        <p>كل مدير يرى خطته ويناقشها — ملكية حقيقية للتنفيذ</p>
+      </div>
+    </div>
+
+    <div class="formula">
+      <div style="font-size:.85rem;opacity:.8;margin-bottom:6px">🧮 معادلة حساب المدة التلقائية</div>
+      <div class="eq">المدة (أيام) = عدد الوحدات ÷ (حجم الفريق × 6.25)</div>
+      <div class="sub">6.25 = 150 وحدة/فني/شهر ÷ 24 يوم عمل | الوحدة = 20 دقيقة تركيب</div>
+    </div>
+  </div>
+
+  <!-- ── كيف يعمل ── -->
+  <div class="section" id="workflow">
+    <div class="section-title">⚙️ كيف يعمل النظام</div>
+
+    <div class="workflow">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-content">
+          <h4>📂 رفع خطة التسليمات</h4>
+          <p>يحيى (سلسلة الإمداد) يرفع ملف Excel يحتوي على الأوامر القادمة — تواريخ التسليم، العملاء، الكميات</p>
+          <span class="tag tag-who">👤 يحيى / أشرف</span>
+          <span class="tag tag-when">📅 كل أسبوعين</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-content">
+          <h4>🧮 حساب التوزيع التلقائي</h4>
+          <p>النظام يحسب لكل أمر: المدة المطلوبة، الفريق المناسب بناءً على الطاقة، والجدول الزمني كاملاً</p>
+          <span class="tag tag-who">🤖 النظام</span>
+          <span class="tag tag-result">✅ فوري</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-content">
+          <h4>✅ مراجعة واعتماد أشرف</h4>
+          <p>أشرف يراجع الخطط المقترحة — يعتمد أو يعدّل. لا شيء يُنفَّذ بدون موافقته</p>
+          <span class="tag tag-who">👤 أشرف قاسم</span>
+          <span class="tag tag-when">⏰ نفس اليوم</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-content">
+          <h4>📱 إشعار الفريق</h4>
+          <p>بعد الاعتماد — كل مدير مجموعة يستلم على Telegram خطته كاملة: الأمر، العميل، الموقع، المدة، والجدول الزمني</p>
+          <span class="tag tag-who">📱 Telegram</span>
+          <span class="tag tag-result">✅ تلقائي</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-content">
+          <h4>👁️ مدير يراجع خطته</h4>
+          <p>كل مدير يدخل على Planning Agent ويشوف خطة فريقه — الأوامر القادمة، المواعيد، تسلسل الأعمال</p>
+          <span class="tag tag-who">👤 مدير المجموعة</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">6</div>
+        <div class="wf-content">
+          <h4>✏️ طلب تعديل (لو لزم)</h4>
+          <p>لو المدير عنده ملاحظة — يضغط "طلب تعديل" ويكتب السبب. الطلب يوصل لأشرف فوراً للمراجعة</p>
+          <span class="tag tag-who">👤 المدير → أشرف</span>
+          <span class="tag tag-when">📱 Telegram</span>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">7</div>
+        <div class="wf-content">
+          <h4>📋 التنفيذ والمتابعة</h4>
+          <p>الفريق يبدأ الاستعداد — رسومات هندسية T-10، زيارة موقع T-5، تسليم T-0، تركيب T+X</p>
+          <span class="tag tag-result">✅ خطة واضحة للكل</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── الجدول الزمني ── -->
+  <div class="section">
+    <div class="section-title">📅 الجدول الزمني لكل أمر</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot-wrap"><div class="tl-dot tl-purple"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <h4>📐 رسومات هندسية جاهزة</h4>
+          <p>يجب أن تكون الرسومات والتفاصيل الفنية جاهزة قبل التسليم بـ 10 أيام</p>
+          <span class="tl-tag tl-t-purple">T-10 أيام</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap"><div class="tl-dot tl-blue"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <h4>🏠 زيارة الموقع</h4>
+          <p>مدير الفريق يزور الموقع للمعاينة والتحضير وتحديد أي متطلبات خاصة</p>
+          <span class="tl-tag tl-t-purple">T-5 أيام</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap"><div class="tl-dot tl-green"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <h4>🚚 تسليم للموقع</h4>
+          <p>البضاعة تصل للموقع — الفريق جاهز لاستقبالها وبدء التركيب فوراً</p>
+          <span class="tl-tag tl-t-green">T-0 يوم التسليم</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot-wrap"><div class="tl-dot tl-orange"></div></div>
+        <div class="tl-content">
+          <h4>✅ انتهاء التركيب</h4>
+          <p>يحسبه النظام تلقائياً: الوحدات ÷ (حجم الفريق × 6.25)</p>
+          <span class="tl-tag tl-t-green">T + عدد أيام التركيب</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── دليل الاستخدام ── -->
+  <div class="section" id="guide">
+    <div class="section-title">📖 دليل الاستخدام — خطوة بخطوة</div>
+
+    <div class="guide-step">
+      <h4>1️⃣ الدخول على النظام</h4>
+      <ol>
+        <li>افتح الرابط: <a href="https://ashrafa1-glitch.github.io/mobica-fleet/planning/" style="color:#4a148c">planning agent</a></li>
+        <li>ادخل اسم المستخدم وكلمة السر (انظر جدول الصلاحيات)</li>
+        <li>ستظهر لك التبويبات المناسبة لدورك</li>
+      </ol>
+    </div>
+
+    <div class="guide-step">
+      <h4>2️⃣ رفع ملف خطة التسليمات (أشرف فقط)</h4>
+      <ol>
+        <li>اضغط تبويب <strong>📂 رفع ملف</strong></li>
+        <li>اسحب ملف Excel أو اضغط لاختياره</li>
+        <li>النظام يقرأ الملف ويعرض الأعمدة — تحقق من ربط الأعمدة الصح</li>
+        <li>اضغط <strong>معاينة البيانات</strong> — راجع الجدول المعروض</li>
+        <li>اضغط <strong>استيراد كخطط</strong> — تُحفظ كـ "في انتظار الاعتماد"</li>
+      </ol>
+      <div class="note"><strong>💡 الأعمدة المطلوبة:</strong> رقم الأمر، العميل، الموقع، عدد الوحدات، تاريخ التسليم، الفريق</div>
+    </div>
+
+    <div class="guide-step">
+      <h4>3️⃣ إنشاء خطة يدوياً (أشرف فقط)</h4>
+      <ol>
+        <li>اضغط تبويب <strong>➕ خطة جديدة</strong></li>
+        <li>اختر رقم الأمر من القائمة</li>
+        <li>أدخل: عدد الوحدات، الفريق، تاريخ التسليم، الموقع</li>
+        <li>سيظهر تلقائياً: المدة المطلوبة، الجدول الزمني كامل</li>
+        <li>اضغط <strong>إرسال للاعتماد</strong></li>
+      </ol>
+    </div>
+
+    <div class="guide-step">
+      <h4>4️⃣ اعتماد الخطط (أشرف — محمد فتحي — خالد علي)</h4>
+      <ol>
+        <li>اضغط تبويب <strong>✅ الخطط</strong></li>
+        <li>ستجد الخطط بحالة "⏳ في الانتظار"</li>
+        <li>راجع تفاصيل كل خطة: الفريق، المدة، الجدول</li>
+        <li>اضغط <strong>✅ اعتماد</strong> — يُرسل إشعار Telegram للفريق فوراً</li>
+        <li>أو اضغط <strong>❌ رفض</strong> لو محتاج تعديل</li>
+      </ol>
+      <div class="note"><strong>⚠️ مهم:</strong> بعد الاعتماد — مدير الفريق يستلم على Telegram كل تفاصيل الخطة تلقائياً</div>
+    </div>
+
+    <div class="guide-step">
+      <h4>5️⃣ مراجعة الخطة (مديرو المجموعات)</h4>
+      <ol>
+        <li>ادخل بكلمة السر الخاصة بفريقك</li>
+        <li>ستجد في <strong>الرئيسية</strong>: ملخص خططك وطاقة فريقك</li>
+        <li>في <strong>✅ الخطط</strong>: كل خططك القادمة بالتفاصيل</li>
+        <li>راجع: العميل، الموقع، المدة، مواعيد الرسومات وزيارة الموقع</li>
+      </ol>
+    </div>
+
+    <div class="guide-step">
+      <h4>6️⃣ طلب تعديل (مديرو المجموعات)</h4>
+      <ol>
+        <li>في صفحة الخطط — ابحث عن الخطة المطلوبة</li>
+        <li>اضغط <strong>✏️ طلب تعديل</strong></li>
+        <li>اكتب السبب بوضوح (مثال: الفريق مشغول في هذا التاريخ / الموقع بعيد)</li>
+        <li>اضغط موافق — يوصل الطلب لأشرف على Telegram فوراً</li>
+        <li>انتظر رد الإدارة قبل التنفيذ</li>
+      </ol>
+      <div class="note"><strong>📌 قاعدة:</strong> أي تعديل يمر على أشرف أولاً — لا تعديل مباشر بدون موافقة الإدارة</div>
+    </div>
+  </div>
+
+  <!-- ── الصلاحيات ── -->
+  <div class="section" id="roles">
+    <div class="section-title">👥 الصلاحيات والأدوار</div>
+
+    <div class="role-card">
+      <div class="role-icon">👑</div>
+      <div>
+        <div class="role-name">أشرف قاسم — مدير تخطيط التركيبات</div>
+        <div class="role-desc">الصلاحية الكاملة على النظام — التخطيط والاعتماد والإدارة</div>
+        <div class="role-perms">
+          <span class="perm">رفع ملف Excel</span>
+          <span class="perm">إنشاء خطط</span>
+          <span class="perm">اعتماد / رفض</span>
+          <span class="perm">مشاهدة كل الخطط</span>
+          <span class="perm">متابعة طلبات التعديل</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-icon">📊</div>
+      <div>
+        <div class="role-name">محمد فتحي + خالد علي — الإدارة</div>
+        <div class="role-desc">مشاهدة كل الخطط القادمة لجميع الفرق + اعتماد</div>
+        <div class="role-perms">
+          <span class="perm">مشاهدة كل الخطط</span>
+          <span class="perm">اعتماد / رفض</span>
+          <span class="perm">متابعة الأداء</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-icon">🔧</div>
+      <div>
+        <div class="role-name">مديرو المجموعات (A / B / C / D / A4)</div>
+        <div class="role-desc">مشاهدة خطط فريقهم فقط + طلب تعديل</div>
+        <div class="role-perms">
+          <span class="perm">خطط الفريق فقط</span>
+          <span class="perm">طلب تعديل</span>
+          <span class="perm">الجدول الزمني</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── المعادلة ── -->
+  <div class="section" id="formula">
+    <div class="section-title">🧮 معادلة التخطيط</div>
+    <div class="card">
+      <div class="card-title">كيف النظام يحسب المدة؟</div>
+      <div class="formula" style="margin-top:10px">
+        <div class="eq">الأيام = عدد الوحدات ÷ (حجم الفريق × 6.25)</div>
+        <div class="sub">6.25 وحدة/فني/يوم = الهدف الاستراتيجي: 150 وحدة/فني/شهر ÷ 24 يوم عمل</div>
+      </div>
+      <table class="login-table" style="margin-top:14px">
+        <thead><tr><th>الفريق</th><th>الحجم</th><th>الطاقة اليومية</th><th>مثال: 100 وحدة</th></tr></thead>
+        <tbody>
+          <tr><td>A — أحمد حسن</td><td>25 فني</td><td>156 وحدة/يوم</td><td>1 يوم</td></tr>
+          <tr><td>B — سامى فؤاد</td><td>61 فني</td><td>381 وحدة/يوم</td><td>أقل من يوم</td></tr>
+          <tr><td>C — حازم قاعود</td><td>37 فني</td><td>231 وحدة/يوم</td><td>1 يوم</td></tr>
+          <tr><td>D — هشام جمال</td><td>55 فني</td><td>344 وحدة/يوم</td><td>1 يوم</td></tr>
+          <tr><td>A4 — محمد وسيم</td><td>5 فنيين + مقاولين</td><td>أرضيات فقط</td><td>حسب العقد</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── بيانات الدخول ── -->
+  <div class="section" id="login">
+    <div class="section-title">🔑 بيانات الدخول</div>
+    <div class="note"><strong>🔒 سري:</strong> لا تشارك كلمة السر مع أحد خارج النظام</div>
+    <table class="login-table">
+      <thead>
+        <tr><th>الاسم</th><th>الدور</th><th>اسم الدخول</th><th>كلمة السر</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>أشرف قاسم</td><td>👑 مدير التخطيط</td><td><code>ashraf</code></td><td><code>ashraf2026</code></td></tr>
+        <tr><td>محمد فتحي</td><td>📊 مدير التركيبات</td><td><code>fathy</code></td><td><code>ashraf2026</code></td></tr>
+        <tr><td>خالد علي</td><td>📊 الإدارة</td><td><code>khaled</code></td><td><code>ashraf2026</code></td></tr>
+        <tr><td>أحمد حسن (A)</td><td>🔧 مدير المجموعة</td><td><code>ahmed</code></td><td><code>teamA2026</code></td></tr>
+        <tr><td>سامى فؤاد (B)</td><td>🔧 مدير المجموعة</td><td><code>P1</code></td><td><code>teamB2026</code></td></tr>
+        <tr><td>حازم قاعود (C)</td><td>🔧 مدير المجموعة</td><td><code>P4</code></td><td><code>teamC2026</code></td></tr>
+        <tr><td>هشام جمال (D)</td><td>🔧 مدير المجموعة</td><td><code>P109</code></td><td><code>teamD2026</code></td></tr>
+        <tr><td>محمد وسيم (A4)</td><td>🔧 أرضيات</td><td><code>A4</code></td><td><code>team42026</code></td></tr>
+      </tbody>
+    </table>
+
+    <div style="text-align:center;margin-top:20px">
+      <a href="https://ashrafa1-glitch.github.io/mobica-fleet/planning/"
+         style="display:inline-block;background:linear-gradient(135deg,#4a148c,#1565c0);color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.95rem">
+        🚀 افتح Planning Agent
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  📅 Planning Agent v1.2 | إدارة التركيبات — موبيكا<br>
+  أُعدّ بواسطة: أشرف قاسم — مدير تخطيط التركيبات | مارس 2026<br>
+  <a href="https://ashrafa1-glitch.github.io/mobica-fleet/planning/">🔗 planning agent</a> |
+  <a href="https://ashrafa1-glitch.github.io/mobica-fleet/tracking/">🔗 tracking agent</a>
+</div>
+
+</body>
+</html>
