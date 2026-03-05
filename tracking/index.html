@@ -1080,6 +1080,26 @@ function processExcel(arrayBuffer, fileName, resEl){
       };
       fetch(API_URL+'?action=addSAPUpload&payload='+encodeURIComponent(JSON.stringify(summary)))
         .catch(()=>{});
+
+      // ── Push كل أمر لـ TrackingUpdates بـ timestamp صحيح ──
+      const now = Date.now();
+      orders.forEach((o, idx) => {
+        setTimeout(() => {
+          const body = {
+            type:     'sap_import',
+            order_no: o.order_no,
+            customer: o.customer,
+            team_code:o.team_code || '',
+            status:   o.status || 'TECO',
+            pct:      0,
+            note:     'مستورد من SAP — ' + fileName,
+            by:       U.name,
+            ts:       now - idx // timestamp فريد لكل أمر
+          };
+          fetch(API_URL+'?action=addUpdate&payload='+encodeURIComponent(JSON.stringify(body)))
+            .catch(()=>{});
+        }, idx * 300); // 300ms بين كل طلب لتفادي الحمل
+      });
     }
 
     // Show result
@@ -1343,12 +1363,13 @@ function subIR(){
 }
 
 function save(u){
+  if(!u.ts) u.ts = Date.now(); // ضمان وجود timestamp صحيح دايماً
   UPD.unshift(u);
   localStorage.setItem(SK+'_u',JSON.stringify(UPD));
   // Sync to Google Sheets
   if(API_URL){
     const body=Object.assign({},u);
-    delete body.items; // don't send heavy items array
+    delete body.items;  // don't send heavy items array
     delete body.photos; // don't send base64 photos
     fetch(API_URL+'?action=addUpdate&payload='+encodeURIComponent(JSON.stringify(body)))
       .catch(()=>{});
