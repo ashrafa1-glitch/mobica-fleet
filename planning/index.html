@@ -262,11 +262,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a1a2e;di
             <label>الفريق المقترح</label>
             <select id="npTeam" onchange="calcPlan()">
               <option value="">اختر الفريق...</option>
-              <option value="P1">B — سامى فؤاد (53 فني)</option>
-              <option value="109962">D — هشام جمال (48 فني)</option>
-              <option value="P4">C — حازم قاعود (30 فني)</option>
-              <option value="A4">A4 — محمد وسيم (16 فني)</option>
-              <option value="ahmed">A — أحمد حسن (24 فني)</option>
+              <option value="P1">B — سامى فؤاد (61 فني)</option>
+              <option value="109962">D — هشام جمال (55 فني)</option>
+              <option value="P4">C — حازم قاعود (37 فني)</option>
+              <option value="ahmed">A — أحمد حسن (25 فني)</option>
+              <option value="A4">A4 — محمد وسيم (5 فنيين + مقاولين | أرضيات فقط)</option>
             </select>
           </div>
         </div>
@@ -399,11 +399,11 @@ const TELEGRAM_BOT = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
 const DAILY_RATE = 6.25;
 
 const TEAM_INFO = {
-  'P1':     { name: 'سامى فؤاد',   code: 'B',  size: 53, id: '1453588787' },
-  '109962': { name: 'هشام جمال',   code: 'D',  size: 48, id: '5555531128' },
-  'P4':     { name: 'حازم قاعود',  code: 'C',  size: 30, id: '979158814'  },
-  'A4':     { name: 'محمد وسيم',   code: 'A4', size: 16, id: ''           },
-  'ahmed':  { name: 'أحمد حسن',    code: 'A',  size: 24, id: '8583850058' },
+  'P1':     { name: 'سامى فؤاد',   code: 'B',  size: 61, id: '1453588787' },
+  '109962': { name: 'هشام جمال',   code: 'D',  size: 55, id: '5555531128' },
+  'P4':     { name: 'حازم قاعود',  code: 'C',  size: 37, id: '979158814'  },
+  'A4':     { name: 'محمد وسيم',   code: 'A4', size: 5,  id: '',  specialty: 'flooring', contractors: true },
+  'ahmed':  { name: 'أحمد حسن',    code: 'A',  size: 25, id: '8583850058' },
 };
 
 const ADMIN_IDS = ['7055250567','8562342656','8017935026'];
