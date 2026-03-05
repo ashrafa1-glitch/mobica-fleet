@@ -40,11 +40,13 @@ function doGet(e) {
 
   let result = {};
   try {
-    if      (act === 'addUpdate')    result = addUpdate(payload);
-    else if (act === 'getUpdates')   result = getUpdates(params.team);
-    else if (act === 'sendReport')   result = sendDailyReport('طلب');
-    else if (act === 'addIR')        result = addIR(payload);
-    else if (act === 'addSAPUpload') result = addSAPUpload(payload);
+    if      (act === 'addUpdate')      result = addUpdate(payload);
+    else if (act === 'getUpdates')     result = getUpdates(params.team);
+    else if (act === 'sendReport')     result = sendDailyReport('طلب');
+    else if (act === 'addIR')          result = addIR(payload);
+    else if (act === 'addSAPUpload')   result = addSAPUpload(payload);
+    else if (act === 'repairHeaders')  result = repairHeaders();
+    else if (act === 'debug')          result = debugSheet();
     else result = { error: 'unknown action: ' + act };
   } catch(err) {
     result = { error: err.message };
@@ -58,15 +60,31 @@ function doGet(e) {
 // ═══════════════════════════════════════════════════════════
 // ADD UPDATE — حفظ + إشعارات ذكية
 // ═══════════════════════════════════════════════════════════
+// ─── الـ headers المطلوبة بالترتيب ──────────────────────────
+const REQUIRED_HEADERS = [
+  'type','order_no','customer','team_code','contract_no',
+  'status','pct','issue_type','severity','snag_id',
+  'photo_count','ir_type','ir_no','ir_vl',
+  'delivery_status','note','by','ts'
+];
+
+// ─── إصلاح headers تلقائياً ──────────────────────────────────
+function ensureHeaders(sheet) {
+  const firstRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  // إذا الـ ts مش موجود في الـ headers — نعيد كتابة الـ header row
+  if (!firstRow.includes('ts')) {
+    sheet.getRange(1, 1, 1, REQUIRED_HEADERS.length).setValues([REQUIRED_HEADERS]);
+  }
+}
+
 function addUpdate(body) {
   const ss    = SpreadsheetApp.openById(SHEET_ID);
   let sheet   = ss.getSheetByName(SHEET_UPDATES);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_UPDATES);
-    sheet.appendRow(['type','order_no','customer','team_code','contract_no',
-                     'status','pct','issue_type','severity','snag_id',
-                     'photo_count','ir_type','ir_no','ir_vl',
-                     'delivery_status','note','by','ts']);
+    sheet.appendRow(REQUIRED_HEADERS);
+  } else {
+    ensureHeaders(sheet);
   }
 
   sheet.appendRow([
@@ -783,4 +801,40 @@ function setupTriggers() {
     .create();
 
   Logger.log('✅ Triggers set: 8AM + 3PM reports | 9AM + 9PM delayed reminders');
+}
+
+// ═══════════════════════════════════════════════════════════
+// REPAIR HEADERS — يُصلح header row في TrackingUpdates
+// ═══════════════════════════════════════════════════════════
+function repairHeaders() {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  let sheet   = ss.getSheetByName(SHEET_UPDATES);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_UPDATES);
+    sheet.appendRow(REQUIRED_HEADERS);
+    return { ok: true, action: 'created', headers: REQUIRED_HEADERS };
+  }
+  const firstRow = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), REQUIRED_HEADERS.length)).getValues()[0];
+  sheet.getRange(1, 1, 1, REQUIRED_HEADERS.length).setValues([REQUIRED_HEADERS]);
+  return { ok: true, action: 'repaired', old_headers: firstRow, new_headers: REQUIRED_HEADERS };
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEBUG SHEET — يُرجع headers + آخر صف
+// ═══════════════════════════════════════════════════════════
+function debugSheet() {
+  const ss    = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_UPDATES);
+  if (!sheet) return { error: 'sheet not found' };
+  const lastRow  = sheet.getLastRow();
+  const lastCol  = sheet.getLastColumn();
+  const headers  = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const lastData = lastRow > 1 ? sheet.getRange(lastRow, 1, 1, lastCol).getValues()[0] : [];
+  return {
+    ok: true,
+    total_rows: lastRow - 1,
+    headers: headers,
+    last_row: lastData,
+    ts_col_index: headers.indexOf('ts'),
+  };
 }
