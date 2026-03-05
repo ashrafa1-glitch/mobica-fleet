@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planning Agent — إدارة التركيبات</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a1a2e;direction:rtl}
+:root{
+  --blue:#1565c0;--green:#2e7d32;--orange:#e65100;--red:#c62828;
+  --purple:#6a1b9a;--teal:#00695c;--gold:#f57f17;
+}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.header h1{font-size:1.1rem;font-weight:700}
+.header .sub{font-size:.75rem;opacity:.8;margin-top:2px}
+.badge{background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;font-size:.75rem}
+
+/* ── LOGIN ── */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--purple),var(--blue))}
+.login-card{background:#fff;border-radius:16px;padding:32px;width:320px;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center}
+.login-card h2{color:var(--purple);margin-bottom:8px;font-size:1.3rem}
+.login-card p{color:#666;font-size:.85rem;margin-bottom:24px}
+.login-card input{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:.95rem;margin-bottom:12px;text-align:right;font-family:inherit}
+.login-card input:focus{border-color:var(--purple);outline:none}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:600}
+.login-err{color:var(--red);font-size:.8rem;margin-top:8px;display:none}
+
+/* ── TABS ── */
+.tabs{display:flex;background:#fff;border-bottom:2px solid #e0e0e0;overflow-x:auto;gap:0}
+.tab{padding:12px 18px;cursor:pointer;font-size:.85rem;font-weight:600;color:#666;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple)}
+.tab-content{display:none;padding:16px}
+.tab-content.active{display:block}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-weight:700;font-size:.95rem;color:#1a1a2e}
+.section-title{font-size:1rem;font-weight:700;color:var(--purple);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8e0f0}
+
+/* ── TEAM CAPACITY BARS ── */
+.team-bar{margin-bottom:12px}
+.team-bar-header{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px}
+.team-bar-name{font-weight:600}
+.team-bar-track{background:#f0f0f0;border-radius:6px;height:10px;overflow:hidden}
+.team-bar-fill{height:100%;border-radius:6px;transition:.5s}
+.cap-green{background:var(--green)}
+.cap-orange{background:var(--orange)}
+.cap-red{background:var(--red)}
+
+/* ── ORDER CARDS ── */
+.order-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-right:4px solid var(--purple)}
+.order-card.assigned{border-right-color:var(--green)}
+.order-card.urgent{border-right-color:var(--red)}
+.order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.order-no{font-weight:700;color:var(--purple);font-size:.95rem}
+.order-customer{color:#444;font-size:.85rem;margin-bottom:4px}
+.order-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tag{padding:3px 8px;border-radius:12px;font-size:.72rem;font-weight:600}
+.tag-blue{background:#e3f2fd;color:var(--blue)}
+.tag-green{background:#e8f5e9;color:var(--green)}
+.tag-orange{background:#fff3e0;color:var(--orange)}
+.tag-red{background:#ffebee;color:var(--red)}
+.tag-purple{background:#f3e5f5;color:var(--purple)}
+.tag-gray{background:#f5f5f5;color:#666}
+
+/* ── PLAN FORM ── */
+.plan-form{background:#fafafa;border-radius:10px;padding:14px;border:2px solid #e8e0f0;margin-top:10px}
+.plan-form h4{color:var(--purple);margin-bottom:12px;font-size:.9rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px}
+.form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid #ddd;border-radius:7px;font-size:.85rem;font-family:inherit;text-align:right}
+.form-group input:focus,.form-group select:focus{border-color:var(--purple);outline:none}
+.calc-box{background:#f3e5f5;border-radius:8px;padding:10px;margin-bottom:10px;font-size:.82rem}
+.calc-box .calc-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.calc-box .calc-highlight{font-weight:700;color:var(--purple);font-size:.95rem}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;font-family:inherit;transition:.2s}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:#7b1fa2}
+.btn-success{background:var(--green);color:#fff}
+.btn-danger{background:var(--red);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--purple);color:var(--purple)}
+.btn-sm{padding:6px 12px;font-size:.78rem}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* ── PLAN STATUS ── */
+.plan-item{background:#fff;border-radius:10px;padding:12px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.plan-status{padding:3px 10px;border-radius:12px;font-size:.72rem;font-weight:700}
+.status-pending{background:#fff3e0;color:var(--orange)}
+.status-approved{background:#e8f5e9;color:var(--green)}
+.status-rejected{background:#ffebee;color:var(--red)}
+
+/* ── SUMMARY STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat-card{background:#fff;border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.stat-num{font-size:1.8rem;font-weight:700;line-height:1}
+.stat-label{font-size:.72rem;color:#666;margin-top:4px}
+.stat-purple{color:var(--purple)}
+.stat-green{color:var(--green)}
+.stat-orange{color:var(--orange)}
+.stat-red{color:var(--red)}
+
+/* ── TIMELINE ── */
+.timeline{margin-top:10px}
+.tl-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:.82rem}
+.tl-dot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.tl-done{background:var(--green)}
+.tl-next{background:var(--orange)}
+.tl-future{background:#ddd}
+.tl-label{font-weight:600;color:#333}
+.tl-date{color:#888;font-size:.75rem}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{color:var(--purple);font-size:1rem}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#666}
+.modal-body{padding:16px 20px}
+.modal-footer{padding:12px 20px;border-top:1px solid #eee;display:flex;gap:8px;justify-content:flex-end}
+
+/* ── NOTIFICATION TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:8px;font-size:.85rem;z-index:9999;transition:.3s;opacity:0;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:30px;color:#aaa}
+.empty-icon{font-size:2.5rem;margin-bottom:8px}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:20px;color:#9c27b0;font-size:.85rem}
+
+@media(max-width:500px){
+  .form-row{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div style="font-size:2.5rem;margin-bottom:8px">📅</div>
+    <h2>Planning Agent</h2>
+    <p>نظام تخطيط التركيبات</p>
+    <input type="text" id="loginUser" placeholder="اسم المستخدم" autocomplete="off">
+    <input type="password" id="loginPass" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">دخول</button>
+    <div class="login-err" id="loginErr">اسم المستخدم أو كلمة المرور غلط</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none">
+  <div class="header">
+    <div>
+      <div class="header h1">📅 Planning Agent</div>
+      <div class="sub">نظام تخطيط وجدولة التركيبات</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="badge" id="headerUser"></span>
+      <button onclick="doLogout()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.75rem">خروج</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('dashboard')">🏠 الرئيسية</div>
+    <div class="tab" onclick="switchTab('orders')">📋 الأوامر</div>
+    <div class="tab" onclick="switchTab('plans')">✅ الخطط</div>
+    <div class="tab" onclick="switchTab('newplan')">➕ خطة جديدة</div>
+  </div>
+
+  <!-- TAB: DASHBOARD -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num stat-purple" id="statTotal">—</div>
+        <div class="stat-label">إجمالي الأوامر</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num stat-orange" id="statUnplanned">—</div>
+        <div class="stat-label">تحتاج تخطيط</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num stat-green" id="statApproved">—</div>
+        <div class="stat-label">خطط معتمدة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num stat-red" id="statDelayed">—</div>
+        <div class="stat-label">متأخرة</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">⚡ طاقة الفرق الحالية</div>
+      <div id="teamCapacity"><div class="loading">جارى التحميل...</div></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">⚠️ أوامر تحتاج تخطيط عاجل</div>
+      <div id="urgentOrders"><div class="loading">جارى التحميل...</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: ORDERS -->
+  <div class="tab-content" id="tab-orders">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="filterStatus" onchange="renderOrders()" style="padding:8px;border-radius:8px;border:1.5px solid #ddd;font-family:inherit;font-size:.82rem">
+        <option value="">كل الحالات</option>
+        <option value="unplanned">غير مخططة</option>
+        <option value="planned">مخططة</option>
+        <option value="inprogress">جارى التركيب</option>
+        <option value="completed">مكتملة</option>
+      </select>
+      <button class="btn btn-outline btn-sm" onclick="loadFromServer()">🔄 تحديث</button>
+    </div>
+    <div id="ordersList"><div class="loading">جارى التحميل...</div></div>
+  </div>
+
+  <!-- TAB: PLANS -->
+  <div class="tab-content" id="tab-plans">
+    <div id="plansList"><div class="loading">جارى التحميل...</div></div>
+  </div>
+
+  <!-- TAB: NEW PLAN -->
+  <div class="tab-content" id="tab-newplan">
+    <div class="card">
+      <div class="section-title">➕ إنشاء خطة تركيب جديدة</div>
+
+      <div class="form-group" style="margin-bottom:12px">
+        <label>رقم الأمر</label>
+        <select id="npOrder" onchange="onOrderSelect()" style="width:100%;padding:8px 10px;border:1.5px solid #ddd;border-radius:7px;font-size:.85rem;font-family:inherit">
+          <option value="">اختر الأمر...</option>
+        </select>
+      </div>
+
+      <div id="orderInfo" style="display:none" class="plan-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>العميل</label>
+            <input type="text" id="npCustomer" readonly>
+          </div>
+          <div class="form-group">
+            <label>الموقع / المشروع</label>
+            <input type="text" id="npLocation" placeholder="مثال: القاهرة الجديدة">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>عدد الوحدات</label>
+            <input type="number" id="npUnits" min="1" oninput="calcPlan()" placeholder="مثال: 50">
+          </div>
+          <div class="form-group">
+            <label>الفريق المقترح</label>
+            <select id="npTeam" onchange="calcPlan()">
+              <option value="">اختر الفريق...</option>
+              <option value="P1">B — سامى فؤاد (53 فني)</option>
+              <option value="109962">D — هشام جمال (48 فني)</option>
+              <option value="P4">C — حازم قاعود (30 فني)</option>
+              <option value="A4">A4 — محمد وسيم (16 فني)</option>
+              <option value="ahmed">A — أحمد حسن (24 فني)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>📅 تاريخ التسليم المتوقع</label>
+            <input type="date" id="npDelivery" oninput="calcPlan()">
+          </div>
+          <div class="form-group">
+            <label>⚡ الأولوية</label>
+            <select id="npPriority">
+              <option value="normal">عادي</option>
+              <option value="urgent">عاجل 🔴</option>
+              <option value="vip">VIP ⭐</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- حساب تلقائي -->
+        <div class="calc-box" id="calcResult" style="display:none">
+          <div style="font-weight:700;color:var(--purple);margin-bottom:8px">📊 حساب التخطيط التلقائي</div>
+          <div class="calc-row"><span>عدد الوحدات:</span><span id="calcUnits">—</span></div>
+          <div class="calc-row"><span>حجم الفريق:</span><span id="calcTeamSize">—</span></div>
+          <div class="calc-row"><span>طاقة الفريق اليومية:</span><span id="calcCapacity">—</span></div>
+          <div class="calc-row" style="border-top:1px solid #ddd;padding-top:6px;margin-top:6px">
+            <span>المدة المطلوبة:</span><span class="calc-highlight" id="calcDays">—</span>
+          </div>
+          <div style="margin-top:10px;border-top:1px solid #ddd;padding-top:8px">
+            <div style="font-weight:700;margin-bottom:6px;font-size:.82rem">📅 الجدول الزمني المقترح:</div>
+            <div id="calcTimeline"></div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px">
+          <label>📝 ملاحظات</label>
+          <input type="text" id="npNote" placeholder="أي ملاحظات إضافية...">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="submitPlan()">📤 إرسال للاعتماد</button>
+          <button class="btn btn-outline" onclick="clearForm()">🗑️ مسح</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PLAN DETAIL -->
+<div class="modal-overlay" id="planModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">تفاصيل الخطة</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbztwpT9Si4zw2my29ZS0MTJstXDl8meerhcb0fJCJJcYYwjs5HLoqLCPzhhHuSOam6Z/exec';
+const SK = 'plan_v1';
+const TELEGRAM_BOT = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
+
+// الأيام العمل في الشهر = 24 | الوحدات/فني/يوم = 6.25
+const DAILY_RATE = 6.25;
+
+const TEAM_INFO = {
+  'P1':     { name: 'سامى فؤاد',   code: 'B',  size: 53, id: '1453588787' },
+  '109962': { name: 'هشام جمال',   code: 'D',  size: 48, id: '5555531128' },
+  'P4':     { name: 'حازم قاعود',  code: 'C',  size: 30, id: '979158814'  },
+  'A4':     { name: 'محمد وسيم',   code: 'A4', size: 16, id: ''           },
+  'ahmed':  { name: 'أحمد حسن',    code: 'A',  size: 24, id: '8583850058' },
+};
+
+const ADMIN_IDS = ['7055250567','8562342656','8017935026'];
+
+const PW = {
+  'ashraf|admin':   'ashraf2026',
+  'فتحي|admin':     'ashraf2026',
+  'خالد|admin':     'ashraf2026',
+  'planning|planner':'plan2026',
+};
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let U = null;
+let ORDERS = [];
+let PLANS = JSON.parse(localStorage.getItem(SK+'_plans') || '[]');
+
+// ═══════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  const key  = user+'|admin';
+  const key2 = user+'|planner';
+  let role = null;
+  if (PW[key] === pass)  role = 'admin';
+  if (PW[key2] === pass) role = 'planner';
+  if (!role) { document.getElementById('loginErr').style.display='block'; return; }
+  U = { name: user, role };
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('headerUser').textContent = user + (role==='admin'?' 👑':'');
+  loadFromServer();
+}
+
+function doLogout() {
+  U = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const ids = ['dashboard','orders','plans','newplan'];
+    t.classList.toggle('active', ids[i]===id);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (id==='dashboard') renderDashboard();
+  if (id==='orders')    renderOrders();
+  if (id==='plans')     renderPlans();
+  if (id==='newplan')   populateOrderSelect();
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAD FROM SERVER
+// ═══════════════════════════════════════════════════════════
+function loadFromServer() {
+  fetch(API_URL + '?action=getUpdates')
+    .then(r => r.json())
+    .then(data => {
+      // آخر تحديث لكل أمر
+      const map = {};
+      (data.updates || []).forEach(u => {
+        if (u.type !== 'status' && u.type !== 'sap_import') return;
+        const k = u.order_no;
+        if (!map[k] || (u.ts||0) > (map[k].ts||0)) map[k] = u;
+      });
+      ORDERS = Object.values(map).filter(o => o.order_no && !o.order_no.startsWith('TEST'));
+      renderDashboard();
+      renderOrders();
+      renderPlans();
+      populateOrderSelect();
+    })
+    .catch(() => {
+      // fallback to demo data
+      ORDERS = getDemoOrders();
+      renderDashboard();
+      renderOrders();
+      renderPlans();
+      populateOrderSelect();
+    });
+}
+
+function getDemoOrders() {
+  return [
+    {order_no:'20080195',customer:'مستشفى الأطفال المنصورة',team_code:'P1',status:'REL',ts:Date.now()-58*86400000},
+    {order_no:'20080467',customer:'جامعة القاهرة',team_code:'109962',status:'REL',ts:Date.now()-42*86400000},
+    {order_no:'20080647',customer:'مستشفى سيناء',team_code:'P4',status:'REL',ts:Date.now()-35*86400000},
+    {order_no:'20081102',customer:'فندق ماريوت',team_code:'ahmed',status:'REL',ts:Date.now()-10*86400000},
+    {order_no:'20081250',customer:'مجمع تجاري مدينة نصر',team_code:'',status:'',ts:Date.now()-2*86400000},
+  ];
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+function renderDashboard() {
+  const now = Date.now();
+  const delayed = ORDERS.filter(o => {
+    if (['Completed','TECO','CLSD'].includes(o.status)) return false;
+    return now - (o.ts||0) > 3*86400000;
+  });
+  const planned = PLANS.filter(p => p.status === 'approved');
+  const unplanned = ORDERS.filter(o => !PLANS.find(p => p.order_no === o.order_no));
+
+  document.getElementById('statTotal').textContent = ORDERS.length;
+  document.getElementById('statUnplanned').textContent = unplanned.length;
+  document.getElementById('statApproved').textContent = planned.length;
+  document.getElementById('statDelayed').textContent = delayed.length;
+
+  // Team capacity
+  const capEl = document.getElementById('teamCapacity');
+  let capHtml = '';
+  Object.entries(TEAM_INFO).forEach(([code, t]) => {
+    const teamOrders = ORDERS.filter(o => o.team_code === code && !['Completed','TECO','CLSD'].includes(o.status));
+    const teamPlans  = PLANS.filter(p => p.team_code === code && p.status === 'approved');
+    const plannedUnits = teamPlans.reduce((s,p) => s+(p.units||0), 0);
+    const capacity = t.size * DAILY_RATE * 10; // 10 يوم كأفق زمني
+    const pct = Math.min(Math.round((plannedUnits/capacity)*100), 100);
+    const colorClass = pct < 50 ? 'cap-green' : pct < 80 ? 'cap-orange' : 'cap-red';
+    capHtml += `
+      <div class="team-bar">
+        <div class="team-bar-header">
+          <span class="team-bar-name">${t.code} — ${t.name} (${t.size} فني)</span>
+          <span>${teamOrders.length} أمر نشط | ${pct}% محمّل</span>
+        </div>
+        <div class="team-bar-track"><div class="team-bar-fill ${colorClass}" style="width:${pct}%"></div></div>
+      </div>`;
+  });
+  capEl.innerHTML = capHtml || '<div class="empty">لا بيانات</div>';
+
+  // Urgent orders (no plan + delayed)
+  const urgEl = document.getElementById('urgentOrders');
+  const urgOrders = ORDERS.filter(o => {
+    if (['Completed','TECO','CLSD'].includes(o.status)) return false;
+    const hasP = PLANS.find(p => p.order_no===o.order_no && p.status==='approved');
+    const days = Math.floor((now-(o.ts||0))/86400000);
+    return !hasP && days > 3;
+  }).slice(0,5);
+  if (!urgOrders.length) {
+    urgEl.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>لا توجد أوامر عاجلة</div>';
+  } else {
+    urgEl.innerHTML = urgOrders.map(o => {
+      const days = Math.floor((now-(o.ts||0))/86400000);
+      return `<div class="order-card urgent" style="margin-bottom:8px">
+        <div class="order-top">
+          <span class="order-no">${o.order_no}</span>
+          <span class="tag tag-red">${days} يوم</span>
+        </div>
+        <div class="order-customer">${o.customer||'—'}</div>
+        <button class="btn btn-sm btn-primary" style="margin-top:6px" onclick="openPlanFor('${o.order_no}')">📅 خطط الآن</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ORDERS
+// ═══════════════════════════════════════════════════════════
+function renderOrders() {
+  const el = document.getElementById('ordersList');
+  const filter = document.getElementById('filterStatus')?.value || '';
+  const now = Date.now();
+
+  let list = [...ORDERS];
+  if (filter === 'unplanned') list = list.filter(o => !PLANS.find(p => p.order_no===o.order_no));
+  if (filter === 'planned')   list = list.filter(o =>  PLANS.find(p => p.order_no===o.order_no && p.status==='approved'));
+  if (filter === 'completed') list = list.filter(o => ['Completed','TECO','CLSD'].includes(o.status));
+
+  if (!list.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>لا توجد أوامر</div>'; return; }
+
+  el.innerHTML = list.map(o => {
+    const days = Math.floor((now-(o.ts||0))/86400000);
+    const plan  = PLANS.find(p => p.order_no===o.order_no);
+    const team  = TEAM_INFO[o.team_code];
+    const isDelayed = days > 3 && !['Completed','TECO','CLSD'].includes(o.status);
+    return `
+      <div class="order-card ${plan?'assigned':''} ${isDelayed&&!plan?'urgent':''}">
+        <div class="order-top">
+          <span class="order-no">${o.order_no}</span>
+          <span class="tag ${isDelayed?'tag-red':'tag-gray'}">${days} يوم</span>
+        </div>
+        <div class="order-customer">${o.customer||'—'}</div>
+        <div class="order-meta">
+          ${team?`<span class="tag tag-blue">${team.code} — ${team.name}</span>`:'<span class="tag tag-orange">غير محدد الفريق</span>'}
+          ${fmtStatus(o.status)}
+          ${plan?`<span class="tag tag-green">✅ مخططة</span>`:'<span class="tag tag-orange">⏳ تحتاج تخطيط</span>'}
+        </div>
+        ${plan ? `<div style="font-size:.78rem;color:#555;margin-top:4px">
+          📅 تسليم: ${plan.delivery_date||'—'} | 
+          ⏱️ ${plan.days||'—'} يوم | 
+          👤 ${TEAM_INFO[plan.team_code]?.name||plan.team_code}
+        </div>` : ''}
+        <div class="btn-row">
+          ${!plan ? `<button class="btn btn-sm btn-primary" onclick="openPlanFor('${o.order_no}')">📅 خطط</button>` : ''}
+          ${plan && plan.status==='pending' && U?.role==='admin' ? `<button class="btn btn-sm btn-success" onclick="approvePlan('${plan.id}')">✅ اعتماد</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function fmtStatus(s) {
+  const m = {
+    'REL':'<span class="tag tag-blue">قيد التركيب</span>',
+    'TECO':'<span class="tag tag-green">مكتمل SAP</span>',
+    'PCNF':'<span class="tag tag-orange">منجز جزئياً</span>',
+    'CLSD':'<span class="tag tag-gray">مغلق</span>',
+    'Completed':'<span class="tag tag-green">✅ مكتمل</span>',
+    'Being processed':'<span class="tag tag-blue">🔵 جارى</span>',
+    'Stopped':'<span class="tag tag-red">🔴 متوقف</span>',
+  };
+  return m[s] || `<span class="tag tag-gray">${s||'—'}</span>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PLANS
+// ═══════════════════════════════════════════════════════════
+function renderPlans() {
+  const el = document.getElementById('plansList');
+  if (!PLANS.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>لا توجد خطط بعد<br><small>ابدأ بإنشاء خطة من تبويب ➕ خطة جديدة</small></div>';
+    return;
+  }
+  el.innerHTML = PLANS.slice().reverse().map(p => {
+    const team = TEAM_INFO[p.team_code];
+    const statusCls = p.status==='approved'?'status-approved':p.status==='rejected'?'status-rejected':'status-pending';
+    const statusLbl = p.status==='approved'?'✅ معتمدة':p.status==='rejected'?'❌ مرفوضة':'⏳ في الانتظار';
+    return `
+      <div class="plan-item">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:700;color:var(--purple)">${p.order_no}</div>
+            <div style="font-size:.82rem;color:#555">${p.customer||'—'}</div>
+          </div>
+          <span class="plan-status ${statusCls}">${statusLbl}</span>
+        </div>
+        <div style="font-size:.8rem;color:#444;line-height:1.7">
+          👥 الفريق: <b>${team?team.name:p.team_code||'—'}</b><br>
+          📦 الوحدات: <b>${p.units||'—'}</b> وحدة<br>
+          📅 التسليم: <b>${p.delivery_date||'—'}</b><br>
+          ⏱️ المدة: <b>${p.days||'—'} يوم</b><br>
+          🏗️ رسومات هندسية: <b>${p.drawings_date||'—'}</b> (T-10)<br>
+          🏠 زيارة موقع: <b>${p.site_visit||'—'}</b> (T-5)<br>
+          ${p.note?`📝 ${p.note}<br>`:''}
+          👤 أنشأها: ${p.by||'—'} | ${p.created_at||'—'}
+        </div>
+        ${p.status==='pending' && U?.role==='admin' ? `
+          <div class="btn-row" style="margin-top:10px">
+            <button class="btn btn-sm btn-success" onclick="approvePlan('${p.id}')">✅ اعتماد</button>
+            <button class="btn btn-sm btn-danger" onclick="rejectPlan('${p.id}')">❌ رفض</button>
+          </div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NEW PLAN
+// ═══════════════════════════════════════════════════════════
+function populateOrderSelect() {
+  const sel = document.getElementById('npOrder');
+  if (!sel) return;
+  const opts = ORDERS
+    .filter(o => !PLANS.find(p => p.order_no===o.order_no && p.status==='approved'))
+    .map(o => `<option value="${o.order_no}">${o.order_no} — ${o.customer||'—'}</option>`);
+  sel.innerHTML = '<option value="">اختر الأمر...</option>' + opts.join('');
+}
+
+function openPlanFor(orderNo) {
+  switchTab('newplan');
+  const sel = document.getElementById('npOrder');
+  if (sel) { sel.value = orderNo; onOrderSelect(); }
+}
+
+function onOrderSelect() {
+  const orderNo = document.getElementById('npOrder').value;
+  const info = document.getElementById('orderInfo');
+  if (!orderNo) { info.style.display='none'; return; }
+  const o = ORDERS.find(x => x.order_no === orderNo);
+  if (!o) return;
+  info.style.display = 'block';
+  document.getElementById('npCustomer').value = o.customer || '';
+  if (o.team_code) document.getElementById('npTeam').value = o.team_code;
+  calcPlan();
+}
+
+function calcPlan() {
+  const units    = parseInt(document.getElementById('npUnits').value) || 0;
+  const teamCode = document.getElementById('npTeam').value;
+  const delivery = document.getElementById('npDelivery').value;
+  const calcBox  = document.getElementById('calcResult');
+
+  if (!units || !teamCode) { calcBox.style.display='none'; return; }
+  const team = TEAM_INFO[teamCode];
+  if (!team) return;
+
+  const dailyCap = team.size * DAILY_RATE;
+  const days     = Math.ceil(units / dailyCap);
+
+  document.getElementById('calcUnits').textContent     = units + ' وحدة';
+  document.getElementById('calcTeamSize').textContent  = team.size + ' فني';
+  document.getElementById('calcCapacity').textContent  = dailyCap.toFixed(1) + ' وحدة/يوم';
+  document.getElementById('calcDays').textContent      = days + ' يوم عمل';
+
+  // timeline
+  let tlHtml = '';
+  if (delivery) {
+    const delDate = new Date(delivery);
+    const drawDate = new Date(delDate); drawDate.setDate(drawDate.getDate()-10);
+    const visitDate = new Date(delDate); visitDate.setDate(visitDate.getDate()-5);
+    const endDate = new Date(delDate); endDate.setDate(endDate.getDate()+days);
+
+    tlHtml = `
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot tl-next"></div><div><div class="tl-label">📐 رسومات هندسية جاهزة</div><div class="tl-date">${fmtDate(drawDate)} (T-10)</div></div></div>
+        <div class="tl-item"><div class="tl-dot tl-next"></div><div><div class="tl-label">🏠 زيارة الموقع</div><div class="tl-date">${fmtDate(visitDate)} (T-5)</div></div></div>
+        <div class="tl-item"><div class="tl-dot tl-done"></div><div><div class="tl-label">🚚 تسليم للموقع</div><div class="tl-date">${fmtDate(delDate)} (T-0)</div></div></div>
+        <div class="tl-item"><div class="tl-dot tl-future"></div><div><div class="tl-label">✅ انتهاء التركيب</div><div class="tl-date">${fmtDate(endDate)} (T+${days})</div></div></div>
+      </div>`;
+  }
+  document.getElementById('calcTimeline').innerHTML = tlHtml;
+  calcBox.style.display = 'block';
+}
+
+function fmtDate(d) {
+  return d.toLocaleDateString('ar-EG', {year:'numeric',month:'short',day:'numeric'});
+}
+
+function addDays(dateStr, n) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate()+n);
+  return d.toISOString().split('T')[0];
+}
+
+function submitPlan() {
+  const orderNo  = document.getElementById('npOrder').value;
+  const customer = document.getElementById('npCustomer').value;
+  const location = document.getElementById('npLocation').value;
+  const units    = parseInt(document.getElementById('npUnits').value) || 0;
+  const teamCode = document.getElementById('npTeam').value;
+  const delivery = document.getElementById('npDelivery').value;
+  const priority = document.getElementById('npPriority').value;
+  const note     = document.getElementById('npNote').value;
+
+  if (!orderNo || !units || !teamCode || !delivery) {
+    showToast('⚠️ يرجى تعبئة جميع الحقول المطلوبة'); return;
+  }
+
+  const team     = TEAM_INFO[teamCode];
+  const dailyCap = team.size * DAILY_RATE;
+  const days     = Math.ceil(units / dailyCap);
+
+  const plan = {
+    id:             'P' + Date.now(),
+    order_no:       orderNo,
+    customer,
+    location,
+    units,
+    team_code:      teamCode,
+    delivery_date:  delivery,
+    days,
+    drawings_date:  addDays(delivery, -10),
+    site_visit:     addDays(delivery, -5),
+    end_date:       addDays(delivery, days),
+    priority,
+    note,
+    status:         U?.role === 'admin' ? 'approved' : 'pending',
+    by:             U?.name || 'غير معروف',
+    created_at:     new Date().toLocaleDateString('ar-EG'),
+  };
+
+  PLANS.push(plan);
+  localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
+
+  if (plan.status === 'approved') {
+    sendPlanNotification(plan);
+    showToast('✅ تم اعتماد الخطة وإرسال الإشعارات');
+  } else {
+    showToast('✅ تم إرسال الخطة للاعتماد');
+    notifyAdmins(plan);
+  }
+
+  clearForm();
+  switchTab('plans');
+}
+
+function approvePlan(id) {
+  const plan = PLANS.find(p => p.id === id);
+  if (!plan) return;
+  plan.status = 'approved';
+  plan.approved_by = U?.name;
+  plan.approved_at = new Date().toLocaleDateString('ar-EG');
+  localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
+  sendPlanNotification(plan);
+  renderPlans();
+  renderOrders();
+  renderDashboard();
+  showToast('✅ تم اعتماد الخطة وإرسال الإشعارات للفريق');
+}
+
+function rejectPlan(id) {
+  const plan = PLANS.find(p => p.id === id);
+  if (!plan) return;
+  plan.status = 'rejected';
+  localStorage.setItem(SK+'_plans', JSON.stringify(PLANS));
+  renderPlans();
+  showToast('❌ تم رفض الخطة');
+}
+
+function clearForm() {
+  ['npOrder','npCustomer','npLocation','npUnits','npTeam','npDelivery','npNote'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('orderInfo').style.display = 'none';
+  document.getElementById('calcResult').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+function sendTelegram(chatId, text) {
+  if (!chatId) return;
+  fetch(`https://api.telegram.org/bot${TELEGRAM_BOT}/sendMessage`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+  }).catch(()=>{});
+}
+
+function sendPlanNotification(plan) {
+  const team = TEAM_INFO[plan.team_code];
+  const msg =
+    `✅ <b>خطة تركيب معتمدة</b>\n\n`+
+    `📋 الأمر: ${plan.order_no}\n`+
+    `🏢 العميل: ${plan.customer||'—'}\n`+
+    `📍 الموقع: ${plan.location||'—'}\n`+
+    `📦 الوحدات: ${plan.units} وحدة\n`+
+    `⏱️ المدة: ${plan.days} يوم\n\n`+
+    `📅 الجدول الزمني:\n`+
+    `📐 رسومات هندسية: ${plan.drawings_date} (T-10)\n`+
+    `🏠 زيارة الموقع: ${plan.site_visit} (T-5)\n`+
+    `🚚 تسليم: ${plan.delivery_date} (T-0)\n`+
+    `🏁 انتهاء التركيب: ${plan.end_date}\n\n`+
+    `${plan.note?'📝 '+plan.note+'\n':''}`+
+    `👤 اعتمدها: ${plan.approved_by||plan.by}`;
+
+  // للفريق المسؤول
+  if (team?.id) sendTelegram(team.id, msg);
+  // للإدارة
+  ADMIN_IDS.forEach(id => sendTelegram(id, msg));
+}
+
+function notifyAdmins(plan) {
+  const team = TEAM_INFO[plan.team_code];
+  const msg =
+    `📋 <b>خطة جديدة تنتظر الاعتماد</b>\n\n`+
+    `📦 الأمر: ${plan.order_no} — ${plan.customer||'—'}\n`+
+    `👥 الفريق: ${team?team.name:plan.team_code}\n`+
+    `📦 الوحدات: ${plan.units} | ⏱️ المدة: ${plan.days} يوم\n`+
+    `📅 التسليم: ${plan.delivery_date}\n`+
+    `👤 أنشأها: ${plan.by}`;
+  ADMIN_IDS.forEach(id => sendTelegram(id, msg));
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+function closeModal() { document.getElementById('planModal').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem(SK+'_session');
+  if (saved) {
+    U = JSON.parse(saved);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    document.getElementById('headerUser').textContent = U.name + (U.role==='admin'?' 👑':'');
+    loadFromServer();
+  }
+});
+</script>
+</body>
+</html>
