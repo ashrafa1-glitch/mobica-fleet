@@ -164,7 +164,7 @@ body{font-family:-apple-system,Tahoma,sans-serif;background:#eef2f7;min-height:1
     </div>
     <div style="display:flex;gap:8px">
       <button class="btn b-green" onclick="confirmReplaceDriver()">✅ تأكيد الاستبدال</button>
-      <button class="btn b-out" onclick="closeModal('replaceModal')">إلغاء</button>
+      <button class="btn b-out" onclick="document.getElementById('replaceModal').style.display='none'">إلغاء</button>
     </div>
   </div>
 </div>
@@ -1357,8 +1357,10 @@ function confirmReplaceDriver(){
   }
 
   toast(`✅ تم استبدال السيارة — ${reason}`);
-  closeModal('replaceModal');
+  document.getElementById('replaceModal').style.display='none';
   renderPlan(); // تحديث العرض
+  // تأكد إن tab الخطة ظاهر
+  switchTab('plan');
 }
 
 async function approveAllCompany(){
