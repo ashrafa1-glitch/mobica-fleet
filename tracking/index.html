@@ -1072,6 +1072,10 @@ function processExcel(arrayBuffer, fileName, resEl){
     localStorage.setItem(SK+'_sap_orders', JSON.stringify(orders));
     localStorage.setItem(SK+'_sap_upload_ts', Date.now());
 
+    // ✅ FIX: تحديث الـ ORDERS global في الذاكرة فوراً
+    ORDERS = orders;
+    go('dash'); // تحديث الـ dashboard
+
     // Sync to Google Sheets (send summary only — no heavy base64)
     if(API_URL){
       const summary={
