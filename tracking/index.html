@@ -333,6 +333,8 @@ const TEAM_BASE=JSON.parse(atob("eyJQMSI6eyJuYW1lIjoiXHUwNjMzXHUwNjI3XHUwNjQ1XHU
 const UNIT_MIN  = 20;
 const SK = 'track_v3';
 const API_URL = 'https://script.google.com/macros/s/AKfycbztwpT9Si4zw2my29ZS0MTJstXDl8meerhcb0fJCJJcYYwjs5HLoqLCPzhhHuSOam6Z/exec';
+// ✅ تحميل أوامر SAP من localStorage عند بدء التشغيل (يتغلب على البيانات المدمجة)
+(function(){ try { const s=localStorage.getItem(SK+'_sap_orders'); if(s){ const d=JSON.parse(s); if(d&&d.length) ORDERS=d; } } catch(e){} })();
 
 const PW = {
   'ashraf|admin':'ashraf2026','fathy|admin':'ashraf2026',
