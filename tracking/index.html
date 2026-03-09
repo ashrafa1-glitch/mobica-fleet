@@ -983,8 +983,9 @@ function importExcel(input){
       if(typeof XLSX==='undefined'){
         // Load SheetJS dynamically
         const s=document.createElement('script');
-        s.src='https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
         s.onload=()=>processExcel(e.target.result, file.name, res);
+        s.onerror=()=>{ res.innerHTML=`<div style="color:#c62828;padding:12px">❌ فشل تحميل مكتبة قراءة Excel — تأكد من الإنترنت وحاول مرة أخرى</div>`; };
         document.head.appendChild(s);
       } else {
         processExcel(e.target.result, file.name, res);
