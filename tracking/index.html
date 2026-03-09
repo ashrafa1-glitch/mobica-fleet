@@ -1010,6 +1010,13 @@ function processExcel(arrayBuffer, fileName, resEl){
       return;
     }
 
+    // 🔍 DEBUG: عرض أسماء الأعمدة المكتشفة
+    const detectedCols = Object.keys(rows[0]);
+    resEl.innerHTML=`<div style="background:#fff3e0;border:1px solid #ff9800;border-radius:8px;padding:12px;margin-bottom:10px;direction:ltr;font-size:11px">
+      <b>🔍 أعمدة الملف المكتشفة (${detectedCols.length} عمود | ${rows.length} صف):</b><br>
+      ${detectedCols.map(c=>`<span style="background:#e3f2fd;padding:2px 6px;margin:2px;border-radius:4px;display:inline-block">${c}</span>`).join('')}
+    </div>`;
+
     // Map SAP columns → internal format
     const COL = {
       order:    ['Installation Order','Installation order','أمر التركيب'],
