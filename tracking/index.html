@@ -182,7 +182,8 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f0f2f5;color:#222;dire
 <div id="sc-app">
   <div class="hdr">
     <div><h1 id="hdr-t">📋 Tracking Agent</h1><p id="hdr-s"></p></div>
-    <div style="display:flex;gap:6px;align-items:center">
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span id="sync-badge" style="font-size:.72rem;color:#fff;opacity:.85"></span>
       <button id="sync-btn" onclick="manualSync()" title="تحديث البيانات" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px">🔄</button>
       <button class="btn-out" onclick="logout()">خروج</button>
     </div>
@@ -380,7 +381,9 @@ function login(){
     </div>`;
   localStorage.removeItem(SK+'_orders_fetch_ts');
   fetchOrdersFromServer(); // لما يخلص هيعمل go(PG) تلقائياً
-  setInterval(syncFromServer,30000);
+  setInterval(syncFromServer,15000); // كل 15 ثانية بدل 30
+  setInterval(_drainQueue, 20000);   // محاولة إعادة إرسال التحديثات الـ pending كل 20 ثانية
+  setTimeout(_updateSyncBadge, 2000); // تحديث الـ badge بعد التحميل
 }
 function logout(){
   U=null;
@@ -1433,7 +1436,10 @@ function subUpd(){
     pct:parseInt(document.getElementById('mu-pct').value),
     note:document.getElementById('mu-note').value,
     by:U.name,ts:Date.now()};
-  save(u); cls('m-upd'); toast('✅ تم حفظ التحديث'); go(PG);
+  save(u); cls('m-upd');
+  toast('✅ تم الحفظ — جارى المزامنة...');
+  setTimeout(()=>{ syncFromServer(); _updateSyncBadge(); }, 500); // مزامنة فورية بعد التحديث
+  go(PG);
 }
 function subIss(){
   const d=document.getElementById('mi-ds').value;
@@ -1511,17 +1517,63 @@ function subIR(){
   save(u); cls('m-ir'); toast('📋 تم حفظ المحضر'); go(PG);
 }
 
+// ════ SEND QUEUE: يضمن وصول التحديثات للسيرفر حتى لو النت انقطع ════
+function _sendToServer(body, retrying){
+  if(!API_URL) return;
+  const pl = encodeURIComponent(JSON.stringify(body));
+  fetch(API_URL+'?action=addUpdate&payload='+pl)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.ok){
+        if(retrying) _removeFromQueue(body.ts); // نجح الـ retry → حذف من الـ queue
+        _updateSyncBadge();
+      } else {
+        _addToQueue(body);
+      }
+    })
+    .catch(()=>{ _addToQueue(body); });
+}
+function _addToQueue(body){
+  if(!body.ts) return;
+  const q=JSON.parse(localStorage.getItem(SK+'_sq')||'[]');
+  if(q.find(x=>x.ts===body.ts)) return; // موجود بالفعل
+  q.push(body);
+  localStorage.setItem(SK+'_sq',JSON.stringify(q));
+  _updateSyncBadge();
+}
+function _removeFromQueue(ts){
+  const q=JSON.parse(localStorage.getItem(SK+'_sq')||'[]').filter(x=>x.ts!==ts);
+  localStorage.setItem(SK+'_sq',JSON.stringify(q));
+  _updateSyncBadge();
+}
+function _drainQueue(){
+  const q=JSON.parse(localStorage.getItem(SK+'_sq')||'[]');
+  if(!q.length) return;
+  q.forEach(body=>{ _sendToServer(body, true); });
+}
+function _updateSyncBadge(){
+  const q=JSON.parse(localStorage.getItem(SK+'_sq')||'[]');
+  const el=document.getElementById('sync-badge');
+  if(!el) return;
+  if(q.length){
+    el.textContent='⚠️ '+q.length+' غير محفوظة';
+    el.style.color='#c62828';
+  } else {
+    const now=new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+    el.textContent='✅ '+now;
+    el.style.color='#2e7d32';
+  }
+}
+
 function save(u){
-  if(!u.ts) u.ts = Date.now(); // ضمان وجود timestamp صحيح دايماً
+  if(!u.ts) u.ts = Date.now();
   UPD.unshift(u);
   localStorage.setItem(SK+'_u',JSON.stringify(UPD));
-  // Sync to Google Sheets
   if(API_URL){
     const body=Object.assign({},u);
-    delete body.items;  // don't send heavy items array
-    delete body.photos; // don't send base64 photos
-    fetch(API_URL+'?action=addUpdate&payload='+encodeURIComponent(JSON.stringify(body)))
-      .catch(()=>{});
+    delete body.items;
+    delete body.photos;
+    _sendToServer(body, false);
   }
 }
 function manualSync(){
