@@ -1056,47 +1056,59 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
 
     function g(row, idx){ const v=row[idx]; return (v===undefined||v===null)?'':v; }
 
-    // Group rows by Installation Order
+    // معالجة الصفوف على دفعات لتجنب تجميد المتصفح
     const ordersMap={};
-    dataRows.forEach(row=>{
-      const no = String(g(row, orderCol)||'').trim();
-      if(!no || no==='0' || no==='') return;
-      const teamName = String(g(row, groupCol)||'').trim();
-      const teamCode = TEAM_MAP[teamName] || teamName;
-      if(!ordersMap[no]){
-        const plannedRaw = g(row, CI.planned);
-        const plannedStr = plannedRaw instanceof Date
-          ? plannedRaw.toLocaleDateString('ar-EG')
-          : String(plannedRaw||'');
-        ordersMap[no]={
-          order_no:    no,
-          customer:    String(g(row, CI.customer)),
-          address:     String(g(row, CI.address)),
-          phone:       String(g(row, CI.phone)),
-          team_code:   teamCode,
-          team_name:   teamName,
-          status:      'REL',
-          delivery:    String(g(row, CI.delivery)),
-          planned:     plannedStr,
-          main_group:  String(g(row, CI.mainGrp)),
-          notes:       String(g(row, CI.notes)||''),
-          items:[],
-          total_units: 0,
-          upload_by:   U.name,
-          upload_ts:   Date.now(),
-          file_name:   fileName
-        };
+    const CHUNK = 150;
+    let rowIdx = 0;
+
+    function processChunk(){
+      const end = Math.min(rowIdx + CHUNK, dataRows.length);
+      for(let i=rowIdx; i<end; i++){
+        const row = dataRows[i];
+        const no = String(g(row, orderCol)||'').trim();
+        if(!no || no==='0') continue;
+        const teamName = String(g(row, groupCol)||'').trim();
+        const teamCode = TEAM_MAP[teamName] || teamName;
+        if(!ordersMap[no]){
+          const plannedRaw = g(row, CI.planned);
+          const plannedStr = plannedRaw instanceof Date
+            ? plannedRaw.toLocaleDateString('ar-EG') : String(plannedRaw||'');
+          ordersMap[no]={
+            order_no: no, customer: String(g(row,CI.customer)),
+            address: String(g(row,CI.address)), phone: String(g(row,CI.phone)),
+            team_code: teamCode, team_name: teamName, status: 'REL',
+            delivery: String(g(row,CI.delivery)), planned: plannedStr,
+            main_group: String(g(row,CI.mainGrp)), notes: String(g(row,CI.notes)||''),
+            items:[], total_units:0, upload_by:U.name, upload_ts:Date.now(), file_name:fileName
+          };
+        }
+        const instTime = parseFloat(g(row,CI.instTime))||0;
+        const units = Math.round(instTime/20*10)/10;
+        ordersMap[no].items.push({ material:String(g(row,CI.material)), qty:parseFloat(g(row,CI.qty))||0, instTime, units });
+        ordersMap[no].total_units += units;
       }
-      const instTime = parseFloat(g(row, CI.instTime))||0;
-      const units    = Math.round(instTime/20*10)/10;
-      ordersMap[no].items.push({
-        material: String(g(row, CI.material)),
-        qty:      parseFloat(g(row, CI.qty))||0,
-        instTime: instTime,
-        units:    units
-      });
-      ordersMap[no].total_units += units;
-    });
+      rowIdx = end;
+      if(rowIdx < dataRows.length){
+        const pct = Math.round(rowIdx/dataRows.length*100);
+        resEl.innerHTML=`<div style="text-align:center;padding:16px;color:#1565c0">
+          ⚙️ جارى معالجة الملف... ${pct}٪<br>
+          <div style="background:#e3f2fd;border-radius:8px;height:8px;margin-top:8px">
+            <div style="background:#1565c0;border-radius:8px;height:8px;width:${pct}%"></div>
+          </div>
+          <small style="color:#888">${rowIdx} من ${dataRows.length} صف</small></div>`;
+        setTimeout(processChunk, 0);
+      } else {
+        finishImport(ordersMap, fileName, resEl);
+      }
+    }
+    processChunk();
+    return; // finishImport يكمل من هنا
+  } catch(err){
+    resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ خطأ: ${err.message}</div>`;
+  }
+}
+function finishImport(ordersMap, fileName, resEl){
+  try{
 
     const orders = Object.values(ordersMap);
     const newOrders   = orders.filter(o=>!ORDERS.find(ex=>ex.order_no===o.order_no));
