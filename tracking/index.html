@@ -1187,6 +1187,9 @@ function finishImport(ordersMapOrObj, fileName, resEl){
     ORDERS = finalOrders;
     go('dash');
 
+    // ☁️ رفع الأوامر الجديدة/المحدّثة للسيرفر (database مركزي)
+    pushOrdersToServer(newSAPOrders, U.name);
+
     // Sync to Google Sheets (send summary only — no heavy base64)
     if(API_URL){
       const summary={
@@ -1496,8 +1499,12 @@ function manualSync(){
     toast('✅ تم التحديث');
   });
 }
+// ═══ SYNC FROM SERVER ═══════════════════════════════════
+// يجيب التحديثات + الأوامر المركزية من الـ server
 function syncFromServer(cb){
   if(!API_URL){if(cb)cb();return;}
+
+  // 1️⃣ جلب التحديثات
   fetch(API_URL+'?action=getUpdates')
     .then(r=>r.json())
     .then(d=>{
@@ -1507,12 +1514,70 @@ function syncFromServer(cb){
         if(newUpds.length){
           UPD=[...UPD,...newUpds].sort((a,b)=>b.ts-a.ts);
           localStorage.setItem(SK+'_u',JSON.stringify(UPD));
-          go(PG);
-          if(!cb) toast('🔄 '+newUpds.length+' تحديث جديد من الفريق');
+          if(!cb) toast('🔄 '+newUpds.length+' تحديث جديد');
         }
       }
       if(cb) cb();
     }).catch(()=>{if(cb)cb();});
+
+  // 2️⃣ جلب الأوامر المركزية (مرة عند الدخول وكل 5 دقائق)
+  const lastOrderFetch = Number(localStorage.getItem(SK+'_orders_fetch_ts')||0);
+  if(Date.now() - lastOrderFetch > 5*60*1000){
+    fetchOrdersFromServer();
+  }
+}
+
+// جلب الأوامر من Google Sheets → merge مع localStorage
+function fetchOrdersFromServer(){
+  if(!API_URL) return;
+  fetch(API_URL+'?action=getOrders')
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d.orders || !d.orders.length) return;
+      localStorage.setItem(SK+'_orders_fetch_ts', Date.now());
+
+      // Merge: server data wins for SAP fields, local wins for manual fields
+      const serverMap={};
+      d.orders.forEach(o=>{ serverMap[o.order_no]=o; });
+
+      const localMap={};
+      ORDERS.forEach(o=>{ localMap[o.order_no]=o; });
+
+      // اتحاد الأوامر من السيرفر + المحلية
+      const allNos = new Set([...Object.keys(serverMap),...Object.keys(localMap)]);
+      const merged=[];
+      allNos.forEach(no=>{
+        const sv=serverMap[no];
+        const lc=localMap[no];
+        if(sv && lc){
+          // موجود في الاثنين: SAP fields من السيرفر، tracking fields من المحلي
+          merged.push(Object.assign({},lc,{
+            customer:sv.customer, address:sv.address, team_code:sv.team_code,
+            team_name:sv.team_name, delivery:sv.delivery, planned:sv.planned,
+            total_units:sv.total_units, items:sv.items.length?sv.items:lc.items,
+            main_group:sv.main_group||lc.main_group, upload_ts:sv.upload_ts
+          }));
+        } else {
+          merged.push(sv||lc);
+        }
+      });
+
+      ORDERS=merged;
+      localStorage.setItem(SK+'_sap_orders',JSON.stringify(merged));
+      go(PG);
+      toast('☁️ تم تحديث الأوامر من السيرفر ('+merged.length+')');
+    }).catch(()=>{});
+}
+
+// رفع الأوامر للسيرفر بعد SAP upload
+function pushOrdersToServer(orders, by){
+  if(!API_URL || !orders.length) return;
+  const body = JSON.stringify({ action:'saveOrders', orders, by });
+  fetch(API_URL, {
+    method:'POST',
+    body,
+    headers:{'Content-Type':'text/plain'} // Apps Script يقبل text/plain بدون preflight
+  }).catch(()=>{});
 }
 function opn(id){document.getElementById(id).classList.add('sh')}
 function cls(id){document.getElementById(id).classList.remove('sh')}
