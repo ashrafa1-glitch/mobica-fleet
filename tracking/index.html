@@ -1000,6 +1000,11 @@ function importExcel(input){
 }
 
 function processExcel(arrayBuffer, fileName, resEl){
+  // تأخير بسيط عشان المتصفح يتنفس قبل المعالجة الثقيلة
+  resEl.innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">⚙️ جارى معالجة ${fileName}...</div>`;
+  setTimeout(()=>_processExcelCore(arrayBuffer, fileName, resEl), 50);
+}
+function _processExcelCore(arrayBuffer, fileName, resEl){
   try{
     const wb   = XLSX.read(arrayBuffer, {type:'array', cellDates:true});
     const ws   = wb.Sheets[wb.SheetNames[0]];
@@ -1130,25 +1135,8 @@ function processExcel(arrayBuffer, fileName, resEl){
       fetch(API_URL+'?action=addSAPUpload&payload='+encodeURIComponent(JSON.stringify(summary)))
         .catch(()=>{});
 
-      // ── Push كل أمر لـ TrackingUpdates بـ timestamp صحيح ──
-      const now = Date.now();
-      orders.forEach((o, idx) => {
-        setTimeout(() => {
-          const body = {
-            type:     'sap_import',
-            order_no: o.order_no,
-            customer: o.customer,
-            team_code:o.team_code || '',
-            status:   o.status || 'TECO',
-            pct:      0,
-            note:     'مستورد من SAP — ' + fileName,
-            by:       U.name,
-            ts:       now - idx // timestamp فريد لكل أمر
-          };
-          fetch(API_URL+'?action=addUpdate&payload='+encodeURIComponent(JSON.stringify(body)))
-            .catch(()=>{});
-        }, idx * 300); // 300ms بين كل طلب لتفادي الحمل
-      });
+      // ملاحظة: إرسال الأوامر الفردية محذوف لتجنب تجميد المتصفح مع الملفات الكبيرة
+      // البيانات محفوظة في localStorage وسيتم مزامنتها دورياً عبر الـ summary فقط
     }
 
     // Show result
