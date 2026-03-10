@@ -44,8 +44,9 @@ function doGet(e) {
     if      (act === 'addUpdate')      result = addUpdate(payload);
     else if (act === 'getUpdates')     result = getUpdates(params.team);
     else if (act === 'getOrders')      result = getOrders();
-    else if (act === 'updateOrder')    result = updateOrderField(payload);
-    else if (act === 'sendReport')     result = sendDailyReport('طلب');
+    else if (act === 'updateOrder')      result = updateOrderField(payload);
+    else if (act === 'saveOrdersBatch')  result = saveOrders(payload.orders, payload.by);
+    else if (act === 'sendReport')       result = sendDailyReport('طلب');
     else if (act === 'addIR')          result = addIR(payload);
     else if (act === 'addSAPUpload')   result = addSAPUpload(payload);
     else if (act === 'repairHeaders')  result = repairHeaders();

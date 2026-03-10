@@ -1569,15 +1569,36 @@ function fetchOrdersFromServer(){
     }).catch(()=>{});
 }
 
-// رفع الأوامر للسيرفر بعد SAP upload
+// رفع الأوامر للسيرفر بعد SAP upload — بدفعات 10 أوامر
 function pushOrdersToServer(orders, by){
   if(!API_URL || !orders.length) return;
-  const body = JSON.stringify({ action:'saveOrders', orders, by });
-  fetch(API_URL, {
-    method:'POST',
-    body,
-    headers:{'Content-Type':'text/plain'} // Apps Script يقبل text/plain بدون preflight
-  }).catch(()=>{});
+  const BATCH = 10;
+  let i = 0;
+  function sendBatch(){
+    if(i >= orders.length) return;
+    const chunk = orders.slice(i, i+BATCH).map(o=>({
+      order_no:   o.order_no,
+      customer:   o.customer,
+      address:    o.address   || '',
+      team_code:  o.team_code || '',
+      team_name:  o.team_name || '',
+      status:     o.status    || 'REL',
+      delivery:   o.delivery  || '',
+      planned:    o.planned   || '',
+      total_units:o.total_units|| 0,
+      notes:      o.notes     || '',
+      upload_by:  by          || o.upload_by || '',
+      upload_ts:  o.upload_ts || Date.now(),
+      items:      o.items     || [],
+      main_group: o.main_group|| '',
+      phone:      o.phone     || '',
+    }));
+    const payload = encodeURIComponent(JSON.stringify({action:'saveOrders', orders:chunk, by}));
+    fetch(API_URL+'?action=saveOrdersBatch&payload='+payload).catch(()=>{});
+    i += BATCH;
+    setTimeout(sendBatch, 800);
+  }
+  sendBatch();
 }
 function opn(id){document.getElementById(id).classList.add('sh')}
 function cls(id){document.getElementById(id).classList.remove('sh')}
