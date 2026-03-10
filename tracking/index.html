@@ -1008,36 +1008,42 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
   try{
     const wb   = XLSX.read(arrayBuffer, {type:'array', cellDates:true});
     const ws   = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+    // قراءة كمصفوفات (أكثر موثوقية مع الملفات العربية)
+    const allRows = XLSX.utils.sheet_to_json(ws, {defval:'', header:1});
 
-    if(!rows.length){
-      resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ الملف فارغ</div>`;
+    if(allRows.length < 2){
+      resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ الملف فارغ أو لا يحتوي بيانات</div>`;
       return;
     }
 
-    // Map SAP columns → internal format
-    // تطبيع أسماء الأعمدة: حذف التطويل (kashida) والمسافات الزائدة
-    function normCol(s){ return String(s||'').replace(/\u0640/g,'').trim(); }
+    // الصف الأول = رؤوس الأعمدة، الباقي = بيانات
+    const headers = allRows[0];
+    const dataRows = allRows.slice(1);
 
-    // بناء خريطة مطبّعة لأسماء الأعمدة الموجودة في الملف
-    const colMap={};
-    Object.keys(rows[0]).forEach(k=>{ colMap[normCol(k)]=k; });
+    // أرقام الأعمدة الثابتة (من ملف SAP الفعلي)
+    // col 33=رقم امر التركيب, col 1=اسم العميل, col 2=العنوان
+    // col 4=تليفون, col 23=مجموعة التركيب, col 25=موقف التوريد
+    // col 18=تاريخ بدء التركيب, col 7=المنتجات, col 32=معدلات التركيب
+    // col 8=الكمية, col 31=التركيب بالدقايق, col 20=ملاحظات
+    const CI = { order:33, customer:1, address:2, phone:4, group:23,
+                 delivery:25, planned:18, material:7, mainGrp:32,
+                 qty:8, instTime:31, notes:20 };
 
-    // أسماء الأعمدة الحقيقية من ملف SAP (مع بدائل)
-    const COL = {
-      order:    ['رقم امر التركيب','رقم أمر التركيب','Installation Order'],
-      customer: ['اسم العميل','Customer Name','العميل'],
-      address:  ['العنوان','Installation Address','Address'],
-      phone:    ['رقم التليفون','Telephone','Phone'],
-      group:    ['مجموعة التركيب','Installation Group','المجموعة'],
-      delivery: ['موقف التوريد','Delivery Status','حالة التوريد'],
-      planned:  ['تاريخ بدء التركيب','تاريخ انتهاء التركيب','Planned finish date'],
-      material: ['المنتجات','Material Description','الصنف'],
-      mainGrp:  ['معدلات التركيب','Main Group Name','المجموعة الرئيسية'],
-      qty:      ['الكمية الفعلية بالبند','Order Qty','الكمية'],
-      instTime: ['التركيب بالدقايق','Installation Time','وقت التركيب'],
-      notes:    ['ملاحظات','Notes'],
-    };
+    // دالة مساعدة: البحث عن عمود باسمه لو تغير ترتيب الأعمدة
+    function findCol(names){
+      for(let i=0;i<headers.length;i++){
+        const h = String(headers[i]||'').replace(/\u0640/g,'').trim();
+        for(const n of names){
+          if(h === n.replace(/\u0640/g,'').trim()) return i;
+        }
+      }
+      return -1;
+    }
+    // تحديث الفهارس لو الأعمدة اتغيرت
+    const orderCol = findCol(['رقم امر التركيب','رقم أمر التركيب']) !== -1
+      ? findCol(['رقم امر التركيب','رقم أمر التركيب']) : CI.order;
+    const groupCol = findCol(['مجموعة التركيب']) !== -1
+      ? findCol(['مجموعة التركيب']) : CI.group;
 
     // تعيين أسماء الفرق → كود الفريق
     const TEAM_MAP={
@@ -1048,41 +1054,32 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
       'محمد وسيم':'A4','وسيم':'A4',
     };
 
-    function getVal(row, keys){
-      for(const k of keys){
-        // بحث مباشر أولاً
-        if(row[k]!==undefined && row[k]!=='' && row[k]!==null) return row[k];
-        // بحث بعد تطبيع
-        const orig = colMap[normCol(k)];
-        if(orig && row[orig]!==undefined && row[orig]!=='' && row[orig]!==null) return row[orig];
-      }
-      return '';
-    }
+    function g(row, idx){ const v=row[idx]; return (v===undefined||v===null)?'':v; }
 
     // Group rows by Installation Order
     const ordersMap={};
-    rows.forEach(row=>{
-      const no = String(getVal(row, COL.order)||'').trim();
-      if(!no || no==='0') return;
-      const teamName = String(getVal(row, COL.group)||'').trim();
+    dataRows.forEach(row=>{
+      const no = String(g(row, orderCol)||'').trim();
+      if(!no || no==='0' || no==='') return;
+      const teamName = String(g(row, groupCol)||'').trim();
       const teamCode = TEAM_MAP[teamName] || teamName;
       if(!ordersMap[no]){
-        const plannedRaw = getVal(row, COL.planned);
+        const plannedRaw = g(row, CI.planned);
         const plannedStr = plannedRaw instanceof Date
           ? plannedRaw.toLocaleDateString('ar-EG')
           : String(plannedRaw||'');
         ordersMap[no]={
           order_no:    no,
-          customer:    String(getVal(row, COL.customer)),
-          address:     String(getVal(row, COL.address)),
-          phone:       String(getVal(row, COL.phone)),
+          customer:    String(g(row, CI.customer)),
+          address:     String(g(row, CI.address)),
+          phone:       String(g(row, CI.phone)),
           team_code:   teamCode,
           team_name:   teamName,
           status:      'REL',
-          delivery:    String(getVal(row, COL.delivery)),
+          delivery:    String(g(row, CI.delivery)),
           planned:     plannedStr,
-          main_group:  String(getVal(row, COL.mainGrp)),
-          notes:       String(getVal(row, COL.notes)||''),
+          main_group:  String(g(row, CI.mainGrp)),
+          notes:       String(g(row, CI.notes)||''),
           items:[],
           total_units: 0,
           upload_by:   U.name,
@@ -1090,11 +1087,11 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
           file_name:   fileName
         };
       }
-      const instTime = parseFloat(getVal(row, COL.instTime))||0;
-      const units    = Math.round(instTime/20*10)/10; // 1 unit = 20 min
+      const instTime = parseFloat(g(row, CI.instTime))||0;
+      const units    = Math.round(instTime/20*10)/10;
       ordersMap[no].items.push({
-        material: String(getVal(row, COL.material)),
-        qty:      parseFloat(getVal(row, COL.qty))||0,
+        material: String(g(row, CI.material)),
+        qty:      parseFloat(g(row, CI.qty))||0,
         instTime: instTime,
         units:    units
       });
