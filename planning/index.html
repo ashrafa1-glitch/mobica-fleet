@@ -391,7 +391,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1a1a2e;di
 // ═══════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbztwpT9Si4zw2my29ZS0MTJstXDl8meerhcb0fJCJJcYYwjs5HLoqLCPzhhHuSOam6Z/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyQbJhyNzQ-jHIoojXFAb1wxXWpwRQNj8jHdzTWyOyHIusE5-YCrzTCo4nkMAWD-1DgWA/exec';
 const SK = 'plan_v1';
 const TELEGRAM_BOT = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
 
@@ -492,24 +492,21 @@ function switchTab(id) {
 // LOAD FROM SERVER
 // ═══════════════════════════════════════════════════════════
 function loadFromServer() {
-  fetch(API_URL + '?action=getUpdates')
+  // جلب الأوامر من SAPOrders (تحتوي على total_units الحقيقية)
+  fetch(API_URL + '?action=getOrders')
     .then(r => r.json())
     .then(data => {
-      // آخر تحديث لكل أمر
-      const map = {};
-      (data.updates || []).forEach(u => {
-        if (u.type !== 'status' && u.type !== 'sap_import') return;
-        const k = u.order_no;
-        if (!map[k] || (u.ts||0) > (map[k].ts||0)) map[k] = u;
-      });
-      ORDERS = Object.values(map).filter(o => o.order_no && !o.order_no.startsWith('TEST'));
+      if (data.orders && data.orders.length) {
+        ORDERS = data.orders.filter(o => o.order_no && !String(o.order_no).startsWith('TEST'));
+      } else {
+        ORDERS = getDemoOrders();
+      }
       renderDashboard();
       renderOrders();
       renderPlans();
       populateOrderSelect();
     })
     .catch(() => {
-      // fallback to demo data
       ORDERS = getDemoOrders();
       renderDashboard();
       renderOrders();
