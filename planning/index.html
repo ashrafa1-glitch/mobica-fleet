@@ -737,7 +737,9 @@ function onOrderSelect() {
   const o = ORDERS.find(x => x.order_no === orderNo);
   if (!o) return;
   info.style.display = 'block';
-  document.getElementById('npCustomer').value = o.customer || '';
+  document.getElementById('npCustomer').value  = o.customer    || '';
+  document.getElementById('npLocation').value  = o.address     || '';
+  document.getElementById('npUnits').value     = o.total_units || o.units || '';
   if (o.team_code) document.getElementById('npTeam').value = o.team_code;
   calcPlan();
 }
