@@ -8,10 +8,12 @@ const TEAM_MAP = {
   'حازم قاعود':'P4','حازم':'P4',
   'أحمد حسن':'ahmed','احمد حسن':'ahmed',
   'محمد وسيم':'A4','وسيم':'A4',
+  'الارضيات':'A4','ارضيات':'A4','أرضيات':'A4',
 };
 // أرقام الأعمدة من ملف SAP
 const CI = { order:33, customer:1, address:2, phone:4, group:23,
-             delivery:25, planned:18, material:7, mainGrp:32, qty:8, instTime:31, notes:20 };
+             delivery:25, planned:18, material:7, mainGrp:32,
+             qty:8, unitMeasure:26, instTime:31, notes:20 };
 
 function g(row, idx){ return (row[idx]===undefined||row[idx]===null)?'':row[idx]; }
 
@@ -53,8 +55,8 @@ self.onmessage = function(e){
           items:[], total_units:0, file_name:fileName
         };
       }
-      const instTime = parseFloat(g(row,CI.instTime))||0;
-      const units = Math.round(instTime/20*10)/10;
+      const units    = parseFloat(g(row,CI.unitMeasure))||0; // col 26 = Unit Measure مباشرةً
+      const instTime = parseFloat(g(row,CI.instTime))||0;   // col 31 = الدقايق
       ordersMap[no].items.push({material:String(g(row,CI.material)), qty:parseFloat(g(row,CI.qty))||0, instTime, units});
       ordersMap[no].total_units += units;
     });

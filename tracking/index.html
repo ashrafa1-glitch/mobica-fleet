@@ -349,8 +349,8 @@ const UN = {
   P1:'سامى فؤاد','109962':'هشام جمال',P4:'حازم قاعود',A4:'محمد وسيم',
   yasser:'ياسر السيد',emad:'عماد عبدالواحد'
 };
-const TN = {P1:'سامى فؤاد','109962':'هشام جمال',P4:'حازم قاعود',A4:'محمد وسيم'};
-const TM = {P1:53,'109962':48,P4:30,A4:16};
+const TN = {P1:'سامى فؤاد','109962':'هشام جمال',P4:'حازم قاعود',A4:'محمد وسيم',ahmed:'أحمد حسن'};
+const TM = {P1:61,'109962':55,P4:37,A4:5,ahmed:25}; // مؤكدة من أشرف 2026-03-05
 
 let U=null, PG='dash', CUR=null;
 let UPD = JSON.parse(localStorage.getItem(SK+'_u')||'[]');
@@ -428,15 +428,27 @@ function myContracts(){
 function lastUpd(no){
   return UPD.filter(u=>u.order_no===String(no)&&u.type==='status').sort((a,b)=>b.ts-a.ts)[0];
 }
+// تحويل حالة SAP → حالة داخلية
+function sapToStatus(s){
+  if(!s) return '';
+  if(s==='TECO'||s==='CLSD') return 'Completed';
+  if(s==='REL'||s==='PCNF') return 'Being processed';
+  return s; // حالة يدوية موجودة
+}
 function oStatus(o){
   const u=lastUpd(o.order_no);
-  return u?{status:u.status,pct:u.pct}:{status:o.overall,pct:o.overall==='Completed'?100:o.overall==='Being processed'?50:0};
+  if(u) return {status:u.status, pct:u.pct||0};
+  // fallback: استخدم حالة SAP
+  const st = o.overall || sapToStatus(o.status) || '';
+  return {status:st, pct:st==='Completed'?100:st==='Being processed'?50:0};
 }
+function planDate(o){ return o.plan_finish || o.planned || ''; }
 function isLate(o){
-  if(!o.plan_finish||oStatus(o).status==='Completed') return false;
-  return new Date(o.plan_finish)<new Date();
+  const d = planDate(o);
+  if(!d || oStatus(o).status==='Completed') return false;
+  return new Date(d) < new Date();
 }
-function dLate(o){return Math.max(0,Math.floor((Date.now()-new Date(o.plan_finish))/864e5))}
+function dLate(o){ const d=planDate(o); return d?Math.max(0,Math.floor((Date.now()-new Date(d))/864e5)):0; }
 function pc(p){return p>=80?'#2e7d32':p>=50?'#1565c0':p>=20?'#e65100':'#c62828'}
 function fv(v){return v?'EGP '+Number(v).toLocaleString():'—'}
 function sb(s){
@@ -733,7 +745,7 @@ function ordCards(ords){
             ${sb(s.status)}${db(o.delivery)}
             <span class="b bgy">📦 ${qty} قطعة</span>
             <span class="b bp">⏱️ ${units.toLocaleString()} وحدة</span>
-            ${o.plan_finish?`<span class="b bp">📅 ${o.plan_finish}</span>`:''}
+            ${planDate(o)?`<span class="b bp">📅 ${planDate(o)}</span>`:''}
             ${isLate(o)?`<span class="b br">⚠️ ${dLate(o)} يوم</span>`:''}
             ${upds.length?`<span class="b bgy">🔔${upds.length}</span>`:''}
           </div>
@@ -1054,10 +1066,10 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
     // col 33=رقم امر التركيب, col 1=اسم العميل, col 2=العنوان
     // col 4=تليفون, col 23=مجموعة التركيب, col 25=موقف التوريد
     // col 18=تاريخ بدء التركيب, col 7=المنتجات, col 32=معدلات التركيب
-    // col 8=الكمية, col 31=التركيب بالدقايق, col 20=ملاحظات
+    // col 8=الكمية, col 26=Unit Measure (الوحدات), col 31=الدقايق, col 20=ملاحظات
     const CI = { order:33, customer:1, address:2, phone:4, group:23,
                  delivery:25, planned:18, material:7, mainGrp:32,
-                 qty:8, instTime:31, notes:20 };
+                 qty:8, unitMeasure:26, instTime:31, notes:20 };
 
     // دالة مساعدة: البحث عن عمود باسمه لو تغير ترتيب الأعمدة
     function findCol(names){
@@ -1082,6 +1094,7 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
       'حازم قاعود':'P4','حازم':'P4',
       'أحمد حسن':'ahmed','احمد حسن':'ahmed',
       'محمد وسيم':'A4','وسيم':'A4',
+      'الارضيات':'A4','ارضيات':'A4','أرضيات':'A4', // أرضيات = فريق وسيم
     };
 
     function g(row, idx){ const v=row[idx]; return (v===undefined||v===null)?'':v; }
@@ -1112,8 +1125,8 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
             items:[], total_units:0, upload_by:U.name, upload_ts:Date.now(), file_name:fileName
           };
         }
-        const instTime = parseFloat(g(row,CI.instTime))||0;
-        const units = Math.round(instTime/20*10)/10;
+        const units    = parseFloat(g(row,CI.unitMeasure))||0; // col 26 = Unit Measure مباشرةً
+        const instTime = parseFloat(g(row,CI.instTime))||0;   // col 31 = الدقايق
         ordersMap[no].items.push({ material:String(g(row,CI.material)), qty:parseFloat(g(row,CI.qty))||0, instTime, units });
         ordersMap[no].total_units += units;
       }
