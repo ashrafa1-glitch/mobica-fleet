@@ -1195,10 +1195,17 @@ function finishImport(ordersMapOrObj, fileName, resEl){
       return newO;
     });
 
-    // 3️⃣ احتفظ بالأوامر القديمة التي لم تظهر في الملف الجديد (لا تُحذف)
+    // 3️⃣ احتفظ بالأوامر القديمة التي لم تظهر في الملف الجديد (لا تُحذف أبداً)
+    //    مثلاً: أوامر مكتملة أُزيلت من SAP اليومي لكن لا نحذفها من النظام
     const keptOld = ORDERS.filter(o=>!newNos.has(o.order_no));
 
     const finalOrders = [...mergedFromNew, ...keptOld];
+
+    // إحصائيات التغييرات
+    const changedOrders = mergedFromNew.filter((o,i)=>{
+      const ex = existingMap[o.order_no];
+      return ex && (ex.delivery!==o.delivery || ex.total_units!==o.total_units);
+    });
     const newOrders   = newSAPOrders.filter(o=>!existingMap[o.order_no]);
     const updOrders   = newSAPOrders.filter(o=> existingMap[o.order_no]);
 
@@ -1259,8 +1266,9 @@ function finishImport(ordersMapOrObj, fileName, resEl){
           📅 الملف: ${fileName}<br>
           🗂️ إجمالي الأوامر المحفوظة: <b>${finalOrders.length}</b><br>
           ${newOrders.length?`🆕 أوامر جديدة (${newOrders.length}): `+newOrders.slice(0,3).map(o=>o.order_no).join(', ')+(newOrders.length>3?' ...':'')+'<br>':''}
-          ${updOrders.length?`🔄 أوامر محدّثة (${updOrders.length})<br>`:''}
-          ${keptOld.length?`📌 أوامر محتفظ بها من قبل (${keptOld.length})<br>`:''}
+          ${changedOrders.length?`✏️ أوامر تغيّرت بياناتها (${changedOrders.length})<br>`:''}
+          ${updOrders.length - changedOrders.length > 0 ? `✅ أوامر بدون تغيير (${updOrders.length - changedOrders.length})<br>`:''}
+          ${keptOld.length?`📌 أوامر قديمة محتفظ بها (${keptOld.length})<br>`:''}
         </div>
       </div>`;
 
@@ -1552,50 +1560,55 @@ function syncFromServer(cb){
   }
 }
 
-// جلب الأوامر من Google Sheets — السيرفر هو المصدر الوحيد
+// ═══ FETCH & SMART MERGE من السيرفر ═══════════════════════
+// القاعدة: لا يتم حذف أي أمر أبداً — فقط تحديث وإضافة
 function fetchOrdersFromServer(){
   if(!API_URL) return;
-
-  // حماية: لو في رفع محلي خلال آخر 10 دقائق → لا نكتب فوق البيانات الجديدة
-  const localUploadTs = Number(localStorage.getItem(SK+'_local_upload_ts')||0);
-  const uploadAge = Date.now() - localUploadTs;
-  const PROTECT_MS = 10 * 60 * 1000; // 10 دقائق
-
   fetch(API_URL+'?action=getOrders')
     .then(r=>r.json())
     .then(d=>{
-      if(!d.orders || !d.orders.length) return;
       localStorage.setItem(SK+'_orders_fetch_ts', Date.now());
 
-      // لو في رفع محلي حديث → السيرفر مش عنده الجديد بعد → تجاهل
-      if(uploadAge < PROTECT_MS){
-        toast('☁️ بيانات محمية — السيرفر قيد التحديث');
-        return;
-      }
+      const serverOrders = (d.orders||[]);
 
-      // السيرفر هو المصدر الوحيد للأوامر
-      // نحتفظ فقط بالـ status/pct/overall اللي تم تحديثها يدوياً محلياً
+      // خريطة الأوامر الموجودة محلياً
       const localMap={};
       ORDERS.forEach(o=>{ localMap[o.order_no]=o; });
 
-      const merged = d.orders.map(sv=>{
+      // خريطة أوامر السيرفر
+      const serverMap={};
+      serverOrders.forEach(o=>{ serverMap[o.order_no]=o; });
+
+      // ══ خطوة 1: تحديث الأوامر الموجودة من السيرفر
+      //    السيرفر يحدّث: بيانات SAP (العميل، العنوان، الوحدات، التوريد، الخطة)
+      //    المحلي يحتفظ بـ: الحالة اليدوية، نسبة الإنجاز، الملاحظات
+      const step1 = serverOrders.map(sv=>{
         const lc = localMap[sv.order_no];
         if(lc){
-          // احتفظ بالتحديثات اليدوية المحلية (status, pct, overall)
           return Object.assign({}, sv, {
-            status:  lc.status  || sv.status,
-            pct:     lc.pct     !== undefined ? lc.pct : 0,
+            // حافظ على التحديثات اليدوية
             overall: lc.overall || sv.overall || '',
+            pct:     lc.pct!=null ? lc.pct : 0,
           });
         }
-        return sv;
+        return sv; // أمر جديد من السيرفر
       });
+
+      // ══ خطوة 2: أضف الأوامر المحلية اللي مش على السيرفر بعد
+      //    (مرفوعة محلياً ولم تصل للسيرفر بعد)
+      const step2 = ORDERS.filter(lc=>!serverMap[lc.order_no]);
+
+      // ══ النتيجة: اتحاد كامل — لا حذف أبداً
+      const merged = [...step1, ...step2];
+
+      if(!merged.length) return; // لا تمسح البيانات لو السيرفر رجع فاضي
 
       ORDERS = merged;
       localStorage.setItem(SK+'_sap_orders', JSON.stringify(merged));
       go(PG);
-      toast('☁️ '+merged.length+' أمر من السيرفر');
-    }).catch(()=>{});
+      const news = step2.length ? ` (+${step2.length} محلي)` : '';
+      toast(`☁️ ${step1.length} أمر من السيرفر${news}`);
+    }).catch(()=>{}); // لو السيرفر فشل → احتفظ بالبيانات المحلية
 }
 
 // رفع الأوامر للسيرفر بعد SAP upload — بدفعات 10 أوامر
