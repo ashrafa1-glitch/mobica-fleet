@@ -755,10 +755,37 @@ function calcPlan() {
   const dailyCap = team.size * DAILY_RATE;
   const days     = Math.ceil(units / dailyCap);
 
+  // حساب الأفراد المطلوبين بناءً على تاريخ التسليم
+  let reqStaff = team.size, availDays = days, staffStatus = '';
+  if (delivery) {
+    availDays = countWorkingDays(new Date(), new Date(delivery));
+    if (availDays < 1) availDays = 1;
+    reqStaff  = Math.ceil(units / (availDays * DAILY_RATE));
+    if (reqStaff <= team.size) {
+      staffStatus = `<span style="color:#2e7d32">✅ الفريق كافٍ (${team.size} فني)</span>`;
+    } else {
+      staffStatus = `<span style="color:#c62828">⚠️ يحتاج ${reqStaff} فني — الفريق ${team.size} فقط</span>`;
+    }
+  }
+
   document.getElementById('calcUnits').textContent     = units + ' وحدة';
   document.getElementById('calcTeamSize').textContent  = team.size + ' فني';
   document.getElementById('calcCapacity').textContent  = dailyCap.toFixed(1) + ' وحدة/يوم';
   document.getElementById('calcDays').textContent      = days + ' يوم عمل';
+
+  // عرض الأفراد المطلوبين
+  let reqEl = document.getElementById('calcReqStaff');
+  if (!reqEl) {
+    reqEl = document.createElement('div');
+    reqEl.id = 'calcReqStaff';
+    reqEl.style.cssText = 'background:#fff3e0;border-radius:8px;padding:10px;margin-top:8px;font-size:14px;font-weight:600;text-align:center';
+    calcBox.querySelector('.calc-grid') && calcBox.querySelector('.calc-grid').after(reqEl);
+  }
+  if (delivery) {
+    reqEl.innerHTML = `👷 الأفراد المطلوبين لإنهاء في ${new Date(delivery).toLocaleDateString('ar-EG')}: <b style="font-size:18px">${reqStaff} فني</b> (${availDays} يوم متاح)<br>${staffStatus}`;
+  } else {
+    reqEl.innerHTML = '';
+  }
 
   // timeline
   let tlHtml = '';
@@ -778,6 +805,20 @@ function calcPlan() {
   }
   document.getElementById('calcTimeline').innerHTML = tlHtml;
   calcBox.style.display = 'block';
+}
+
+// حساب أيام العمل (الجمعة إجازة فقط)
+function countWorkingDays(from, to) {
+  let count = 0;
+  const d = new Date(from);
+  d.setHours(0,0,0,0);
+  const end = new Date(to);
+  end.setHours(0,0,0,0);
+  while (d < end) {
+    if (d.getDay() !== 5) count++; // 5 = الجمعة
+    d.setDate(d.getDate() + 1);
+  }
+  return Math.max(count, 1);
 }
 
 function fmtDate(d) {
