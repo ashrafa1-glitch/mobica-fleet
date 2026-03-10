@@ -1000,13 +1000,32 @@ function importExcel(input){
 }
 
 function processExcel(arrayBuffer, fileName, resEl){
-  // تأخير بسيط عشان المتصفح يتنفس قبل المعالجة الثقيلة
-  resEl.innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">⚙️ جارى معالجة ${fileName}...</div>`;
-  setTimeout(()=>_processExcelCore(arrayBuffer, fileName, resEl), 50);
+  resEl.innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">
+    ⚙️ جارى معالجة الملف في الخلفية...<br>
+    <small style="color:#888">المتصفح لن يتجمد — يرجى الانتظار</small></div>`;
+
+  // Web Worker: المعالجة في thread منفصل
+  const worker = new Worker('./xlsx-worker.js');
+  worker.onmessage = function(e){
+    worker.terminate();
+    if(e.data.error){
+      resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ ${e.data.error}</div>`;
+      return;
+    }
+    const orders = e.data.orders.map(o=>({...o, upload_by:U.name, upload_ts:Date.now()}));
+    finishImport({orders}, fileName, resEl);
+  };
+  worker.onerror = function(err){
+    worker.terminate();
+    // fallback: معالجة محلية لو الـ worker فشل
+    resEl.innerHTML=`<div style="text-align:center;padding:16px;color:#e65100">⚠️ Web Worker غير متاح — جارى المعالجة المباشرة...</div>`;
+    setTimeout(()=>_processExcelCore(arrayBuffer, fileName, resEl), 100);
+  };
+  worker.postMessage({arrayBuffer, fileName}, [arrayBuffer]);
 }
 function _processExcelCore(arrayBuffer, fileName, resEl){
   try{
-    const wb   = XLSX.read(arrayBuffer, {type:'array', cellDates:true});
+    const wb   = XLSX.read(new Uint8Array(arrayBuffer), {type:'array', cellDates:true});
     const ws   = wb.Sheets[wb.SheetNames[0]];
     // قراءة كمصفوفات (أكثر موثوقية مع الملفات العربية)
     const allRows = XLSX.utils.sheet_to_json(ws, {defval:'', header:1});
@@ -1107,10 +1126,10 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
     resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ خطأ: ${err.message}</div>`;
   }
 }
-function finishImport(ordersMap, fileName, resEl){
+function finishImport(ordersMapOrObj, fileName, resEl){
   try{
-
-    const orders = Object.values(ordersMap);
+    // يقبل {orders:[...]} من الـ Worker أو ordersMap عادي
+    const orders = ordersMapOrObj.orders || Object.values(ordersMapOrObj);
     const newOrders   = orders.filter(o=>!ORDERS.find(ex=>ex.order_no===o.order_no));
     const updOrders   = orders.filter(o=> ORDERS.find(ex=>ex.order_no===o.order_no));
 
