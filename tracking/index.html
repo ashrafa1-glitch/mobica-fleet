@@ -370,10 +370,16 @@ function login(){
   document.getElementById('sc-app').style.display='block';
   document.getElementById('hdr-s').textContent=U.name+' — '+
     {admin:'إدارة',manager:'مدير مجموعة',viewer:'متابعة',supply:'توريد',delivery:'تسليم'}[U.role];
-  nav(); go('dash');
-  // جلب فوري من السيرفر عند الدخول — يضمن نفس البيانات لكل المستخدمين
-  localStorage.removeItem(SK+'_orders_fetch_ts'); // إجبار fetch جديد
-  setTimeout(fetchOrdersFromServer, 800);
+  nav();
+  // عرض شاشة تحميل أولاً ثم نجيب من السيرفر (يمنع قفز الأرقام)
+  document.getElementById('pg').innerHTML=`
+    <div style="text-align:center;padding:60px 20px;color:#1565c0">
+      <div style="font-size:2.5rem;margin-bottom:12px">☁️</div>
+      <div style="font-weight:700;font-size:1.1rem;margin-bottom:6px">جارى تحميل البيانات من السيرفر...</div>
+      <div style="font-size:.85rem;color:#888">يرجى الانتظار</div>
+    </div>`;
+  localStorage.removeItem(SK+'_orders_fetch_ts');
+  fetchOrdersFromServer(); // لما يخلص هيعمل go(PG) تلقائياً
   setInterval(syncFromServer,30000);
 }
 function logout(){
