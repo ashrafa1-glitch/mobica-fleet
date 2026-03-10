@@ -1129,17 +1129,56 @@ function _processExcelCore(arrayBuffer, fileName, resEl){
 function finishImport(ordersMapOrObj, fileName, resEl){
   try{
     // يقبل {orders:[...]} من الـ Worker أو ordersMap عادي
-    const orders = ordersMapOrObj.orders || Object.values(ordersMapOrObj);
-    const newOrders   = orders.filter(o=>!ORDERS.find(ex=>ex.order_no===o.order_no));
-    const updOrders   = orders.filter(o=> ORDERS.find(ex=>ex.order_no===o.order_no));
+    const newSAPOrders = ordersMapOrObj.orders || Object.values(ordersMapOrObj);
+
+    // ═══ MERGE: دمج الداتا الجديدة مع القديمة ═══
+    // خريطة الأوامر الموجودة
+    const existingMap={};
+    ORDERS.forEach(o=>{ existingMap[o.order_no]=o; });
+
+    // أرقام الأوامر في الملف الجديد
+    const newNos = new Set(newSAPOrders.map(o=>o.order_no));
+
+    // 1️⃣ دمج: أوامر موجودة → حدّث SAP + احتفظ بتاريخ التتبع
+    // 2️⃣ جديد: أوامر جديدة → أضف
+    const mergedFromNew = newSAPOrders.map(newO=>{
+      const ex = existingMap[newO.order_no];
+      if(ex){
+        // تحديث بيانات SAP مع الاحتفاظ بتاريخ التتبع
+        return Object.assign({}, ex, {
+          customer:   newO.customer,
+          address:    newO.address,
+          phone:      newO.phone,
+          delivery:   newO.delivery,
+          planned:    newO.planned,
+          main_group: newO.main_group,
+          team_code:  newO.team_code || ex.team_code,
+          team_name:  newO.team_name || ex.team_name,
+          items:      newO.items,
+          total_units:newO.total_units,
+          file_name:  newO.file_name,
+          upload_ts:  newO.upload_ts,
+          upload_by:  newO.upload_by,
+          // يحتفظ بـ: status, pct, notes, overall, وأي بيانات تتبع أُضيفت يدوياً
+        });
+      }
+      return newO;
+    });
+
+    // 3️⃣ احتفظ بالأوامر القديمة التي لم تظهر في الملف الجديد (لا تُحذف)
+    const keptOld = ORDERS.filter(o=>!newNos.has(o.order_no));
+
+    const finalOrders = [...mergedFromNew, ...keptOld];
+    const newOrders   = newSAPOrders.filter(o=>!existingMap[o.order_no]);
+    const updOrders   = newSAPOrders.filter(o=> existingMap[o.order_no]);
 
     // Save to localStorage
-    localStorage.setItem(SK+'_sap_orders', JSON.stringify(orders));
+    localStorage.setItem(SK+'_sap_orders', JSON.stringify(finalOrders));
     localStorage.setItem(SK+'_sap_upload_ts', Date.now());
 
-    // ✅ FIX: تحديث الـ ORDERS global في الذاكرة فوراً
-    ORDERS = orders;
-    go('dash'); // تحديث الـ dashboard
+    // تحديث ORDERS في الذاكرة
+    ORDERS = finalOrders;
+    go('dash');
 
     // Sync to Google Sheets (send summary only — no heavy base64)
     if(API_URL){
@@ -1183,8 +1222,10 @@ function finishImport(ordersMapOrObj, fileName, resEl){
         </div>
         <div style="font-size:12px;color:#555">
           📅 الملف: ${fileName}<br>
-          🔔 تم إرسال إشعار للإدارة<br>
-          ${newOrders.length?'🆕 أوامر جديدة: '+newOrders.slice(0,3).map(o=>o.order_no).join(', ')+(newOrders.length>3?' ...':''):''}
+          🗂️ إجمالي الأوامر المحفوظة: <b>${finalOrders.length}</b><br>
+          ${newOrders.length?`🆕 أوامر جديدة (${newOrders.length}): `+newOrders.slice(0,3).map(o=>o.order_no).join(', ')+(newOrders.length>3?' ...':'')+'<br>':''}
+          ${updOrders.length?`🔄 أوامر محدّثة (${updOrders.length})<br>`:''}
+          ${keptOld.length?`📌 أوامر محتفظ بها من قبل (${keptOld.length})<br>`:''}
         </div>
       </div>`;
 
