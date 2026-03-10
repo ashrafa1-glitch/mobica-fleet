@@ -395,9 +395,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbztwpT9Si4zw2my29ZS0MTJ
 const SK = 'plan_v1';
 const TELEGRAM_BOT = '8209404725:AAH1zZ_QzS3nDW01VMd0TLLHyvC1EYFPdh0';
 
-// الهدف: 150 وحدة/فني/شهر ÷ 22 يوم عمل = 6.82 وحدة/فني/يوم
-const DAILY_RATE = 6.82;
+// الهدف: 150 وحدة/فني/شهر ÷ 26 يوم عمل (الجمعة إجازة فقط) = 5.77 وحدة/فني/يوم
+const DAILY_RATE = 5.77;
 const MONTHLY_TARGET = 150; // وحدة/فني/شهر
+const WORKING_DAYS_MONTH = 26;
 
 const TEAM_INFO = {
   'P1':     { name: 'سامى فؤاد',   code: 'B',  size: 61, id: '1453588787' },
