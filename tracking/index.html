@@ -1210,7 +1210,9 @@ function finishImport(ordersMapOrObj, fileName, resEl){
     ORDERS = finalOrders;
     go('dash');
 
-    // ☁️ رفع الأوامر الجديدة/المحدّثة للسيرفر (database مركزي)
+    // ☁️ رفع الأوامر للسيرفر + حماية 10 دقائق من الكتابة فوق البيانات الجديدة
+    const uploadNow = Date.now();
+    localStorage.setItem(SK+'_local_upload_ts', uploadNow);
     pushOrdersToServer(newSAPOrders, U.name);
 
     // Sync to Google Sheets (send summary only — no heavy base64)
@@ -1553,11 +1555,23 @@ function syncFromServer(cb){
 // جلب الأوامر من Google Sheets — السيرفر هو المصدر الوحيد
 function fetchOrdersFromServer(){
   if(!API_URL) return;
+
+  // حماية: لو في رفع محلي خلال آخر 10 دقائق → لا نكتب فوق البيانات الجديدة
+  const localUploadTs = Number(localStorage.getItem(SK+'_local_upload_ts')||0);
+  const uploadAge = Date.now() - localUploadTs;
+  const PROTECT_MS = 10 * 60 * 1000; // 10 دقائق
+
   fetch(API_URL+'?action=getOrders')
     .then(r=>r.json())
     .then(d=>{
       if(!d.orders || !d.orders.length) return;
       localStorage.setItem(SK+'_orders_fetch_ts', Date.now());
+
+      // لو في رفع محلي حديث → السيرفر مش عنده الجديد بعد → تجاهل
+      if(uploadAge < PROTECT_MS){
+        toast('☁️ بيانات محمية — السيرفر قيد التحديث');
+        return;
+      }
 
       // السيرفر هو المصدر الوحيد للأوامر
       // نحتفظ فقط بالـ status/pct/overall اللي تم تحديثها يدوياً محلياً
