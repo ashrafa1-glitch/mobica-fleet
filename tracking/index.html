@@ -1010,32 +1010,46 @@ function processExcel(arrayBuffer, fileName, resEl){
       return;
     }
 
-    // 🔍 DEBUG: عرض أسماء الأعمدة المكتشفة
-    const detectedCols = Object.keys(rows[0]);
-    resEl.innerHTML=`<div style="background:#fff3e0;border:1px solid #ff9800;border-radius:8px;padding:12px;margin-bottom:10px;direction:ltr;font-size:11px">
-      <b>🔍 أعمدة الملف المكتشفة (${detectedCols.length} عمود | ${rows.length} صف):</b><br>
-      ${detectedCols.map(c=>`<span style="background:#e3f2fd;padding:2px 6px;margin:2px;border-radius:4px;display:inline-block">${c}</span>`).join('')}
-    </div>`;
-
     // Map SAP columns → internal format
+    // تطبيع أسماء الأعمدة: حذف التطويل (kashida) والمسافات الزائدة
+    function normCol(s){ return String(s||'').replace(/\u0640/g,'').trim(); }
+
+    // بناء خريطة مطبّعة لأسماء الأعمدة الموجودة في الملف
+    const colMap={};
+    Object.keys(rows[0]).forEach(k=>{ colMap[normCol(k)]=k; });
+
+    // أسماء الأعمدة الحقيقية من ملف SAP (مع بدائل)
     const COL = {
-      order:    ['Installation Order','Installation order','أمر التركيب'],
-      customer: ['Customer Name','Customer','العميل'],
-      address:  ['Installation Address','Address','العنوان'],
-      phone:    ['Telephone','Phone','الهاتف'],
-      group:    ['Installation Group','Group','المجموعة'],
-      status:   ['Overall Status','Status','الحالة'],
-      delivery: ['Delivery Status','حالة التوريد'],
-      planned:  ['Planed finish date','Planned finish date','التاريخ المخطط'],
-      material: ['Material Desc.','Material Description','الصنف'],
-      mainGrp:  ['Main Group Name','المجموعة الرئيسية'],
-      qty:      ['Order Qty','Quantity','الكمية'],
-      instTime: ['Installation Time','وقت التركيب'],
+      order:    ['رقم امر التركيب','رقم أمر التركيب','Installation Order'],
+      customer: ['اسم العميل','Customer Name','العميل'],
+      address:  ['العنوان','Installation Address','Address'],
+      phone:    ['رقم التليفون','Telephone','Phone'],
+      group:    ['مجموعة التركيب','Installation Group','المجموعة'],
+      delivery: ['موقف التوريد','Delivery Status','حالة التوريد'],
+      planned:  ['تاريخ بدء التركيب','تاريخ انتهاء التركيب','Planned finish date'],
+      material: ['المنتجات','Material Description','الصنف'],
+      mainGrp:  ['معدلات التركيب','Main Group Name','المجموعة الرئيسية'],
+      qty:      ['الكمية الفعلية بالبند','Order Qty','الكمية'],
+      instTime: ['التركيب بالدقايق','Installation Time','وقت التركيب'],
+      notes:    ['ملاحظات','Notes'],
+    };
+
+    // تعيين أسماء الفرق → كود الفريق
+    const TEAM_MAP={
+      'هشام جمال':'109962','هشام':'109962',
+      'سامى فؤاد':'P1','سامي فؤاد':'P1','سامى':'P1',
+      'حازم قاعود':'P4','حازم':'P4',
+      'أحمد حسن':'ahmed','احمد حسن':'ahmed',
+      'محمد وسيم':'A4','وسيم':'A4',
     };
 
     function getVal(row, keys){
       for(const k of keys){
-        if(row[k]!==undefined && row[k]!=='') return row[k];
+        // بحث مباشر أولاً
+        if(row[k]!==undefined && row[k]!=='' && row[k]!==null) return row[k];
+        // بحث بعد تطبيع
+        const orig = colMap[normCol(k)];
+        if(orig && row[orig]!==undefined && row[orig]!=='' && row[orig]!==null) return row[orig];
       }
       return '';
     }
@@ -1044,18 +1058,26 @@ function processExcel(arrayBuffer, fileName, resEl){
     const ordersMap={};
     rows.forEach(row=>{
       const no = String(getVal(row, COL.order)||'').trim();
-      if(!no) return;
+      if(!no || no==='0') return;
+      const teamName = String(getVal(row, COL.group)||'').trim();
+      const teamCode = TEAM_MAP[teamName] || teamName;
       if(!ordersMap[no]){
+        const plannedRaw = getVal(row, COL.planned);
+        const plannedStr = plannedRaw instanceof Date
+          ? plannedRaw.toLocaleDateString('ar-EG')
+          : String(plannedRaw||'');
         ordersMap[no]={
           order_no:    no,
           customer:    String(getVal(row, COL.customer)),
           address:     String(getVal(row, COL.address)),
           phone:       String(getVal(row, COL.phone)),
-          team_code:   String(getVal(row, COL.group)),
-          status:      String(getVal(row, COL.status)),
+          team_code:   teamCode,
+          team_name:   teamName,
+          status:      'REL',
           delivery:    String(getVal(row, COL.delivery)),
-          planned:     String(getVal(row, COL.planned)),
+          planned:     plannedStr,
           main_group:  String(getVal(row, COL.mainGrp)),
+          notes:       String(getVal(row, COL.notes)||''),
           items:[],
           total_units: 0,
           upload_by:   U.name,
