@@ -1001,27 +1001,34 @@ function importExcel(input){
 
 function processExcel(arrayBuffer, fileName, resEl){
   resEl.innerHTML=`<div style="text-align:center;padding:20px;color:#1565c0">
-    ⚙️ جارى معالجة الملف في الخلفية...<br>
-    <small style="color:#888">المتصفح لن يتجمد — يرجى الانتظار</small></div>`;
+    ⚙️ جارى معالجة الملف...<br>
+    <small style="color:#888">يرجى الانتظار</small></div>`;
 
-  // Web Worker: المعالجة في thread منفصل
-  const worker = new Worker('./xlsx-worker.js');
-  worker.onmessage = function(e){
-    worker.terminate();
-    if(e.data.error){
-      resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ ${e.data.error}</div>`;
-      return;
-    }
-    const orders = e.data.orders.map(o=>({...o, upload_by:U.name, upload_ts:Date.now()}));
-    finishImport({orders}, fileName, resEl);
-  };
-  worker.onerror = function(err){
-    worker.terminate();
-    // fallback: معالجة محلية لو الـ worker فشل
-    resEl.innerHTML=`<div style="text-align:center;padding:16px;color:#e65100">⚠️ Web Worker غير متاح — جارى المعالجة المباشرة...</div>`;
-    setTimeout(()=>_processExcelCore(arrayBuffer, fileName, resEl), 100);
-  };
-  worker.postMessage({arrayBuffer, fileName}, [arrayBuffer]);
+  // نسخة احتياطية من الـ buffer للـ fallback
+  const bufferCopy = arrayBuffer.slice(0);
+
+  try{
+    const worker = new Worker('./xlsx-worker.js');
+    worker.onmessage = function(e){
+      worker.terminate();
+      if(e.data.error){
+        resEl.innerHTML=`<div style="color:#c62828;padding:12px">❌ ${e.data.error}</div>`;
+        return;
+      }
+      const orders = e.data.orders.map(o=>({...o, upload_by:U.name, upload_ts:Date.now()}));
+      finishImport({orders}, fileName, resEl);
+    };
+    worker.onerror = function(){
+      worker.terminate();
+      resEl.innerHTML=`<div style="text-align:center;padding:16px;color:#e65100">⚙️ جارى المعالجة...</div>`;
+      setTimeout(()=>_processExcelCore(bufferCopy, fileName, resEl), 50);
+    };
+    // نرسل نسخة (بدون transfer) عشان الـ fallback يشتغل
+    worker.postMessage({arrayBuffer: bufferCopy, fileName});
+  } catch(e){
+    // لو Web Workers مش مدعومة
+    setTimeout(()=>_processExcelCore(bufferCopy, fileName, resEl), 50);
+  }
 }
 function _processExcelCore(arrayBuffer, fileName, resEl){
   try{
