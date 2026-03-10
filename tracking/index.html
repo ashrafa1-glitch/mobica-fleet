@@ -366,7 +366,7 @@ function login(){
   if(PW[k]!==p){document.getElementById('lerr').style.display='block';return;}
   document.getElementById('lerr').style.display='none';
   const [uid,role]=k.split('|');
-  U={uid,role,name:UN[uid]||uid,team:['P1','109962','P4','A4'].includes(uid)?uid:null};
+  U={uid,role,name:UN[uid]||uid,team:['P1','109962','P4','A4','ahmed'].includes(uid)?uid:null};
   document.getElementById('sc-login').style.display='none';
   document.getElementById('sc-app').style.display='block';
   document.getElementById('hdr-s').textContent=U.name+' — '+
