@@ -370,7 +370,11 @@ function login(){
   document.getElementById('sc-app').style.display='block';
   document.getElementById('hdr-s').textContent=U.name+' — '+
     {admin:'إدارة',manager:'مدير مجموعة',viewer:'متابعة',supply:'توريد',delivery:'تسليم'}[U.role];
-  nav(); go('dash'); setTimeout(syncFromServer,1000); setInterval(syncFromServer,30000);
+  nav(); go('dash');
+  // جلب فوري من السيرفر عند الدخول — يضمن نفس البيانات لكل المستخدمين
+  localStorage.removeItem(SK+'_orders_fetch_ts'); // إجبار fetch جديد
+  setTimeout(fetchOrdersFromServer, 800);
+  setInterval(syncFromServer,30000);
 }
 function logout(){
   U=null;
@@ -1527,7 +1531,7 @@ function syncFromServer(cb){
   }
 }
 
-// جلب الأوامر من Google Sheets → merge مع localStorage
+// جلب الأوامر من Google Sheets — السيرفر هو المصدر الوحيد
 function fetchOrdersFromServer(){
   if(!API_URL) return;
   fetch(API_URL+'?action=getOrders')
@@ -1536,36 +1540,28 @@ function fetchOrdersFromServer(){
       if(!d.orders || !d.orders.length) return;
       localStorage.setItem(SK+'_orders_fetch_ts', Date.now());
 
-      // Merge: server data wins for SAP fields, local wins for manual fields
-      const serverMap={};
-      d.orders.forEach(o=>{ serverMap[o.order_no]=o; });
-
+      // السيرفر هو المصدر الوحيد للأوامر
+      // نحتفظ فقط بالـ status/pct/overall اللي تم تحديثها يدوياً محلياً
       const localMap={};
       ORDERS.forEach(o=>{ localMap[o.order_no]=o; });
 
-      // اتحاد الأوامر من السيرفر + المحلية
-      const allNos = new Set([...Object.keys(serverMap),...Object.keys(localMap)]);
-      const merged=[];
-      allNos.forEach(no=>{
-        const sv=serverMap[no];
-        const lc=localMap[no];
-        if(sv && lc){
-          // موجود في الاثنين: SAP fields من السيرفر، tracking fields من المحلي
-          merged.push(Object.assign({},lc,{
-            customer:sv.customer, address:sv.address, team_code:sv.team_code,
-            team_name:sv.team_name, delivery:sv.delivery, planned:sv.planned,
-            total_units:sv.total_units, items:sv.items.length?sv.items:lc.items,
-            main_group:sv.main_group||lc.main_group, upload_ts:sv.upload_ts
-          }));
-        } else {
-          merged.push(sv||lc);
+      const merged = d.orders.map(sv=>{
+        const lc = localMap[sv.order_no];
+        if(lc){
+          // احتفظ بالتحديثات اليدوية المحلية (status, pct, overall)
+          return Object.assign({}, sv, {
+            status:  lc.status  || sv.status,
+            pct:     lc.pct     !== undefined ? lc.pct : 0,
+            overall: lc.overall || sv.overall || '',
+          });
         }
+        return sv;
       });
 
-      ORDERS=merged;
-      localStorage.setItem(SK+'_sap_orders',JSON.stringify(merged));
+      ORDERS = merged;
+      localStorage.setItem(SK+'_sap_orders', JSON.stringify(merged));
       go(PG);
-      toast('☁️ تم تحديث الأوامر من السيرفر ('+merged.length+')');
+      toast('☁️ '+merged.length+' أمر من السيرفر');
     }).catch(()=>{});
 }
 
